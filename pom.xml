@@ -9,14 +9,15 @@
 	<name>Lemo</name>
 
 	<modules>
-		<module>lemo-launcher</module>
-		<module>lemo-core</module>
-		<module>lemo-logging</module>
-		<module>lemo-server</module>
-		<module>lemo-an</module>
-		<module>lemo-persistence</module>
-		<module>lemo-persistence-entities</module>
-		<module>lemo-plugins</module>
+		<!-- <module>lemo-launcher</module> -->
+		<!-- <module>lemo-core</module> -->
+		<!-- <module>lemo-logging</module> -->
+		<module>osgi-jersey-http-service-adapter</module>
+		<module>lemo-testplugin</module>
+		<!-- <module>lemo-an</module> -->
+		<!-- <module>lemo-persistence</module> -->
+		<!-- <module>lemo-persistence-entities</module> -->
+		<!-- <module>lemo-plugins</module> -->
 	</modules>
 
 	<properties>
@@ -27,18 +28,10 @@
 
 		<!-- TODO move server properties to server aggregator -->
 
-		<osgi-version>5.0.0</osgi-version>
-		<servlet-api-version>3.0.1</servlet-api-version>
-
-
-		<!-- <servlet-api-version>3.0.0.v201112011016</servlet-api-version> -->
-
+		<osgi-version>4.2.0</osgi-version>
+		<!-- <servlet-api-version>3.0.1</servlet-api-version> -->
 		<jaxrs-api-version>2.0.1</jaxrs-api-version>
-
-		<jetty-version>9.3.0.M0</jetty-version>
-		<felix-jetty-version>8.1.14.v20131031</felix-jetty-version>
-
-		<jersey-version>2.13</jersey-version>
+		<jersey-version>2.14</jersey-version>
 
 		<!-- TODO move persistence properties to persistence aggregator(?) -->
 
@@ -58,38 +51,16 @@
 
 		<!-- bnd import instruction entry for slf4j logging support -->
 
-		<logging-import>org.slf4j; org.slf4j.spi; version="[1.7,2.0)"</logging-import>
+		<!-- <import.logging-import>org.slf4j; version="[1,)""</logging-import> -->
 		<!-- <logging-import>org.slf4j; org.slf4j.spi; version="[1.7,2.0)"; provider=paxlogging</logging-import> -->
 
 
-		<dm-annotation-plugin>org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=info</dm-annotation-plugin>
 		<outputDirectoryName>bundle/classes</outputDirectoryName>
 		<project.build.outputDirectory>${project.build.directory}/${outputDirectoryName}</project.build.outputDirectory>
 
 	</properties>
 
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.enterprise</artifactId>
-		</dependency>
-
-	</dependencies>
 
 	<dependencyManagement>
 		<dependencies>
@@ -147,6 +118,12 @@
 				<version>${servlet-api-version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.4</version>
+				<scope>provided</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>javax.ws.rs</groupId>
@@ -154,6 +131,8 @@
 				<version>${jaxrs-api-version}</version>
 				<scope>provided</scope>
 			</dependency>
+
+
 
 			<!-- testing -->
 			<dependency>
@@ -166,6 +145,32 @@
 		</dependencies>
 	</dependencyManagement>
 
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.osgi</groupId> -->
+		<!-- <artifactId>org.osgi.core</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.osgi</groupId> -->
+		<!-- <artifactId>org.osgi.compendium</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.osgi</groupId> -->
+		<!-- <artifactId>org.osgi.enterprise</artifactId> -->
+		<!-- </dependency> -->
+	</dependencies>
 
 	<build>
 
@@ -193,43 +198,23 @@
 		<pluginManagement>
 			<plugins>
 
-
 				<!-- <plugin> -->
-				<!-- <groupId>org.apache.felix</groupId> -->
-				<!-- <artifactId>org.apache.felix.dependencymanager.annotation</artifactId> -->
-				<!-- <version>3.2.0</version> -->
+				<!-- <artifactId>maven-invoker-plugin</artifactId> -->
+				<!-- <version>1.9</version> -->
+				<!-- <configuration> -->
+				<!-- <pomIncludes> -->
+				<!-- <pomInclude>lemo-persistence-entites/pom.xml</pomInclude> -->
+				<!-- </pomIncludes> -->
+				<!-- </configuration> -->
 				<!-- <executions> -->
 				<!-- <execution> -->
-				<!-- <phase>install</phase> -->
+				<!-- <id>install</id> -->
 				<!-- <goals> -->
-				<!-- <goal>scan</goal> -->
+				<!-- <goal>install</goal> -->
 				<!-- </goals> -->
-				<!-- <configuration> -->
-				<!-- <m_log>debug</m_log> -->
-				<!-- <m_buildImportExportService>false</m_buildImportExportService> -->
-				<!-- <m_generatedOutputDir>target/${outputDirectoryName}</m_generatedOutputDir> -->
-				<!-- </configuration> -->
 				<!-- </execution> -->
 				<!-- </executions> -->
 				<!-- </plugin> -->
-
-				<plugin>
-					<artifactId>maven-invoker-plugin</artifactId>
-					<version>1.9</version>
-					<configuration>
-						<pomIncludes>
-							<pomInclude>lemo-persistence-entites/pom.xml</pomInclude>
-						</pomIncludes>
-					</configuration>
-					<executions>
-						<execution>
-							<id>install</id>
-							<goals>
-								<goal>install</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -241,35 +226,17 @@
 					</configuration>
 				</plugin>
 
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-scr-plugin</artifactId>
-					<version>1.20.0</version>
-					<executions>
-						<execution>
-							<id>generate-scr-scrdescriptor</id>
-							<goals>
-								<goal>scr</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<supportedProjectTypes>
-							<supportedProjectType>bundle</supportedProjectType>
-						</supportedProjectTypes>
-						<generateAccessors>true</generateAccessors>
-					</configuration>
-				</plugin>
 
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.3.2</version>
-					<configuration>
-						<skip>true</skip>
-						<workingDirectory>${project.basedir}</workingDirectory>
-					</configuration>
-				</plugin>
+
+				<!-- <plugin> -->
+				<!-- <groupId>org.codehaus.mojo</groupId> -->
+				<!-- <artifactId>exec-maven-plugin</artifactId> -->
+				<!-- <version>1.3.2</version> -->
+				<!-- <configuration> -->
+				<!-- <skip>true</skip> -->
+				<!-- <workingDirectory>${project.basedir}</workingDirectory> -->
+				<!-- </configuration> -->
+				<!-- </plugin> -->
 
 				<plugin>
 					<groupId>org.apache.felix</groupId>
@@ -278,14 +245,14 @@
 					<extensions>true</extensions>
 					<executions>
 
-						<execution>
-							<!-- skip default execution, conflicts felix with dm annotation bnd plugin -->
-							<id>default-bundle</id>
-							<phase>none</phase>
-							<configuration>
-								<skip>true</skip>
-							</configuration>
-						</execution>
+						<!-- <execution> -->
+						<!-- skip default execution, conflicts felix with dm annotation bnd plugin -->
+						<!-- <id>default-bundle</id> -->
+						<!-- <phase>none</phase> -->
+						<!-- <configuration> -->
+						<!-- <skip>true</skip> -->
+						<!-- </configuration> -->
+						<!-- </execution> -->
 
 						<execution>
 							<id>create-manifest</id>
@@ -295,13 +262,13 @@
 							</goals>
 						</execution>
 
-						<execution>
-							<id>create-bundle</id>
-							<phase>package</phase>
-							<goals>
-								<goal>bundle</goal>
-							</goals>
-						</execution>
+						<!-- <execution> -->
+						<!-- <id>create-bundle</id> -->
+						<!-- <phase>package</phase> -->
+						<!-- <goals> -->
+						<!-- <goal>bundle</goal> -->
+						<!-- </goals> -->
+						<!-- </execution> -->
 
 					</executions>
 
@@ -318,17 +285,31 @@
 						<!-- </archive> -->
 						<!-- <excludeDependencies>org.osgi.core,org.osgi.compendium</excludeDependencies> -->
 					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.felix</groupId>
-							<artifactId>org.apache.felix.dependencymanager.annotation</artifactId>
-							<version>3.2.0</version>
-							<scope>compile</scope>
-							<type>maven-plugin</type>
-						</dependency>
-					</dependencies>
+					<!-- <dependencies> -->
+					<!-- <dependency> -->
+					<!-- <groupId>org.apache.felix</groupId> -->
+					<!-- <artifactId>org.apache.felix.dependencymanager.annotation</artifactId> -->
+					<!-- <version>3.2.0</version> -->
+					<!-- <scope>compile</scope> -->
+					<!-- <type>maven-plugin</type> -->
+					<!-- </dependency> -->
+					<!-- </dependencies> -->
 				</plugin>
 
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-scr-plugin</artifactId>
+					<version>1.20.0</version>
+					<executions>
+						<execution>
+							<id>generate-scr-scrdescriptor</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>scr</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 
 				<!-- <plugin> -->
 				<!-- <groupId>org.apache.maven.plugins</groupId> -->
@@ -375,47 +356,47 @@
 				<!-- </executions> -->
 				<!-- </plugin> -->
 
-				<plugin>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.9</version>
-					<executions>
-						<execution>
-							<id>copy-dependencies</id>
-							<phase>package</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<includeScope>provided</includeScope>
-								<excludeGroupIds>
-									<!-- reactor dependencies are loaded directly from build path --><!-- TODO could result in wrong versions -->
-									de.lemo,
-									org.slf4j,
-								</excludeGroupIds>
-								<addParentPoms>true</addParentPoms>
+				<!-- <plugin> -->
+				<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+				<!-- <version>2.9</version> -->
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <id>copy-dependencies</id> -->
+				<!-- <phase>package</phase> -->
+				<!-- <goals> -->
+				<!-- <goal>copy-dependencies</goal> -->
+				<!-- </goals> -->
+				<!-- <configuration> -->
+				<!-- <includeScope>provided</includeScope> -->
+				<!-- <excludeGroupIds> -->
+				<!-- reactor dependencies are loaded directly from build pathTODO could result in wrong versions -->
+				<!-- de.lemo, -->
+				<!-- org.slf4j, -->
+				<!-- </excludeGroupIds> -->
+				<!-- <addParentPoms>true</addParentPoms> -->
 
-								<excludeArtifactIds>
-									<!-- provided by framework -->
-									org.osgi.core,
-									org.osgi.compendium,
-									<!-- org.apache.felix.scr, -->
-									org.apache.felix.scr.annotations,
-									org.apache.felix.scr.ds-annotations,
-									org.apache.felix.dependencymanager.annotation,
-								</excludeArtifactIds>
+				<!-- <excludeArtifactIds> -->
+				<!-- provided by framework -->
+				<!-- org.osgi.core, -->
+				<!-- org.osgi.compendium, -->
+				<!-- org.apache.felix.scr, -->
+				<!-- org.apache.felix.scr.annotations, -->
+				<!-- org.apache.felix.scr.ds-annotations, -->
+				<!-- org.apache.felix.dependencymanager.annotation, -->
+				<!-- </excludeArtifactIds> -->
 
-								<overWriteIfNewer>true</overWriteIfNewer>
-								<overWriteSnapshots>true</overWriteSnapshots>
-								<overWriteReleases>true</overWriteReleases>
+				<!-- <overWriteIfNewer>true</overWriteIfNewer> -->
+				<!-- <overWriteSnapshots>true</overWriteSnapshots> -->
+				<!-- <overWriteReleases>true</overWriteReleases> -->
 
-								<outputDirectory>${project.parent.basedir}/target/bundles</outputDirectory>
+				<!-- <outputDirectory>${project.parent.basedir}/target/bundles</outputDirectory> -->
 
-							</configuration>
-						</execution>
+				<!-- </configuration> -->
+				<!-- </execution> -->
 
 
-					</executions>
-				</plugin>
+				<!-- </executions> -->
+				<!-- </plugin> -->
 
 
 
@@ -508,23 +489,23 @@
 											</action>
 										</pluginExecution>
 
-										<pluginExecution>
-											<!-- Create manifest on save -->
-											<pluginExecutionFilter>
-												<groupId>org.apache.felix</groupId>
-												<artifactId>maven-bundle-plugin</artifactId>
-												<versionRange>[0,)</versionRange>
-												<goals>
-													<goal>bundle</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<execute>
-													<runOnIncremental>true</runOnIncremental>
-													<runOnConfiguration>true</runOnConfiguration>
-												</execute>
-											</action>
-										</pluginExecution>
+										<!-- <pluginExecution> -->
+										<!-- Create manifest on save -->
+										<!-- <pluginExecutionFilter> -->
+										<!-- <groupId>org.apache.felix</groupId> -->
+										<!-- <artifactId>maven-bundle-plugin</artifactId> -->
+										<!-- <versionRange>[0,)</versionRange> -->
+										<!-- <goals> -->
+										<!-- <goal>bundle</goal> -->
+										<!-- </goals> -->
+										<!-- </pluginExecutionFilter> -->
+										<!-- <action> -->
+										<!-- <execute> -->
+										<!-- <runOnIncremental>true</runOnIncremental> -->
+										<!-- <runOnConfiguration>true</runOnConfiguration> -->
+										<!-- </execute> -->
+										<!-- </action> -->
+										<!-- </pluginExecution> -->
 
 										<!-- <pluginExecution> -->
 										<!-- Process felix dm annotations on save -->
@@ -544,15 +525,14 @@
 										<!-- </action> -->
 										<!-- </pluginExecution> -->
 
+
 										<pluginExecution>
-											<!-- Copy depenedencies on configuration update -->
-											<!-- TODO run on config upd only -->
 											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-dependency-plugin</artifactId>
+												<groupId>org.apache.felix</groupId>
+												<artifactId>maven-scr-plugin</artifactId>
 												<versionRange>[0,)</versionRange>
 												<goals>
-													<goal>copy-dependencies</goal>
+													<goal>scr</goal>
 												</goals>
 											</pluginExecutionFilter>
 											<action>
@@ -562,6 +542,25 @@
 												</execute>
 											</action>
 										</pluginExecution>
+
+										<!-- <pluginExecution> -->
+										<!-- Copy depenedencies on configuration update -->
+										<!-- TODO run on config upd only -->
+										<!-- <pluginExecutionFilter> -->
+										<!-- <groupId>org.apache.maven.plugins</groupId> -->
+										<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+										<!-- <versionRange>[0,)</versionRange> -->
+										<!-- <goals> -->
+										<!-- <goal>copy-dependencies</goal> -->
+										<!-- </goals> -->
+										<!-- </pluginExecutionFilter> -->
+										<!-- <action> -->
+										<!-- <execute> -->
+										<!-- <runOnIncremental>true</runOnIncremental> -->
+										<!-- <runOnConfiguration>true</runOnConfiguration> -->
+										<!-- </execute> -->
+										<!-- </action> -->
+										<!-- </pluginExecution> -->
 
 
 									</pluginExecutions>
