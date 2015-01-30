@@ -54,8 +54,8 @@ public class RestApplicationAdapter {
 		}
 
 		resourceConfig.setApplicationName((String) servletProperties.get(AdapterConstants.SERVLET_NAME));
-		logger.info("Adding JAX-RS application " + resourceConfig.getApplicationName());
-
+		logger.info("REGISTERED JAX-RS application {} at path {}" , resourceConfig.getApplicationName(), servletProperties.get(AdapterConstants.ALIAS));
+ 
 		ServletContainer servlet = new ServletContainer(resourceConfig);
 
 		BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
@@ -114,12 +114,15 @@ public class RestApplicationAdapter {
 		if (applicationPathAnnotation != null) {
 			path = applicationPathAnnotation.value();
 		}
-		if (!path.startsWith("/")) {
-			path = "/" + path;
-		}
+		// trim trailing slash
 		if (path.endsWith("/")) {
 			path = path.substring(0, path.length() - 1);
 		}
+		// add leading slash
+		if (!path.startsWith("/")) {
+			path = "/" + path;
+		}
+		
 		return path;
 	}
 

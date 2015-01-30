@@ -57,14 +57,14 @@
 			<version>${jersey-version}</version>
 			<scope>provided</scope>
 		</dependency>
- 
+
 
 	</dependencies>
 
 	<build>
 		<plugins>
 
-			<plugin>
+			<plugin> 
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
