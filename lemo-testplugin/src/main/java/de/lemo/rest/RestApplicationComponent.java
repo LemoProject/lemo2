@@ -16,7 +16,7 @@ public class RestApplicationComponent extends Application {
 
 	public RestApplicationComponent() {
 
-	}
+	} 
 
 	@Override
 	public Set<Class<?>> getClasses() {
@@ -24,5 +24,5 @@ public class RestApplicationComponent extends Application {
 		classes.add(HelloWorldResource.class);
 		return classes;
 	}
-
+ 
 }

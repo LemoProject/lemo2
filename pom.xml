@@ -9,12 +9,13 @@
 	<name>Lemo</name>
 
 	<modules>
-		<!-- <module>lemo-launcher</module> -->
-		<!-- <module>lemo-core</module> -->
-		<!-- <module>lemo-logging</module> -->
+ 
+		<module>lemo-analysis-api</module>
+
 		<module>osgi-jersey-http-service-adapter</module>
+		<module>lemo-webapp</module>
 		<module>lemo-testplugin</module>
-		<!-- <module>lemo-an</module> -->
+
 		<!-- <module>lemo-persistence</module> -->
 		<!-- <module>lemo-persistence-entities</module> -->
 		<!-- <module>lemo-plugins</module> -->
@@ -31,7 +32,7 @@
 		<osgi-version>4.2.0</osgi-version>
 		<!-- <servlet-api-version>3.0.1</servlet-api-version> -->
 		<jaxrs-api-version>2.0.1</jaxrs-api-version>
-		<jersey-version>2.14</jersey-version>
+		<jersey-version>2.15</jersey-version>
 
 		<!-- TODO move persistence properties to persistence aggregator(?) -->
 
@@ -55,8 +56,6 @@
 		<!-- <logging-import>org.slf4j; org.slf4j.spi; version="[1.7,2.0)"; provider=paxlogging</logging-import> -->
 
 
-		<outputDirectoryName>bundle/classes</outputDirectoryName>
-		<project.build.outputDirectory>${project.build.directory}/${outputDirectoryName}</project.build.outputDirectory>
 
 	</properties>
 
@@ -174,8 +173,6 @@
 
 	<build>
 
-		<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-
 		<plugins>
 
 			<plugin>
@@ -190,7 +187,6 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
-
 
 
 		</plugins>
@@ -254,21 +250,24 @@
 						<!-- </configuration> -->
 						<!-- </execution> -->
 
-						<execution>
-							<id>create-manifest</id>
-							<phase>process-classes</phase>
-							<goals>
-								<goal>manifest</goal>
-							</goals>
-						</execution>
-
 						<!-- <execution> -->
-						<!-- <id>create-bundle</id> -->
-						<!-- <phase>package</phase> -->
+						<!-- <id>create-manifest</id> -->
+						<!-- <phase>process-classes</phase> -->
 						<!-- <goals> -->
-						<!-- <goal>bundle</goal> -->
+						<!-- <goal>manifest</goal> -->
 						<!-- </goals> -->
 						<!-- </execution> -->
+
+						<execution>
+							<id>create-bundle</id>
+							<phase>package</phase>
+							<goals>
+								<goal>bundle</goal>
+							</goals>
+							<configuration>
+								<buildDirectory>${project.build.directory}/bundle</buildDirectory>
+							</configuration>
+						</execution>
 
 					</executions>
 
@@ -451,25 +450,25 @@
 										<!-- </action> -->
 										<!-- </pluginExecution> -->
 
-										<pluginExecution>
-											<!-- Compile on save -->
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-compiler-plugin</artifactId>
-												<versionRange>[0,)</versionRange>
-												<goals>
-													<goal>process</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<execute>
-													<runOnIncremental>true</runOnIncremental>
-													<runOnConfiguration>true</runOnConfiguration>
-												</execute>
+										<!-- <pluginExecution> -->
+										<!-- Compile on save -->
+										<!-- <pluginExecutionFilter> -->
+										<!-- <groupId>org.apache.maven.plugins</groupId> -->
+										<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+										<!-- <versionRange>[0,)</versionRange> -->
+										<!-- <goals> -->
+										<!-- <goal>process</goal> -->
+										<!-- </goals> -->
+										<!-- </pluginExecutionFilter> -->
+										<!-- <action> -->
+										<!-- <execute> -->
+										<!-- <runOnIncremental>true</runOnIncremental> -->
+										<!-- <runOnConfiguration>true</runOnConfiguration> -->
+										<!-- </execute> -->
 
-											</action>
+										<!-- </action> -->
 
-										</pluginExecution>
+										<!-- </pluginExecution> -->
 
 										<pluginExecution>
 											<!-- Create manifest on save -->
@@ -478,7 +477,7 @@
 												<artifactId>maven-bundle-plugin</artifactId>
 												<versionRange>[0,)</versionRange>
 												<goals>
-													<goal>manifest</goal>
+													<goal>bundle</goal>
 												</goals>
 											</pluginExecutionFilter>
 											<action>
@@ -506,25 +505,6 @@
 										<!-- </execute> -->
 										<!-- </action> -->
 										<!-- </pluginExecution> -->
-
-										<!-- <pluginExecution> -->
-										<!-- Process felix dm annotations on save -->
-										<!-- <pluginExecutionFilter> -->
-										<!-- <groupId>org.apache.felix</groupId> -->
-										<!-- <artifactId>org.apache.felix.dependencymanager.annotation</artifactId> -->
-										<!-- <versionRange>[0,)</versionRange> -->
-										<!-- <goals> -->
-										<!-- <goal>scan</goal> -->
-										<!-- </goals> -->
-										<!-- </pluginExecutionFilter> -->
-										<!-- <action> -->
-										<!-- <execute> -->
-										<!-- <runOnIncremental>true</runOnIncremental> -->
-										<!-- <runOnConfiguration>true</runOnConfiguration> -->
-										<!-- </execute> -->
-										<!-- </action> -->
-										<!-- </pluginExecution> -->
-
 
 										<pluginExecution>
 											<pluginExecutionFilter>

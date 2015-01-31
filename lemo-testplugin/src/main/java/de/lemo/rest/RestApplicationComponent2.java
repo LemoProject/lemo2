@@ -14,15 +14,13 @@ import org.glassfish.jersey.server.mvc.mustache.MustacheMvcFeature;
 public class RestApplicationComponent2 extends ResourceConfig {
 
 	public RestApplicationComponent2() {
-	 
+
 		packages("de.lemo.rest");
-    
-		register(MustacheMvcFeature.class); 
 
-//		property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/templates"); 
- 		 
-	} 
+		register(MustacheMvcFeature.class);
 
-	
+		// property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/templates");
+
+	}   
+
 }
- 

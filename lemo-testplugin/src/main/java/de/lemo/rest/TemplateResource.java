@@ -17,9 +17,9 @@ public class TemplateResource {
 	}
   
 	String foo = "dsfdf"; 
-   
+      
 	@Path("tmpl") 
-	@GET
+	@GET 
 	@Template(name = "/test.mustache")
 	public String test2() { 
 		// return new Viewable("/test.mustache",this);
