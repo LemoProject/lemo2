@@ -15,6 +15,7 @@ import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
 import org.glassfish.jersey.server.mvc.mustache.MustacheMvcFeature;
 
 import de.lemo.plugin.api.Analysis;
@@ -29,23 +30,29 @@ public class LemoResourceConfig extends ResourceConfig {
 	private Map<String, Analysis> analysesReadOnlyView = Collections.unmodifiableMap(analyses);
 
 	public LemoResourceConfig() {
+  
 		packages(getClass().getPackage().getName());
-		register(MustacheMvcFeature.class);
-		register(new ApplicationBinder());
-	}
-
+	  
+		register(new ApplicationBinder()); 
+ 
+		// property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/templates");
+		// register(MustacheMvcFeature.class);
+		register(FreemarkerMvcFeature.class);
+		  
+	}  
+   
 	public Map<String, Analysis> getAnalyses() {
-		return analysesReadOnlyView;
+		return analysesReadOnlyView;  
 	}
-
+         
 	protected void registerAnalysis(Analysis analysis) {
 		analyses.put(analysis.getId(), analysis);
 	}
 
-	protected void unregisterAnalysis(Analysis analysis) {
+	protected void unregisterAnalysis(Analysis analysis) { 
 		analyses.remove(analysis.getId());
 	}
-
+  
 	// Enable current OSGi-managed component for injection
 	private class ApplicationBinder extends AbstractBinder {
 		@Override

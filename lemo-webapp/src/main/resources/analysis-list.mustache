@@ -1,0 +1,12 @@
+{{< layout.html }}
+{{$title}}Analysis{{/title}}
+{{$content}}
+
+<ul>
+{{#entrySet}}
+	<li><a href="/lemo/analysis/{{key}}">{{value}}</a></li>
+{{/entrySet}}
+ </ul>
+
+{{/content}} 
+{{/ layout.html }}

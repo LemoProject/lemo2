@@ -15,7 +15,14 @@
 
 
 	<dependencies>
-
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-mvc-freemarker</artifactId>
+			<version>${jersey-version}</version>
+			<scope>provided</scope>
+		</dependency> 
+		
 		<dependency>
 			<groupId>de.lemo</groupId>
 			<artifactId>lemo-analysis-api</artifactId>
