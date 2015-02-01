@@ -1,6 +1,5 @@
 package de.lemo.server;
 
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -18,7 +17,8 @@ import org.apache.felix.scr.annotations.References;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.osgi.framework.Bundle;
+import org.ops4j.pax.web.extender.whiteboard.ResourceMapping;
+import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -31,37 +31,38 @@ public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
 
-	private Map<Application, ServiceRegistration> applications = new HashMap<>();
-	ServiceRegistration registration;
+	private Map<Application, ServiceRegistration> applicationRegistrations = new HashMap<>();
+	private Map<Application, ServiceRegistration> resourceMappingRegistrations = new HashMap<>();
 
 	protected void registerApplication(Application application) {
-		logger.info("addApplication " + application);
-
 		Dictionary<String, Object> servletProperties = createProperties(application);
 
 		ResourceConfig resourceConfig;
 		if (application instanceof ResourceConfig) {
 			// ResourceConfig can be unmodifiable, need to wrap it
-
 			resourceConfig = new ResourceConfig((ResourceConfig) application);
-			resourceConfig.register(OsgiMustacheTemplateProcessor.class);
-
-			long bundleId = FrameworkUtil.getBundle(application.getClass()).getBundleId();
-			resourceConfig.addProperties(Collections.singletonMap(AdapterConstants.WEBAPP_BUNDLE_ID, (Object) bundleId));
-
 		} else {
 			resourceConfig = ResourceConfig.forApplication(application);
 		}
 
+		String path = (String) servletProperties.get(AdapterConstants.ALIAS);
 		resourceConfig.setApplicationName((String) servletProperties.get(AdapterConstants.SERVLET_NAME));
-		logger.info("REGISTERED JAX-RS application {} at path {}" , resourceConfig.getApplicationName(), servletProperties.get(AdapterConstants.ALIAS));
- 
+		logger.info("REGISTERED JAX-RS application {} at path {}", resourceConfig.getApplicationName(), path);
+
 		ServletContainer servlet = new ServletContainer(resourceConfig);
+		BundleContext webappBundleContext = FrameworkUtil.getBundle(application.getClass()).getBundleContext();
 
-		BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
-		ServiceRegistration registration = bundleContext.registerService(Servlet.class.getName(), servlet, servletProperties);
-		applications.put(application, registration);
+		DefaultResourceMapping resourceMapping = new DefaultResourceMapping();
+		resourceMapping.setAlias(path + "/resources");
+		resourceMapping.setPath("/META-INF/webapp");
+		ServiceRegistration resourceMappingRegistration = webappBundleContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
 
+		ServiceRegistration webappRegistration = webappBundleContext.registerService(Servlet.class.getName(), servlet, servletProperties);
+
+		// ServiceRegistration registration2 = webappBundleContext.registerService(Filter.class.getName(), servlet,
+		// createFilterProperties(application));
+		applicationRegistrations.put(application, webappRegistration);
+		resourceMappingRegistrations.put(application, resourceMappingRegistration);
 	}
 
 	protected void updateApplication(Application applicaton) {
@@ -71,17 +72,39 @@ public class RestApplicationAdapter {
 	protected void unregisterApplication(Application applicaton) {
 		logger.info("removeApplication " + applicaton);
 
-		ServiceRegistration registration = applications.remove(applicaton);
+		ServiceRegistration registration = applicationRegistrations.remove(applicaton);
+		ServiceRegistration registration2 = resourceMappingRegistrations.remove(applicaton);
 
 		if (registration != null) {
 			try {
 				registration.unregister();
+				registration2.unregister();
 			} catch (IllegalStateException e) {
 				logger.warn(String.format("Unregistering REST application %s  failed", applicaton), e);
 			}
 		} else {
 			logger.warn("Unregistering REST application %s failed, no registration found", applicaton);
 		}
+	}
+
+	private Dictionary<String, Object> createFilterProperties(Application application) {
+
+		String name = application.getClass().getName();
+		Dictionary<String, Object> props = new Hashtable<>();
+
+		String path = getApplicationPath(application);
+
+		String[] urls = { "/*" };
+		String[] servlets = { name };
+		props.put("filter-name", name + "Filter");
+		props.put("urlPatterns", urls);
+		// props.put("servletNames", servlets);
+		// props.put("pattern", "/*");
+
+		props.put(AdapterConstants.INIT_PREFIX + "jersey.config.servlet.filter.staticContentRegex", ".*css");
+		props.put("jersey.config.servlet.filter.staticContentRegex", ".*css");
+
+		return props;
 	}
 
 	private Dictionary<String, Object> createProperties(Application application) {
@@ -96,14 +119,13 @@ public class RestApplicationAdapter {
 		props.put(AdapterConstants.SERVLET_NAME, name); // TODO should work without "init" but doesn't (?)
 		props.put(AdapterConstants.INIT_PREFIX + AdapterConstants.SERVLET_NAME, name);
 
+		props.put(AdapterConstants.INIT_PREFIX + "jersey.config.servlet.filter.staticContentRegex", ".*css");
+		props.put("jersey.config.servlet.filter.staticContentRegex", ".*css");
+
 		props.put(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
 		props.put(ServerProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true);
 		props.put(ServerProperties.WADL_FEATURE_DISABLE, true);
 		props.put(ServerProperties.APPLICATION_NAME, name);
-  
-		Bundle webAppBundle = FrameworkUtil.getBundle(application.getClass());
-		props.put(AdapterConstants.WEBAPP_BUNDLE_ID, webAppBundle.getBundleId());
-		props.put(AdapterConstants.WEBAPP_BUNDLE_CONTEXT, webAppBundle.getBundleContext());
 
 		return props;
 	}
@@ -122,7 +144,7 @@ public class RestApplicationAdapter {
 		if (!path.startsWith("/")) {
 			path = "/" + path;
 		}
-		
+
 		return path;
 	}
 

@@ -20,11 +20,4 @@ public interface AdapterConstants {
 	public static final String FILTER_NAME = "filter-name";
 	public static final String BUNDLE_CONTEXT_ATTRIBUTE = "osgi-bundlecontext";
 
-	/*
-	 * proprietary
-	 */
-
-	public static final String WEBAPP_BUNDLE_ID = "lemo.webapp.bundle.id";
-	public static final String WEBAPP_BUNDLE_CONTEXT = "lemo.webapp.bundle.context";
-
 }
