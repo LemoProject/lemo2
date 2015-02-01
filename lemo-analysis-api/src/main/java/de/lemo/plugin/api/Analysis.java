@@ -1,6 +1,5 @@
 package de.lemo.plugin.api;
 
-import java.net.URL;
 import java.util.List;
 
 public interface Analysis {
@@ -9,10 +8,10 @@ public interface Analysis {
 
 	/**
 	 * The name or title of this analysis.
-	 */ 
+	 */
 	String getName();
 
-	/** 
+	/**
 	 * A short description of the main analysis.
 	 */
 	String getShortDescription();
@@ -22,18 +21,18 @@ public interface Analysis {
 	 */
 	String getLongDescription();
 
-	URL getIcon();
+	String getIconPath();
 
-	URL getPreviewImage();
+	String getPreviewImagePath();
 
 	/**
 	 * A list of URLs that will be included as scripts the analysis page.
 	 */
-	List<URL> getScripts();
+	List<String> getScriptPaths();
 
 	/**
-	 * A list of URLs that will included as stylesheets in the analysis page.
+	 * A list of URLs that will included as style sheets in the analysis page.
 	 */
-	List<URL> getStyleSheets();
+	List<String> getStyleSheetPaths();
 
 }

@@ -1,6 +1,7 @@
 package de.lemo.rest;
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.felix.scr.annotations.Component;
@@ -12,15 +13,21 @@ import de.lemo.plugin.api.Analysis;
 @Service
 public class TestAnalysis implements Analysis {
 
-	@Override 
+	private List<String> scripts = new ArrayList<String>();
+	{
+		scripts.add("/js/circlegraph.js");
+		scripts = Collections.unmodifiableList(scripts);
+	}
+
+	@Override
 	public String getId() {
 		return "test-analysis";
-	} 
-	
-	@Override 
+	}
+
+	@Override
 	public String getName() {
 		return "Test Analysis";
-	} 
+	}
 
 	@Override
 	public String getShortDescription() {
@@ -33,22 +40,22 @@ public class TestAnalysis implements Analysis {
 	}
 
 	@Override
-	public URL getIcon() {
+	public List<String> getScriptPaths() {
+		return scripts;
+	}
+
+	@Override
+	public List<String> getStyleSheetPaths() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public String getIconPath() {
 		return null;
 	}
 
 	@Override
-	public URL getPreviewImage() {
-		return null;
-	}
-
-	@Override
-	public List<URL> getScripts() {
-		return null;
-	}
-
-	@Override
-	public List<URL> getStyleSheets() {
+	public String getPreviewImagePath() {
 		return null;
 	}
 
