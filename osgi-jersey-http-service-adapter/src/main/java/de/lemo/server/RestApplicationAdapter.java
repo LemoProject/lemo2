@@ -13,29 +13,77 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.ReferenceStrategy;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.ops4j.pax.web.extender.whiteboard.ResourceMapping;
 import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, enabled = true, metatype = false)
+@Component(immediate = true, metatype = false)
 public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
 
-	@Reference(name = "applications", referenceInterface = Application.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "registerApplication", unbind = "unregisterApplication", updated = "updateApplication")
-	private Map<Application, ServiceRegistration> applicationRegistrations = new HashMap<>();
-	private Map<Application, ServiceRegistration> resourceMappingRegistrations = new HashMap<>();
+	@Reference(name = "applications", referenceInterface = Application.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindApplication", unbind = "unbindApplication", updated = "updateApplication")
+	private Map<Application, ServiceRegistration> applications = new HashMap<>();
+	private Map<Application, ServiceRegistration> resourceHttpContexts = new HashMap<>();
+	private Map<Application, ServiceRegistration> resourceMappings = new HashMap<>();
 
-	protected void registerApplication(Application application) {
-		Dictionary<String, Object> servletProperties = createProperties(application);
+	protected void bindApplication(final Application application) {
+ 
+		Bundle applicationBundle = FrameworkUtil.getBundle(application.getClass());
+		BundleContext applicationContext = applicationBundle.getBundleContext();
+
+		logger.info("Registering JAX-RS application {} from bundle {}", application.getClass().getName(), applicationBundle);
+
+		String applicationName = application.getClass().getName() + "-" + applicationBundle.getBundleId();
+		String applicationPath = getApplicationPath(application);
+		String resourceName = applicationName + "-Resources";
+		String resourcePath = applicationPath + "/assets";
+		String httpContextId = applicationName + "-HttpContext";
+
+		ServiceRegistration resourceHttpContextRegistration = registerResourceHttpContext(applicationContext, httpContextId);
+		ServiceRegistration resourceMappingRegistration = registerResourceMapping(applicationContext, resourceName, resourcePath, httpContextId);
+		ServiceRegistration applicationRegistration = registerApplication(application, applicationContext, applicationName, applicationPath, httpContextId);
+
+		resourceHttpContexts.put(application, resourceHttpContextRegistration);
+		resourceMappings.put(application, resourceMappingRegistration);
+		applications.put(application, applicationRegistration);
+
+	}
+
+	protected void updateApplication(Application application) {
+		logger.info("Updating JAX-RS application {}", application);
+	}
+
+	protected void unbindApplication(Application application) {
+		logger.info("Unregistering JAX-RS application {}", application);
+
+		ServiceRegistration resourceHttpContextRegistration = resourceHttpContexts.remove(application);
+		ServiceRegistration resourceMappingRegistration = resourceMappings.remove(application);
+		ServiceRegistration applicationRegistration = applications.remove(application);
+
+		if (resourceMappingRegistration != null) {
+			resourceMappingRegistration.unregister();
+		}
+		if (resourceHttpContextRegistration != null) {
+			resourceHttpContextRegistration.unregister();
+		}
+		if (applicationRegistration != null) {
+			applicationRegistration.unregister();
+		}
+
+	}
+
+	private ServiceRegistration registerApplication(Application application, BundleContext applicationContext, String applicationName, String aplicationPath,
+			String httpContextId) {
 
 		ResourceConfig resourceConfig;
 		if (application instanceof ResourceConfig) {
@@ -44,65 +92,44 @@ public class RestApplicationAdapter {
 		} else {
 			resourceConfig = ResourceConfig.forApplication(application);
 		}
+		resourceConfig.setApplicationName(applicationName);
 
-		String path = (String) servletProperties.get(AdapterConstants.ALIAS);
-		resourceConfig.setApplicationName((String) servletProperties.get(AdapterConstants.SERVLET_NAME));
-		logger.info("REGISTERED JAX-RS application {} at path {}", resourceConfig.getApplicationName(), path);
+		ServletContainer webappServlet = new ServletContainer(resourceConfig);
 
-		ServletContainer servlet = new ServletContainer(resourceConfig);
-		BundleContext webappBundleContext = FrameworkUtil.getBundle(application.getClass()).getBundleContext();
+		Dictionary<String, Object> webappServletProperties = createServletProperties(applicationName, aplicationPath, httpContextId);
+		ServiceRegistration registerService = applicationContext.registerService(Servlet.class.getName(), webappServlet, webappServletProperties);
+		return registerService;
+	}
 
+	private ServiceRegistration registerResourceHttpContext(BundleContext applicationContext, String httpContextId) {
+		ResourceHttpContext resourceHttpContext = new ResourceHttpContext(applicationContext, "/");
+		Dictionary<String, Object> props = new Hashtable<>();
+		props.put(HttpConstants.CONTEXT_ID, httpContextId);
+		return applicationContext.registerService(HttpContext.class.getName(), resourceHttpContext, props);
+	}
+
+	private ServiceRegistration registerResourceMapping(BundleContext applicationContext, String name, String path, String httpContextId) {
 		DefaultResourceMapping resourceMapping = new DefaultResourceMapping();
-		resourceMapping.setAlias(path + "/assets");
-		resourceMapping.setPath("/META-INF/webapp");
-		ServiceRegistration resourceMappingRegistration = webappBundleContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
-
-		ServiceRegistration webappRegistration = webappBundleContext.registerService(Servlet.class.getName(), servlet, servletProperties);
-
-		applicationRegistrations.put(application, webappRegistration);
-		resourceMappingRegistrations.put(application, resourceMappingRegistration);
+		resourceMapping.setAlias(path);
+		resourceMapping.setPath(name);
+		// resourceMapping.setHttpContextId(httpContextId);
+		ServiceRegistration registerService = applicationContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
+		return registerService;
 	}
 
-	protected void updateApplication(Application application) {
-		logger.info("UPDATING JAX-RS application {}", application);
-		unregisterApplication(application);
-		registerApplication(application);
-	}
-
-	protected void unregisterApplication(Application application) {
-		logger.info("removeApplication " + application);
-
-		ServiceRegistration registration = applicationRegistrations.remove(application);
-		ServiceRegistration registration2 = resourceMappingRegistrations.remove(application);
-
-		if (registration != null) {
-			try {
-				registration.unregister();
-				registration2.unregister();
-			} catch (IllegalStateException e) {
-				logger.warn(String.format("Unregistering REST application {} failed", application), e);
-			}
-		} else {
-			logger.warn("Unregistering REST application {} failed, no registration found", application);
-		}
-	}
-
-	private Dictionary<String, Object> createProperties(Application application) {
-
-		String name = application.getClass().getName();
-
+	private Dictionary<String, Object> createServletProperties(String name, String path, String httpContextId) {
 		Dictionary<String, Object> props = new Hashtable<>();
 
-		String path = getApplicationPath(application);
-		props.put(AdapterConstants.ALIAS, path);
-
-		props.put(AdapterConstants.SERVLET_NAME, name); // TODO should work without "init" but doesn't (?)
-		props.put(AdapterConstants.INIT_PREFIX + AdapterConstants.SERVLET_NAME, name);
-
-		props.put(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
-		props.put(ServerProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true);
-		props.put(ServerProperties.WADL_FEATURE_DISABLE, true);
+		// osgi http service
+		props.put(HttpConstants.SERVLET_NAME, name); // TODO should work without "init" but doesn't (?)
+		props.put(HttpConstants.INIT_PREFIX + HttpConstants.SERVLET_NAME, name);
+		props.put(HttpConstants.ALIAS, path);
+		props.put(HttpConstants.CONTEXT_ID, httpContextId);
+		// jersey
 		props.put(ServerProperties.APPLICATION_NAME, name);
+		// props.put(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, "true");
+		// props.put(ServerProperties.FEATURE_AUTO_DISCOVERY_DISABLE, "true");
+		// props.put(ServerProperties.WADL_FEATURE_DISABLE, "true");
 
 		return props;
 	}
