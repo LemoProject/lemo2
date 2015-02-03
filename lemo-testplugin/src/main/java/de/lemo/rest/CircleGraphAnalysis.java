@@ -11,52 +11,55 @@ import de.lemo.plugin.api.Analysis;
 
 @Component
 @Service
-public class TestAnalysis implements Analysis {
+public class CircleGraphAnalysis implements Analysis {
+
+	public final static String PATH = "circlegraph";
 
 	private List<String> scripts = new ArrayList<String>();
-	{
-		scripts.add("/js/circlegraph.js");
+	{ 
+		scripts.add("js/circlegraph.js");
 		scripts = Collections.unmodifiableList(scripts);
 	}
 
 	@Override
-	public String getId() {
-		return "test-analysis";
+	public String getId() { 
+		return PATH;
 	}
-
+ 
 	@Override
-	public String getName() {
-		return "Test Analysis";
+	public String getName() { 
+		return "Circle Graph";
 	}
 
 	@Override
 	public String getShortDescription() {
-		return "short description";
+		return "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.";
 	}
-
-	@Override
+ 
+	@Override 
 	public String getLongDescription() {
-		return "long description";
-	}
-
-	@Override
+		return "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
+				+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.";
+	} 
+ 
+	@Override  
 	public List<String> getScriptPaths() {
 		return scripts;
 	}
-
+   
 	@Override
-	public List<String> getStyleSheetPaths() {
+	public List<String> getStyleSheetPaths() { 
 		return Collections.emptyList();
 	}
 
 	@Override
 	public String getIconPath() {
-		return null;
+		return "img/circlegraph-icon.svg";
 	}
 
 	@Override
 	public String getPreviewImagePath() {
-		return null;
+		return "img/circlegraph-preview.png";
 	}
 
 }
