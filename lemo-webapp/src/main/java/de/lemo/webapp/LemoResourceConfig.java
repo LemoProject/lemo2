@@ -36,9 +36,8 @@ public class LemoResourceConfig extends ResourceConfig {
 		packages(getClass().getPackage().getName());
 		register(new ApplicationBinder());
 
-		Configuration freemarkerConfiguration = createFreemarkerConiguration();
 		property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
-		property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, freemarkerConfiguration);
+		property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, createFreemarkerConiguration());
 		register(FreemarkerMvcFeature.class);
 
 	}

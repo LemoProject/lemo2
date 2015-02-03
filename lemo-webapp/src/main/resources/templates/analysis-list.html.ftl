@@ -10,7 +10,7 @@
 	<#list analysisPlugins as plugin>
 	<!-- -->
 	<#if plugin.iconPath??><#assign
-	iconPath="${basePath}/analysis/${plugin.iconPath}"> <#else> <#assign
+	iconPath="${analysisPath}/${plugin.id}/assets/${plugin.iconPath}"> <#else> <#assign
 	iconPath="holder.js/96x96/gray"> </#if>
 	<!-- -->
 	<li class="media">

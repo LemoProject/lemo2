@@ -21,7 +21,7 @@ public class AnalysisResource {
 
 	@Context
 	private LemoResourceConfig webApplication;
-
+ 
 	@GET
 	@Template(name = "/analysis-list.html")
 	public Object list() throws TemplateModelException {
@@ -37,3 +37,4 @@ public class AnalysisResource {
 		return vars;
 	}
 }
+ 

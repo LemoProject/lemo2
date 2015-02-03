@@ -2,6 +2,7 @@ package de.lemo.webapp;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 
 import org.glassfish.jersey.server.mvc.Template;
 import org.slf4j.Logger;
@@ -14,11 +15,9 @@ public class Home {
 
 	private static final Logger logger = LoggerFactory.getLogger(Home.class);
 
-
 	@GET
-	@Template(name = "/home.html")
-	public Object list() throws TemplateModelException {
-
+	@Template(name = "/home.html") 
+	public Object homePage() throws TemplateModelException {
 		return true;
 	}
 

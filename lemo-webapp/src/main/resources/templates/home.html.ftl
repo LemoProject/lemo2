@@ -22,7 +22,7 @@ Analytics" >
 
 				<#list analysisPlugins as plugin> <#if plugin.previewImagePath??>
 				<#assign
-				previewImagePath="${analysisPath}/${plugin.previewImagePath}">
+				previewImagePath="${analysisPath}/${plugin.id}/assets/${plugin.previewImagePath}">
 				<#else> <#assign previewImagePath="holder.js/100%x500/social">
 				</#if>
 
