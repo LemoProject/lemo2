@@ -51,7 +51,7 @@ public class RestApplicationAdapter {
 
 		ServiceRegistration resourceHttpContextRegistration = registerResourceHttpContext(applicationContext, httpContextId);
 		ServiceRegistration resourceMappingRegistration = registerResourceMapping(applicationContext, resourceName, resourcePath, httpContextId);
-		ServiceRegistration applicationRegistration = registerApplication(application, applicationContext, applicationName, applicationPath, httpContextId);
+		ServiceRegistration applicationRegistration = registerApplication(application, applicationContext, applicationName, applicationPath, "default");
 
 		resourceHttpContexts.put(application, resourceHttpContextRegistration);
 		resourceMappings.put(application, resourceMappingRegistration);
