@@ -1,4 +1,4 @@
-package de.lemo.rest;
+package de.lemo.analysis.circlegraph;
 
 import javax.ws.rs.Path;
 

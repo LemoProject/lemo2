@@ -1,4 +1,4 @@
-package de.lemo.rest;
+package de.lemo.analysis.circlegraph;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -15,12 +15,12 @@ import freemarker.template.TemplateModelException;
 @ApplicationPath("lemo/analysis/" + CircleGraphAnalysis.ID)
 @Component(immediate = true, metatype = false)
 @Service(Application.class)
-public class RestApplicationComponent2 extends ResourceConfig {
+public class CircleGraphApplication extends ResourceConfig {
 
-	public RestApplicationComponent2() {
+	public CircleGraphApplication() {
 
 		packages(getClass().getPackage().getName());
-
+ 
 		// property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, createFreemarkerConiguration());
 		// property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
 		// register(FreemarkerMvcFeature.class);

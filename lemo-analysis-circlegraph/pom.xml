@@ -8,7 +8,7 @@
 		<version>${lemo-version}</version>
 	</parent>
 
-	<artifactId>lemo-testplugin</artifactId>
+	<artifactId>lemo-analysis-circlegraph</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
@@ -69,7 +69,7 @@
 							*
 						</Import-Package>
 						<Export-Package>
-							de.lemo.rest; version="1.0.0",
+							de.lemo.analysis.circlegraph; version="1.0.0",
 						</Export-Package>
 					</instructions>
 				</configuration>

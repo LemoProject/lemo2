@@ -14,11 +14,9 @@
 
 		<module>osgi-jersey-http-service-adapter</module>
 		<module>lemo-webapp</module>
-		<module>lemo-testplugin</module>
+		
+		<module>lemo-analysis-circlegraph</module>
 
-		<!-- <module>lemo-persistence</module> -->
-		<!-- <module>lemo-persistence-entities</module> -->
-		<!-- <module>lemo-plugins</module> -->
 	</modules>
 
 	<properties>
