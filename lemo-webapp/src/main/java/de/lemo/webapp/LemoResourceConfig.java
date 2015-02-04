@@ -61,9 +61,11 @@ public class LemoResourceConfig extends ResourceConfig {
 
 			configuration.setTemplateLoader(new ClassTemplateLoader(getClass(), "/"));
 
-			configuration.setSharedVariable("basePath", "/lemo");
-			configuration.setSharedVariable("assetPath", "/lemo/assets");
-			configuration.setSharedVariable("analysisPath", "/lemo/analysis");
+			String basePath = "/lemo";
+			configuration.setSharedVariable("basePath", basePath);
+			configuration.setSharedVariable("assetPath", basePath + "/assets");
+			configuration.setSharedVariable("analysisPath", basePath + "/analysis");
+			configuration.setSharedVariable("analysisPagePath", basePath + "/analytics");
 
 			configuration.setSharedVariable("analysisPlugins", beansWrapper.wrap(analyses.values()));
 

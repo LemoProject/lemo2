@@ -38,9 +38,9 @@
 							<span class="caret"></span>
 					</a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="${basePath}/analysis">Analyses Overview</a></li>
+							<li><a href="${analysisPagePath}">Analyses Overview</a></li>
 							<li class="divider"></li> <#list analysisPlugins as plugin>
-							<li><a href="${basePath}/analysis/${plugin.id}">${plugin.name}</a></li>
+							<li><a href="${analysisPagePath}/${plugin.id}">${plugin.name}</a></li>
 							</#list>
 						</ul></li>
 				</ul>
@@ -60,10 +60,10 @@
 
 	<div class="container"><#nested/></div>
 
-	<script src="${assetPath}/js/jquery-2.1.3.min.js"></script>
-	<script src="${assetPath}/js/bootstrap.min.js"></script>
-	<script src="${assetPath}/js/holder.min.js"></script>
-	
+	<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
+	<script src="${assetPath}/js/lib/bootstrap.min.js"></script>
+	<script src="${assetPath}/js/lib/holder.min.js"></script>
+
 </body>
 </html>
 </#macro>

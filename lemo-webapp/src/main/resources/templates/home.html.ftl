@@ -7,15 +7,7 @@ Analytics" >
 	<div class="col-md-12">
 
 		<div id="carousel-example-generic" class="carousel slide"
-			data-ride="carousel">
-			<!-- Indicators -->
-			<ol class="carousel-indicators">
-				<#list analysisPlugins as plugin>
-				<li data-target="#carousel-example-generic"
-					data-slide-to="${plugin_index}"></li>
-				<!-- TODO add class="active" -->
-				</#list>
-			</ol>
+			data-ride="carousel" style="width: 655px; margin: 0 auto;">
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
@@ -28,7 +20,8 @@ Analytics" >
 
 				<div class="item active">
 					<img src="${previewImagePath}" alt="${plugin.name}">
-					<div class="carousel-caption">
+					<div class="carousel-caption"
+						style="bottom: 0px; padding-bottom: 0px; color: #333; text-shadow: 0 1px 2px rgba(255, 255, 255, .6);">
 						<h3>${plugin.name}</h3>
 						<p>${plugin.shortDescription}</p>
 					</div>
