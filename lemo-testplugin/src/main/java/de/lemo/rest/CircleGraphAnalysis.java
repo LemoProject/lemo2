@@ -13,21 +13,21 @@ import de.lemo.plugin.api.Analysis;
 @Service
 public class CircleGraphAnalysis implements Analysis {
 
-	public final static String PATH = "circlegraph";
+	public final static String ID = "circle-graph";
 
 	private List<String> scripts = new ArrayList<String>();
-	{ 
+	{
 		scripts.add("js/circlegraph.js");
 		scripts = Collections.unmodifiableList(scripts);
 	}
 
 	@Override
-	public String getId() { 
-		return PATH;
+	public String getId() {
+		return ID;
 	}
- 
+
 	@Override
-	public String getName() { 
+	public String getName() {
 		return "Circle Graph";
 	}
 
@@ -35,20 +35,20 @@ public class CircleGraphAnalysis implements Analysis {
 	public String getShortDescription() {
 		return "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.";
 	}
- 
-	@Override 
+
+	@Override
 	public String getLongDescription() {
 		return "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
 				+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.";
-	} 
- 
-	@Override  
+	}
+
+	@Override
 	public List<String> getScriptPaths() {
 		return scripts;
 	}
-   
+
 	@Override
-	public List<String> getStyleSheetPaths() { 
+	public List<String> getStyleSheetPaths() {
 		return Collections.emptyList();
 	}
 
@@ -59,7 +59,7 @@ public class CircleGraphAnalysis implements Analysis {
 
 	@Override
 	public String getPreviewImagePath() {
-		return "img/circlegraph-preview.png";
+		return "img/preview.png";
 	}
 
 }
