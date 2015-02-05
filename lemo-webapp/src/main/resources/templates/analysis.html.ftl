@@ -1,5 +1,5 @@
 <#import "layout.html.ftl" as layout> <@layout.page
-title="${analysis.name}" >
+title="${analysis.name}" scripts=analysis.scriptPaths>
 
 <h2>${analysis.name}</h2>
 
@@ -7,6 +7,7 @@ title="${analysis.name}" >
 	<div id="#analysis-forms" class="col-md-3 col-md-pull-9"></div>
 	<div id="#analysis-main" class="col-md-9 col-md-push-3"></div>
 </div>
+
 
 
 

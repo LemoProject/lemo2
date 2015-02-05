@@ -1,4 +1,4 @@
-<#macro page title>
+<#macro page title scripts=emptyList>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +39,9 @@
 					</a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="${analysisPagePath}">Analyses Overview</a></li>
-							<li class="divider"></li> <#list analysisPlugins as plugin>
+							<li class="divider"></li>
+							<!--  -->
+							<#list analysisPlugins as plugin>
 							<li><a href="${analysisPagePath}/${plugin.id}">${plugin.name}</a></li>
 							</#list>
 						</ul></li>
@@ -58,11 +60,19 @@
 		</div>
 	</nav>
 
+
 	<div class="container"><#nested/></div>
 
+	<!-- default libraries -->
 	<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
 	<script src="${assetPath}/js/lib/bootstrap.min.js"></script>
 	<script src="${assetPath}/js/lib/holder.min.js"></script>
+
+	<!-- page libraries -->
+	<#list scripts as script>
+	<script src="${script}"></script>
+	</#list>
+
 
 </body>
 </html>

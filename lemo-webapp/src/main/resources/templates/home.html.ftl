@@ -18,7 +18,7 @@ Analytics" >
 				<#else> <#assign previewImagePath="holder.js/100%x500/social">
 				</#if>
 
-				<div class="item active">
+				<div class="item <#if plugin_index==0>active</#if>">
 					<img src="${previewImagePath}" alt="${plugin.name}">
 					<div class="carousel-caption"
 						style="bottom: 0px; padding-bottom: 0px; color: #333; text-shadow: 0 1px 2px rgba(255, 255, 255, .6);">

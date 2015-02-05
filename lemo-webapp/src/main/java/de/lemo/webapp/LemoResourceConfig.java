@@ -69,6 +69,8 @@ public class LemoResourceConfig extends ResourceConfig {
 
 			configuration.setSharedVariable("analysisPlugins", beansWrapper.wrap(analyses.values()));
 
+			configuration.setSharedVariable("emptyList", Collections.emptyList());
+
 			return configuration;
 		} catch (TemplateModelException e) {
 			throw new RuntimeException("Failed to create template config", e);
