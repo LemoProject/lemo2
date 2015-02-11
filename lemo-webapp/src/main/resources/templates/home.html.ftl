@@ -5,25 +5,31 @@ Analytics" >
 
 <div class="row">
 	<div class="col-md-12">
-
+		
 		<div id="carousel-example-generic" class="carousel slide"
 			data-ride="carousel" style="width: 655px; margin: 0 auto;">
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<#list analysisPlugins as plugin> <#if plugin.previewImagePath??>
-				<#assign
-				previewImagePath="${analysisPath}/${plugin.id}/assets/${plugin.previewImagePath}">
-				<#else> <#assign previewImagePath="holder.js/100%x500/social">
-				</#if>
+				<#list analysisPlugins.entrySet() as entry>
+				<!--  -->
+				<#assign analysisPage = entry.key> <#assign analysis = entry.value>
+				<#assign pluginAssets = analysisPluginPath + "/" + analysis.path + "/assets">
+				<!--  -->
+				<#assign previewImage =
+				(pluginAssets + "/" + analysis.properties.image_preview)!"holder.js/100x100/auto">
+				<#assign active><#if entry_index==0>active</#if></#assign>
+ 
 
-				<div class="item <#if plugin_index==0>active</#if>">
-					<img src="${previewImagePath}" alt="${plugin.name}">
+				<div class="item ${active}">
+					<img src="${previewImage}" alt="${analysis.name}" />
 					<div class="carousel-caption"
 						style="bottom: 0px; padding-bottom: 0px; color: #333; text-shadow: 0 1px 2px rgba(255, 255, 255, .6);">
-						<h3>${plugin.name}</h3>
-						<p>${plugin.shortDescription}</p>
+						<h3>
+							${analysis.name}
+						</h3>
+						<p>${(analysis.properties.description_short)!""}</p>
 					</div>
 				</div>
 				</#list>

@@ -12,7 +12,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
-@ApplicationPath("lemo/analysis/" + CircleGraphAnalysis.ID)
+@ApplicationPath(CircleGraphAnalysis.PATH)
 @Component(immediate = true, metatype = false)
 @Service(Application.class)
 public class CircleGraphApplication extends ResourceConfig {
@@ -20,7 +20,7 @@ public class CircleGraphApplication extends ResourceConfig {
 	public CircleGraphApplication() {
 
 		packages(getClass().getPackage().getName());
- 
+
 		// property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, createFreemarkerConiguration());
 		// property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
 		// register(FreemarkerMvcFeature.class);

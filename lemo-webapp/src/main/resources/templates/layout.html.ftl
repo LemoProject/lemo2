@@ -1,4 +1,4 @@
-<#macro page title scripts=emptyList>
+<#macro page title scriptBase="" scripts=[]>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,11 +38,20 @@
 							<span class="caret"></span>
 					</a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="${analysisPagePath}">Analyses Overview</a></li>
+							<li><a href="${analyticsPagePath}">Analyses Overview</a></li>
 							<li class="divider"></li>
-							<!--  -->
-							<#list analysisPlugins as plugin>
-							<li><a href="${analysisPagePath}/${plugin.id}">${plugin.name}</a></li>
+								<#list analysisPlugins.entrySet() as entry>
+								<!--  -->
+								<#assign analyticsPage = analyticsPagePath + "/" + entry.key> <#assign analysis = entry.value>
+								<#assign pluginAssets = analysisPluginPath + "/" + analysis.path + "/assets">
+								<!--  -->
+
+
+								<li><a href="${analyticsPage}"> <#if	analysis.properties.icon_monochrome??><img width="24" height="24" style="margin-left: -16px;"
+										src="${pluginAssets}/${analysis.properties.icon_monochrome}" />
+										</#if> ${analysis.name}
+								</a></li>
+						 
 							</#list>
 						</ul></li>
 				</ul>
@@ -66,11 +75,20 @@
 	<!-- default libraries -->
 	<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
 	<script src="${assetPath}/js/lib/bootstrap.min.js"></script>
+
 	<script src="${assetPath}/js/lib/holder.min.js"></script>
+	<script>
+		// override default gray theme
+		Holder.addTheme("gray", {
+			text : " ",
+			background : "#f8f8f8"
+		});
+	</script>
+
 
 	<!-- page libraries -->
 	<#list scripts as script>
-	<script src="${script}"></script>
+	<script src="${scriptBase}/${script}"></script>
 	</#list>
 
 

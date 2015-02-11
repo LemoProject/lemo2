@@ -12,7 +12,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
-@ApplicationPath("lemo/analysis/" + ActivityTimeAnalysis.ID)
+@ApplicationPath(ActivityTimeAnalysis.PATH)
 @Component(immediate = true, metatype = false)
 @Service(Application.class)
 public class ActivityTimeApplication extends ResourceConfig {
@@ -20,7 +20,7 @@ public class ActivityTimeApplication extends ResourceConfig {
 	public ActivityTimeApplication() {
 
 		packages(getClass().getPackage().getName());
- 
+
 		// property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, createFreemarkerConiguration());
 		// property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
 		// register(FreemarkerMvcFeature.class);

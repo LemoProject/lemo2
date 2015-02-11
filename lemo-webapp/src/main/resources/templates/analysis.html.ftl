@@ -1,5 +1,5 @@
 <#import "layout.html.ftl" as layout> <@layout.page
-title="${analysis.name}" scripts=analysis.scriptPaths>
+title=analysis.name scriptBase="/"+analysis.path+"/assets" scripts=analysis.scriptPaths>
 
 <h2>${analysis.name}</h2>
 

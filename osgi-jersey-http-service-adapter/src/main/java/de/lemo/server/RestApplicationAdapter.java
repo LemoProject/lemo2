@@ -37,7 +37,7 @@ public class RestApplicationAdapter {
 	private Map<Application, ServiceRegistration> resourceMappings = new HashMap<>();
 
 	protected void bindApplication(final Application application) {
- 
+
 		Bundle applicationBundle = FrameworkUtil.getBundle(application.getClass());
 		BundleContext applicationContext = applicationBundle.getBundleContext();
 
@@ -46,7 +46,7 @@ public class RestApplicationAdapter {
 		String applicationName = application.getClass().getName() + "-" + applicationBundle.getBundleId();
 		String applicationPath = getApplicationPath(application);
 		String resourceName = applicationName + "-Resources";
-		String resourcePath = applicationPath + "/assets";
+		String resourcePath = applicationPath + (applicationPath.equals("/") ? "" : "/") + "assets";
 		String httpContextId = applicationName + "-HttpContext";
 
 		ServiceRegistration resourceHttpContextRegistration = registerResourceHttpContext(applicationContext, httpContextId);

@@ -3,25 +3,29 @@
 <h1 class="page-header">Available Analyses</h1>
 
 <ul class="media-list">
+	<#list analysisPlugins.entrySet() as entry>
+	<!--  -->
+	<#assign analysisPage = analyticsPagePath + "/" + entry.key> <#assign analysis = entry.value>
+	<#assign pluginAssets = analysisPluginPath + "/" + analysis.path + "/assets">
+	<!--  -->
 	<!-- -->
-	<#list analysisPlugins as plugin>
-	<!-- -->
-	<#if plugin.iconPath??><#assign
-	iconPath="${analysisPath}/${plugin.id}/assets/${plugin.iconPath}"> <#else> <#assign
-	iconPath="holder.js/96x96/gray"> </#if>
+	<#assign iconPath =	(pluginAssets+"/"+analysis.properties.icon_color)!"holder.js/100x100/auto">
+
 	<!-- -->
 	<li class="media">
 		<div class="media-left">
-			<a href="${analysisPagePath}/${plugin.id}"> <img class="media-object"
-				src="${iconPath}" width="96" height="96" alt="${plugin.name}">
+			<a href="${analysisPage}"> <img
+				class="media-object" src="${iconPath}" width="96" height="96"
+				alt="${analysis.name}" />
 			</a>
 		</div>
 		<div class="media-body">
 			<h4 class="media-heading">
-				<a href="${basePath}/${plugin.id}">${plugin.name}</a> <small>
-					&ndash; ${plugin.shortDescription}</small>
+				<a href="${analysisPage}">${analysis.name}</a> <#if
+				analysis.properties.description_short??><small> &ndash;
+					${analysis.properties.description_short}</small></#if>
 			</h4>
-			<p>${plugin.longDescription}</p>
+			<p>${analysis.properties.description_long!}</p>
 		</div>
 	</li>
 	<!-- -->

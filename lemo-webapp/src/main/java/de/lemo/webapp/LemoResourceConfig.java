@@ -1,5 +1,6 @@
 package de.lemo.webapp;
 
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
-@ApplicationPath("/lemo")
+@ApplicationPath(LemoResourceConfig.APP_PATH)
 @Component(immediate = true, metatype = false)
 @Service(Application.class)
 public class LemoResourceConfig extends ResourceConfig {
@@ -30,6 +31,12 @@ public class LemoResourceConfig extends ResourceConfig {
 	@Reference(name = "analyses", referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindAnalysis", unbind = "unbindAnalysis")
 	private Map<String, Analysis> analyses = new HashMap<>();
 	private Map<String, Analysis> analysesReadOnlyView = Collections.unmodifiableMap(analyses);
+
+	public static final String APP_PATH = "/lemo";
+	public static final String HOME_PAGE = "/";
+	public static final String ANALYTICS_PAGE = "/analytics";
+
+	public static final String ASSETS = APP_PATH + "/assets";
 
 	public LemoResourceConfig() {
 
@@ -47,11 +54,11 @@ public class LemoResourceConfig extends ResourceConfig {
 	}
 
 	protected void bindAnalysis(Analysis analysis) {
-		analyses.put(analysis.getId(), analysis);
+		analyses.put(getAnalysisPagePath(analysis), analysis);
 	}
 
 	protected void unbindAnalysis(Analysis analysis) {
-		analyses.remove(analysis.getId());
+		analyses.remove(getAnalysisPagePath(analysis));
 	}
 
 	private Configuration createFreemarkerConiguration() {
@@ -61,20 +68,34 @@ public class LemoResourceConfig extends ResourceConfig {
 
 			configuration.setTemplateLoader(new ClassTemplateLoader(getClass(), "/"));
 
-			String basePath = "/lemo";
-			configuration.setSharedVariable("basePath", basePath);
-			configuration.setSharedVariable("assetPath", basePath + "/assets");
-			configuration.setSharedVariable("analysisPath", basePath + "/analysis");
-			configuration.setSharedVariable("analysisPagePath", basePath + "/analytics");
+			configuration.setSharedVariable("basePath", APP_PATH);
+			configuration.setSharedVariable("assetPath", ASSETS);
 
-			configuration.setSharedVariable("analysisPlugins", beansWrapper.wrap(analyses.values()));
+			configuration.setSharedVariable("homePagePath", APP_PATH + HOME_PAGE);
+			configuration.setSharedVariable("analyticsPagePath", APP_PATH + ANALYTICS_PAGE);
+			configuration.setSharedVariable("analysisPluginPath", "");
 
-			configuration.setSharedVariable("emptyList", Collections.emptyList());
+			configuration.setSharedVariable("analysisPlugins", beansWrapper.wrap(analyses));
 
 			return configuration;
 		} catch (TemplateModelException e) {
 			throw new RuntimeException("Failed to create template config", e);
 		}
+	}
+
+	private String getAnalysisPagePath(Analysis analysis) {
+		/* TODO is naive transliteration for urls necessary? */
+		// TODO use Pattern.compile once
+
+		// separate letters and diacritics
+		String analysisPath = Normalizer.normalize(analysis.getName(), Normalizer.Form.NFD);
+		// strip non-ascii
+		analysisPath = analysisPath.replaceAll("[^\\p{ASCII}]", "");
+		// trim leading non-alphanumeric
+		analysisPath = analysisPath.replaceAll("^[^\\p{Alnum}]*|[^\\p{Alnum}]*$", "");
+		// replace non-alphanumeric sequences with single dash
+		analysisPath = analysisPath.replaceAll("[^\\p{Alnum}]+", "-");
+		return analysisPath.toLowerCase();
 	}
 
 	// Enable current OSGi-managed component for injection
