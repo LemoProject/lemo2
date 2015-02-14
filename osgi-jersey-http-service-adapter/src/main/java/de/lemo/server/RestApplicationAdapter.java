@@ -43,11 +43,13 @@ public class RestApplicationAdapter {
 
 		logger.info("Registering JAX-RS application {} from bundle {}", application.getClass().getName(), applicationBundle);
 
-		String applicationName = application.getClass().getName() + "-" + applicationBundle.getBundleId();
+		// For some reason http service cut's of anything before the last '.' dot character for servlet names.
+		// workaround: replace dot with other char
+		String applicationName = applicationBundle.getSymbolicName().replace('.', '-') + "--" + application.getClass().getSimpleName();
 		String applicationPath = getApplicationPath(application);
-		String resourceName = applicationName + "-Resources";
+		String resourceName = applicationName + "--Resources";
 		String resourcePath = applicationPath + (applicationPath.equals("/") ? "" : "/") + "assets";
-		String httpContextId = applicationName + "-HttpContext";
+		String httpContextId = applicationName + "--HttpContext";
 
 		ServiceRegistration resourceHttpContextRegistration = registerResourceHttpContext(applicationContext, httpContextId);
 		ServiceRegistration resourceMappingRegistration = registerResourceMapping(applicationContext, resourceName, resourcePath, httpContextId);

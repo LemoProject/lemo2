@@ -35,17 +35,17 @@ public class ResourceHttpContext implements HttpContext {
 
 	@Override
 	public URL getResource(String name) {
-		if (!name.contains("/")) {
-			logger.info("RESOURCE ??? {}  ", name);
+		int slash = name.indexOf("/");
+		if (slash < 0) {
+			logger.warn("Invalid resource name: {} ", name);
 			return null;
 		}
-		String bundle = name.substring(0, name.indexOf("/"));
-		String resourceName = name.substring(name.indexOf("/"));
+		String bundle = name.substring(0, slash);
+		String resourceName = name.substring(slash);
 		String internalPath = basePath + resourceName;
-		logger.info("RESOURCE {} for bundle {} at {}", resourceName, bundle, internalPath);
-		URL resource2 = context.getBundle().getEntry(internalPath);
-		logger.warn("FOUND? {}", resourceName);
-		return resource2;
+		logger.debug("Requested resource {} for bundle {} at {}", resourceName, bundle, internalPath);
+
+		return context.getBundle().getEntry(internalPath);
 	}
 
 	@Override
