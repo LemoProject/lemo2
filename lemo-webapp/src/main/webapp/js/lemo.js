@@ -91,11 +91,12 @@ function domain(start, end) {
 }
 
 $(document).ready(function() {
-	$("#draggable").draggable();
-	$("#draggable2").draggable();
-	$('.tooltips').tipsy({
-		gravity : 's'
-	});
+	console.error("#draggable deactivated");
+//	$("#draggable").draggable();
+//	$("#draggable2").draggable();
+//	$('.tooltips').tipsy({
+//		gravity : 's'
+//	});
 });
 
 function color(name) {

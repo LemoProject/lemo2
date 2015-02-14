@@ -11,7 +11,27 @@
 
 
 <link rel="stylesheet" href="${assetPath}/css/bootstrap.min.css">
+<link rel="stylesheet" href="${assetPath}/css/apps.css">
 <link rel="stylesheet" href="${assetPath}/css/main.css">
+
+
+<!-- default libraries -->
+<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
+<script src="${assetPath}/js/lib/bootstrap.min.js"></script>
+
+<script src="/lemo/assets/js/lemo.js"></script>
+<script src="/lemo/assets/js/lib/packages.js"></script>
+<script src="/lemo/assets/js/lib/d3.v2.min.js"></script>
+
+<script src="${assetPath}/js/lib/holder.min.js"></script>
+<script>
+	// override default gray theme
+	Holder.addTheme("gray", {
+		text : " ",
+		background : "#f8f8f8"
+	});
+</script>
+
 
 
 </head>
@@ -71,20 +91,6 @@
 
 
 	<div class="container"><#nested/></div>
-
-	<!-- default libraries -->
-	<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
-	<script src="${assetPath}/js/lib/bootstrap.min.js"></script>
-
-	<script src="${assetPath}/js/lib/holder.min.js"></script>
-	<script>
-		// override default gray theme
-		Holder.addTheme("gray", {
-			text : " ",
-			background : "#f8f8f8"
-		});
-	</script>
-
 
 	<!-- page libraries -->
 	<#list scripts as script>
