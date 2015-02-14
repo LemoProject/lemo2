@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.lemo</groupId>
 		<artifactId>lemo</artifactId>
-		<version>${lemo-version}</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>osgi-jersey-http-service-adapter</artifactId>

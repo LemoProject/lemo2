@@ -3,7 +3,7 @@
 
 	<groupId>de.lemo</groupId>
 	<artifactId>lemo</artifactId>
-	<version>${lemo-version}</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Lemo</name>
@@ -23,8 +23,7 @@
 	<properties>
 
 		<m2e.wtp.activation>false</m2e.wtp.activation>
-
-		<lemo-version>0.0.1-SNAPSHOT-INITIAL</lemo-version>
+ 
 
 		<!-- TODO move server properties to server aggregator -->
 
