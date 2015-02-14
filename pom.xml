@@ -15,6 +15,7 @@
 		<module>osgi-jersey-http-service-adapter</module>
 		<module>lemo-webapp</module>
 		
+		<module>lemo-analysis-activitytime</module>
 		<module>lemo-analysis-circlegraph</module>
 
 	</modules>
