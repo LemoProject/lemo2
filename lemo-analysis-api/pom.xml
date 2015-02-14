@@ -22,13 +22,15 @@
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 
 				<configuration>
 					<instructions>
-						<Import-Package>
-							*
-						</Import-Package>
 						<Export-Package>
 							de.lemo.plugin.api; version="0.1.0",
 						</Export-Package>
@@ -36,10 +38,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-			</plugin>
+
 
 		</plugins>
 

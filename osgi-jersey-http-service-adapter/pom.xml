@@ -41,21 +41,10 @@
 			<version>3.1.4</version>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>javax.servlet</groupId> -->
-		<!-- <artifactId>javax.servlet-api</artifactId> -->
-		<!-- </dependency> -->
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>javax.ws.rs</groupId> -->
-		<!-- <artifactId>javax.ws.rs-api</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
 
 
 		<dependency>
@@ -64,7 +53,6 @@
 			<version>${jersey-version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.glassfish.jersey.ext</groupId>
@@ -81,32 +69,21 @@
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<unpackBundle>true</unpackBundle>
-					<niceManifest>true</niceManifest>
-					<instructions>
-
-						<Import-Package>
-							<!-- org.slf4j; version="[1,2)", -->
-							<!-- ${import.logging-api}, -->
-							*
-						</Import-Package>
-						<Export-Package>
-							de.lemo.server; version="1.0.0",
-						</Export-Package>
-
-					</instructions>
-				</configuration>
-
-			</plugin>
-
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-scr-plugin</artifactId>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+
+				<configuration>
+					<instructions>
+						<Export-Package>
+							de.lemo.server; version="1.0.0",
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
