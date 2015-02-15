@@ -19,7 +19,7 @@ public class CircleGraphAnalysis implements Analysis {
 
 	private final Map<String, String> properties;
 	{
-		// TODO i18n 
+		// TODO i18n
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put(Analysis.DESCRIPTION_SHORT, "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.");
 		properties.put(Analysis.DESCRIPTION_LONG, "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
@@ -35,6 +35,7 @@ public class CircleGraphAnalysis implements Analysis {
 	{
 		List<String> scripts = new ArrayList<String>();
 		scripts.add("js/circlegraph.js");
+		scripts.add("js/fake_data.js");
 		this.scripts = Collections.unmodifiableList(scripts);
 	}
 
