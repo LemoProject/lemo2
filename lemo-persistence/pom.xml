@@ -6,111 +6,55 @@
 	<parent>
 		<groupId>de.lemo</groupId>
 		<artifactId>lemo</artifactId>
-		<version>${lemo-version}</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
-
-	<!-- <parent> -->
-	<!-- <groupId>de.lemo</groupId> -->
-	<!-- <artifactId>lemo-bundles</artifactId> -->
-	<!-- <version>0.0.1-SNAPSHOT</version> -->
-	<!-- <relativePath>../lemo-bundles.pom.xml</relativePath> -->
-	<!-- </parent> -->
 
 	<artifactId>lemo-persistence</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
+	<properties>
+
+
+	</properties>
 
 
 	<dependencies>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.enterprise</groupId> -->
-<!-- 			<artifactId>cdi-api</artifactId> -->
-<!-- 			<version>1.2</version> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
 
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.felix</groupId> -->
+		<!-- <artifactId>org.apache.felix.scr.ds-annotations</artifactId> -->
+		<!-- </dependency> -->
 		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.11.1.1</version>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.bundles</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.bundles.derby</artifactId> -->
-		<!-- <version>10.11.1.1_1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-
-
-		<!-- TODO this + blueprint for container managed jpa -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries.jpa</groupId> -->
-		<!-- <artifactId>org.apache.aries.jpa.container</artifactId> -->
-		<!-- <version>1.0.2</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries</groupId> -->
-		<!-- <artifactId>org.apache.aries.util</artifactId> -->
-		<!-- <version>1.1.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries.jpa</groupId> -->
-		<!-- <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId> -->
-		<!-- <version>1.0.4</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries.jndi</groupId> -->
-		<!-- <artifactId>org.apache.aries.jndi</artifactId> -->
-		<!-- <version>1.0.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries.proxy</groupId> -->
-		<!-- <artifactId>org.apache.aries.proxy</artifactId> -->
-		<!-- <version>1.0.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.aries.transaction</groupId> -->
-		<!-- <artifactId>org.apache.aries.transaction.manager</artifactId> -->
-		<!-- <version>1.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr</artifactId>
+		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-osgi</artifactId>
-			<version>${hibernate-version}</version>
-			<!-- <scope>provided</scope> -->
-			<exclusions>
-				<exclusion>
-					<artifactId>antlr</artifactId>
-					<groupId>antlr</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xml-apis</artifactId>
-					<groupId>xml-apis</groupId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate.javax.persistence</groupId>
-					<artifactId>hibernate-jpa-2.1-api</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.21</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.jdbc</groupId>
+			<artifactId>pax-jdbc-mysql</artifactId>
+			<version>0.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+ 
+
+		<dependency>
+			<groupId>org.ops4j.pax.jpa</groupId>
+			<artifactId>pax-jpa</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 
@@ -121,128 +65,53 @@
 			<scope>provided</scope>
 		</dependency>
 
-
-
-
-
-
-
-		<!-- old -->
-		<!-- http://mvnrepository.com/artifact/org.ops4j.pax.tipi/org.ops4j.pax.tipi.mysql.connector.java/5.1.22.1 -->
 		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.antlr</artifactId>
-			<version>2.7.7_5</version>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.18.1-GA</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.ant</artifactId>
-			<version>1.7.0_5</version>
-			<scope>provided</scope>
-			<!-- imports: javax.xml.parsers,javax.xml.transform,javax.xml.transform.sax,org.w3c.dom,org.xml.sax,org.xml.sax.helpers -->
-		</dependency>
-		<dependency>
-			<groupId>pull-parser</groupId>
-			<artifactId>pull-parser</artifactId>
-			<version>2.1.10</version>
-			<!-- non-osgi -->
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.relaxngDatatype</artifactId>
-			<version>2011.1_1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
-			<version>1.1.3.1_2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
-			<version>1.2_5</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml</groupId>
-			<artifactId>classmate</artifactId>
-			<version>0.9.0</version>
-			<scope>provided</scope>
-			<!-- no imports -->
-		</dependency>
-
-
-
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.jaxen</artifactId>
-			<version>1.1.6_1</version>
-			<scope>provided</scope>
-			<!-- no imports -->
-		</dependency>
-
-
 	</dependencies>
 
 	<build>
-		<!-- javax.persistence; version="1.1.0"; jpa="2.0", -->
+ 
 		<plugins>
-
-
 			<plugin>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<unpackBundle>true</unpackBundle>
-					<!-- <ignoreMissingArtifacts>true</ignoreMissingArtifacts> -->
-					<!-- -noimport:=true -->
-					<instructions>
-						<Bundle-Activator>org.hibernate.osgi.HibernateBundleActivator</Bundle-Activator>
-						<Embed-Dependency>* ; scope=compile ; inline=false </Embed-Dependency>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Import-Package>
-							${logging-import} ,
-							!com.sun.* ,
-							!sun.io* ,
-							!org.jboss.logging ,
-							!org.jboss.logmanager ,
-							!org.apache.tools.ant.* ,
-							*
-						</Import-Package>
-						<!-- !org.xml.sax.* , -->
-						<!-- !org.xml.sax.* , -->
-						<!-- !org.dom4j.* , -->
-						<Private-Package></Private-Package>
-
-						<!-- <Export-Package>!javax.* </Export-Package> -->
-
-						<_exportcontents>
-							!javax.* ,
-							org.hibernate.* ; version=$[maven_version;${hibernate-version}] ; -split-package:=merge-first,
-							javassist.*;
-							version=3.18.1,
-							org.jboss.jandex.* ; version=1.0.3 ,
-						</_exportcontents>
-						<!-- , org.jboss.* ; version=1.4.0 -->
-						<!-- org.dom4j.* ; version=1.6.1 , -->
-						<!-- ;-noimports=true -->
-						<!-- , com.fasterxml.classmate.* -->
-						<!-- , javassist.util.proxy ; version=3.18.1 -->
-
-					</instructions>
-
-				</configuration>
+				<artifactId>maven-scr-plugin</artifactId>
 			</plugin>
-
-
-
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+
+
+
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<configuration>
+
+						<instructions>
+
+							<Import-Package>
+								${logging-import} ,
+								<!-- javax.persistence ; version="1.1.0"; jpa="2.1.0", -->
+								org.hibernate.proxy ; version="[4.3.7,5)",
+								javassist.util.proxy ; version="[3.18,4)",
+								*
+							</Import-Package>
+
+							<Export-package>de.lemo.*</Export-package>
+
+							<Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+
+						</instructions>
+
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

@@ -11,6 +11,8 @@
 	<modules>
 
 		<module>lemo-analysis-api</module>
+		
+		<module>lemo-persistence</module>
 
 		<module>osgi-jersey-http-service-adapter</module>
 		<module>lemo-webapp</module>
