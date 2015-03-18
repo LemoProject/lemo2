@@ -30,7 +30,7 @@ public class HmacSecurityContext implements SecurityContext {
 	@Override
 	public boolean isUserInRole(String role) {
 
-		logger.info("############## isUserInRole " + role);
+//		logger.info("############## isUserInRole " + role);
 		return false;
 	}
 

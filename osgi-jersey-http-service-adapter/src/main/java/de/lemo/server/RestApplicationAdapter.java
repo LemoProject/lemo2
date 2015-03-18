@@ -1,20 +1,26 @@
 package de.lemo.server;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.Servlet;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.ops4j.pax.web.extender.whiteboard.ResourceMapping;
 import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
@@ -26,107 +32,152 @@ import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.lemo.plugin.api.Analysis;
+
 @Component(immediate = true, metatype = false)
 public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
 
-	@Reference(name = "applications", referenceInterface = Application.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindApplication", unbind = "unbindApplication", updated = "updateApplication")
-	private Map<Application, ServiceRegistration> applications = new HashMap<>();
-	private Map<Application, ServiceRegistration> resourceHttpContexts = new HashMap<>();
-	private Map<Application, ServiceRegistration> resourceMappings = new HashMap<>();
+	private static final String applicationName = "lemo";
+	private static final String assetsName = "assets";
+	private static final String applicationBasePath = "/lemo";
+	private static final String assetPath = applicationBasePath + "/assets";
 
-	protected void bindApplication(final Application application) {
+	private ServletContainer servletContainer;
+	private ResourceHttpContext resourceContext;
 
-		Bundle applicationBundle = FrameworkUtil.getBundle(application.getClass());
-		BundleContext applicationContext = applicationBundle.getBundleContext();
+	private ServiceRegistration servletContainerRegistration;
+	private ServiceRegistration resourceContextRegistration;
+	private ServiceRegistration resourceMappingRegistration;
 
-		logger.info("Registering JAX-RS application {} from bundle {}", application.getClass().getName(), applicationBundle);
+	@Reference(referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindApplication", unbind = "unbindApplication", updated = "updateApplication")
+	private List<Analysis> analysisPlugins = new ArrayList<Analysis>();
 
-		// For some reason http service cut's of anything before the last '.' dot character for servlet names.
-		// workaround: replace dot with other char
-		String applicationName = applicationBundle.getSymbolicName().replace('.', '-') + "--" + application.getClass().getSimpleName();
-		String applicationPath = getApplicationPath(application);
-		String resourceName = applicationName + "--Resources";
-		String resourcePath = applicationPath + (applicationPath.equals("/") ? "" : "/") + "assets";
-		String httpContextId = applicationName + "--HttpContext";
-
-		ServiceRegistration resourceHttpContextRegistration = registerResourceHttpContext(applicationContext, httpContextId);
-		ServiceRegistration resourceMappingRegistration = registerResourceMapping(applicationContext, resourceName, resourcePath, httpContextId);
-		ServiceRegistration applicationRegistration = registerApplication(application, applicationContext, applicationName, applicationPath, "default");
-
-		resourceHttpContexts.put(application, resourceHttpContextRegistration);
-		resourceMappings.put(application, resourceMappingRegistration);
-		applications.put(application, applicationRegistration);
-
+	protected void bindApplication(Analysis application) {
+		analysisPlugins.add(application);
+		reloadApplication();
 	}
 
-	protected void updateApplication(Application application) {
+	protected void updateApplication(Analysis application) {
 		logger.info("Updating JAX-RS application {}", application);
+		// TODO reloadApplication();
 	}
 
-	protected void unbindApplication(Application application) {
-		logger.info("Unregistering JAX-RS application {}", application);
+	protected void unbindApplication(Analysis application) {
+		analysisPlugins.remove(application);
+		reloadApplication();
+	}
 
-		ServiceRegistration resourceHttpContextRegistration = resourceHttpContexts.remove(application);
-		ServiceRegistration resourceMappingRegistration = resourceMappings.remove(application);
-		ServiceRegistration applicationRegistration = applications.remove(application);
+	@Path("/")
+	public static class Foo {
+		private RestApplicationAdapter app;
 
-		if (resourceMappingRegistration != null) {
-			resourceMappingRegistration.unregister();
+		public Foo(RestApplicationAdapter app) {
+			this.app = app;
 		}
-		if (resourceHttpContextRegistration != null) {
-			resourceHttpContextRegistration.unregister();
+
+		@GET
+		 @RolesAllowed("user")
+		public String foo() {
+			return "no auth";
 		}
-		if (applicationRegistration != null) {
-			applicationRegistration.unregister();
+
+		@GET
+		@Path("plugins")
+		public String pluginList() {
+			String r = "Plugins<br><br>";
+			for (Analysis analysis : app.analysisPlugins) {
+				r += "<b>" + analysis.getName() + "</b><br>" + analysis.getPath() + "<br><br>";
+			}
+			return r;
 		}
+	}
+
+	@Activate
+	protected void activate(BundleContext applicationContext) {
+
+		initServletContainer(applicationContext);
+		initResourceMapping(applicationContext);
+
+		reloadApplication();
 
 	}
 
-	private ServiceRegistration registerApplication(Application application, BundleContext applicationContext, String applicationName, String aplicationPath,
-			String httpContextId) {
+	@Deactivate
+	protected void deactivate() {
+		tryUnregister(servletContainerRegistration);
+		tryUnregister(resourceMappingRegistration);
+		tryUnregister(resourceContextRegistration);
+	}
 
-		ResourceConfig resourceConfig;
-		if (application instanceof ResourceConfig) {
-			// ResourceConfig can be unmodifiable, need to wrap it
-			resourceConfig = new ResourceConfig((ResourceConfig) application);
-		} else {
-			resourceConfig = ResourceConfig.forApplication(application);
+	private void initServletContainer(BundleContext applicationContext) {
+		Dictionary<String, Object> webappServletProperties = createServletProperties(applicationName, applicationBasePath);
+		servletContainer = new ServletContainer();
+
+		servletContainerRegistration = applicationContext.registerService(Servlet.class.getName(), servletContainer, webappServletProperties);
+	}
+
+	private void initResourceMapping(BundleContext applicationContext) {
+		resourceContext = new ResourceHttpContext();
+		resourceContextRegistration = applicationContext.registerService(HttpContext.class.getName(), resourceContext, null);
+		resourceMappingRegistration = registerResourceMapping(applicationContext, assetsName, assetPath);
+	}
+
+	private void reloadApplication() {
+		if (servletContainer == null || resourceContext == null) {
+			// if service binding happens before @activate, ignore reloading
+			return;
 		}
-		resourceConfig.setApplicationName(applicationName);
 
-		ServletContainer webappServlet = new ServletContainer(resourceConfig);
+		// reload servlet container
+		ResourceConfig resourceConfig = new ResourceConfig();
+		resourceConfig.register(RolesAllowedDynamicFeature.class);
+		resourceConfig.packages("de.lemo.server.auth");
+		resourceConfig.registerInstances(new Foo(this));
+		for (Analysis analysis : analysisPlugins) {
+			resourceConfig.register(analysis);
+		}
+		servletContainer.reload(resourceConfig);
 
-		Dictionary<String, Object> webappServletProperties = createServletProperties(applicationName, aplicationPath, httpContextId);
-		ServiceRegistration registerService = applicationContext.registerService(Servlet.class.getName(), webappServlet, webappServletProperties);
-		return registerService;
+		// reload resource context
+		Map<String, Bundle> pluginPathMapping = new HashMap<>();
+		for (Analysis analysis : analysisPlugins) {
+			Bundle bundle = FrameworkUtil.getBundle(analysis.getClass());
+			String path = "/" + trim(analysis.getPath(), '/');
+			pluginPathMapping.put(path, bundle);
+		}
+		resourceContext.reload(pluginPathMapping);
 	}
 
-	private ServiceRegistration registerResourceHttpContext(BundleContext applicationContext, String httpContextId) {
-		ResourceHttpContext resourceHttpContext = new ResourceHttpContext(applicationContext, "/");
-		Dictionary<String, Object> props = new Hashtable<>();
-		props.put(HttpConstants.CONTEXT_ID, httpContextId);
-		return applicationContext.registerService(HttpContext.class.getName(), resourceHttpContext, props);
+	private boolean tryUnregister(ServiceRegistration registration) {
+		if (registration != null) {
+			try {
+				registration.unregister();
+			} catch (Exception e) {
+				logger.warn("Failed to unregister service {}", registration);
+				return false;
+			}
+		}
+		return true;
 	}
 
-	private ServiceRegistration registerResourceMapping(BundleContext applicationContext, String name, String path, String httpContextId) {
+	private ServiceRegistration registerResourceMapping(BundleContext applicationContext, String name, String path) {
 		DefaultResourceMapping resourceMapping = new DefaultResourceMapping();
 		resourceMapping.setAlias(path);
 		resourceMapping.setPath(name);
-		// resourceMapping.setHttpContextId(httpContextId);
 		ServiceRegistration registerService = applicationContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
 		return registerService;
 	}
 
-	private Dictionary<String, Object> createServletProperties(String name, String path, String httpContextId) {
+	private Dictionary<String, Object> createServletProperties(String name, String path) {
 		Dictionary<String, Object> props = new Hashtable<>();
 
 		// osgi http service
 		props.put(HttpConstants.SERVLET_NAME, name); // TODO should work without "init" but doesn't (?)
 		props.put(HttpConstants.INIT_PREFIX + HttpConstants.SERVLET_NAME, name);
 		props.put(HttpConstants.ALIAS, path);
-		props.put(HttpConstants.CONTEXT_ID, httpContextId);
+
 		// jersey
 		props.put(ServerProperties.APPLICATION_NAME, name);
 		// props.put(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, "true");
@@ -136,21 +187,14 @@ public class RestApplicationAdapter {
 		return props;
 	}
 
-	private String getApplicationPath(Application application) {
-		ApplicationPath applicationPathAnnotation = application.getClass().getAnnotation(ApplicationPath.class);
-		if (applicationPathAnnotation == null) {
-			throw new RuntimeException("Missing @ApplicationPath annotation");
+	private String trim(String string, char remove) {
+		StringBuilder sb = new StringBuilder(string);
+		while (sb.charAt(0) == remove) {
+			sb.deleteCharAt(0);
 		}
-		String path = applicationPathAnnotation.value();
-		// trim trailing slash
-		if (path.endsWith("/")) {
-			path = path.substring(0, path.length() - 1);
+		while (sb.charAt(sb.length() - 1) == remove) {
+			sb.deleteCharAt(sb.length() - 1);
 		}
-		// add leading slash
-		if (!path.startsWith("/")) {
-			path = "/" + path;
-		}
-		return path;
+		return sb.toString();
 	}
-
 }

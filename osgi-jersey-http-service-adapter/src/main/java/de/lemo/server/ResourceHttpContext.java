@@ -2,11 +2,14 @@ package de.lemo.server;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +18,12 @@ public class ResourceHttpContext implements HttpContext {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceHttpContext.class);
 
-	private BundleContext context;
+	private static final String PREFIX = "assets";
 
-	private String basePath;
+	private Map<String, Bundle> pluginPathMapping = new HashMap<>();
 
-	public ResourceHttpContext(BundleContext context, String basePath) {
-		this.context = context;
-		if (basePath.equals("/")) {
-			this.basePath = "";
-		} else {
-			this.basePath = basePath;
-		}
+	public void reload(Map<String, Bundle> assetPathMapping) {
+		this.pluginPathMapping = new HashMap<>(assetPathMapping);
 	}
 
 	@Override
@@ -34,18 +32,22 @@ public class ResourceHttpContext implements HttpContext {
 	}
 
 	@Override
-	public URL getResource(String name) {
-		int slash = name.indexOf("/");
-		if (slash < 0) {
-			logger.warn("Invalid resource name: {} ", name);
-			return null;
-		}
-		String bundle = name.substring(0, slash);
-		String resourceName = name.substring(slash);
-		String internalPath = basePath + resourceName;
-		logger.debug("Requested resource {} for bundle {} at {}", resourceName, bundle, internalPath);
+	public URL getResource(String requestPath) {
+		String assetPath = requestPath.substring(PREFIX.length());
 
-		return context.getBundle().getEntry(internalPath);
+		logger.info("Requested resource {}", assetPath);
+
+		for (Entry<String, Bundle> entry : pluginPathMapping.entrySet()) {
+			String pluginPath = entry.getKey();
+			logger.info("pluginPath {}", pluginPath);
+			if (assetPath.startsWith(pluginPath)) {
+				Bundle bundle = entry.getValue();
+				String internalResourcePath = "/assets" + assetPath.substring(pluginPath.length());
+				return bundle.getEntry(internalResourcePath);
+			}
+		}
+
+		return null;
 	}
 
 	@Override
