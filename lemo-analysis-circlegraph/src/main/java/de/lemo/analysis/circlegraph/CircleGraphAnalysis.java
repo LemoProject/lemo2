@@ -1,19 +1,66 @@
 package de.lemo.analysis.circlegraph;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
 
 import de.lemo.plugin.api.Analysis;
 
+@Instantiate
 @Component
-@Service
+@Provides
+@Path("circle-graph")
 public class CircleGraphAnalysis implements Analysis {
+
+	Application app;
+
+	@Context
+	public UriInfo uriInfo;
+
+	@GET
+	public String test() {
+		return "ok!";
+	}
+
+	@GET
+	@Produces("text/html")
+	public String t(@QueryParam("n") String name) {
+		return "Fooo " + name + "-" + this + " - " + app;
+	}
+
+	@GET
+	@Path("js.png")
+	@Produces("image/png")
+	public Response test2() {
+		String name = "/img/preview.png";
+		InputStream is = getClass().getResourceAsStream(name);
+		if (is == null) {
+			throw new WebApplicationException(404);
+		}
+
+		String mt = URLConnection.guessContentTypeFromName(name);// new MimetypesFileTypeMap().getContentType(name);
+		System.out.println("XXXXXXXX " + mt);
+		return Response.ok(new InputStreamReader(is), mt).build();
+	}
 
 	public final static String PATH = "circle-graph";
 
@@ -41,7 +88,11 @@ public class CircleGraphAnalysis implements Analysis {
 
 	@Override
 	public String getPath() {
-		return PATH;
+		try {
+			return "uri: " + uriInfo.getAbsolutePath();
+		} catch (Exception e) {
+			return "url fail";
+		}
 	}
 
 	@Override
