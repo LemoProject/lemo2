@@ -22,14 +22,18 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.ServiceProperty;
 
 import de.lemo.plugin.api.Analysis;
 
 @Instantiate
 @Component
 @Provides
-@Path("circle-graph")
-public class CircleGraphAnalysis implements Analysis {
+@Path("analysis/circle-graph")
+public class CircleGraphAnalysis {
+
+	@ServiceProperty(name = "foo", value = "bar")
+	String foo;
 
 	Application app;
 
@@ -86,28 +90,28 @@ public class CircleGraphAnalysis implements Analysis {
 		this.scripts = Collections.unmodifiableList(scripts);
 	}
 
-	@Override
-	public String getPath() {
-		try {
-			return "uri: " + uriInfo.getAbsolutePath();
-		} catch (Exception e) {
-			return "url fail";
-		}
-	}
-
-	@Override
-	public String getName() {
-		return "Circle Graph";
-	}
-
-	@Override
-	public Map<String, String> getProperties() {
-		return properties;
-	}
-
-	@Override
-	public List<String> getScriptPaths() {
-		return scripts;
-	}
+	// @Override
+	// public String getPath() {
+	// try {
+	// return "uri: " + uriInfo.getAbsolutePath();
+	// } catch (Exception e) {
+	// return "url fail";
+	// }
+	// }
+	//
+	// @Override
+	// public String getName() {
+	// return "Circle Graph";
+	// }
+	//
+	// @Override
+	// public Map<String, String> getProperties() {
+	// return properties;
+	// }
+	//
+	// @Override
+	// public List<String> getScriptPaths() {
+	// return scripts;
+	// }
 
 }
