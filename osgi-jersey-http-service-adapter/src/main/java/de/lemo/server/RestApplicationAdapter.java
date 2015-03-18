@@ -1,23 +1,28 @@
 package de.lemo.server;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.Servlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.ipojo.ComponentFactory;
+import org.apache.felix.ipojo.ComponentInstance;
+import org.apache.felix.ipojo.ConfigurationException;
+import org.apache.felix.ipojo.InstanceManager;
+import org.apache.felix.ipojo.MissingHandlerException;
+import org.apache.felix.ipojo.UnacceptableConfiguration;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Context;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Validate;
+import org.apache.felix.ipojo.whiteboard.Wbp;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -27,14 +32,15 @@ import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.lemo.plugin.api.Analysis;
-
-@Component(immediate = true, metatype = false)
+@Instantiate
+@Component
+@Wbp(filter = "(service.pid=*)", onArrival = "onArrival", onDeparture = "onDeparture")
 public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
@@ -51,22 +57,50 @@ public class RestApplicationAdapter {
 	private ServiceRegistration resourceContextRegistration;
 	private ServiceRegistration resourceMappingRegistration;
 
-	@Reference(referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindApplication", unbind = "unbindApplication", updated = "updateApplication")
-	private List<Analysis> analysisPlugins = new ArrayList<Analysis>();
+	private Map<ServiceReference, Object> resourceInstances = new HashMap<>();
+	private Map<ServiceReference, ComponentFactory> resourceFactories = new HashMap<>();
 
-	protected void bindApplication(Analysis application) {
-		analysisPlugins.add(application);
-		reloadApplication();
+	@Context
+	private BundleContext context;
+
+	public synchronized void onArrival(ServiceReference ref) throws ClassNotFoundException {
+
+		Object service = context.getService(ref);
+
+		if (service.getClass().isAnnotationPresent(Path.class)) {
+			logger.info("PATH ANNOTATION SINGLETON " + service.getClass());
+			resourceInstances.put(ref, service);
+			reloadApplication();
+		} else if (service instanceof ComponentFactory) {
+			logger.info("PATH ANNOTATION FACTORY " + service.getClass());
+			ComponentFactory factory = (ComponentFactory) service;
+			Class<?> resourceClass = factory.loadClass(factory.getClassName());
+			if (resourceClass.isAnnotationPresent(Path.class)) {
+				resourceFactories.put(ref, factory);
+				reloadApplication();
+			}
+		}
 	}
 
-	protected void updateApplication(Analysis application) {
-		logger.info("Updating JAX-RS application {}", application);
-		// TODO reloadApplication();
+	public synchronized void onDeparture(ServiceReference ref) throws ClassNotFoundException {
+		if (resourceInstances.remove(ref) != null) {
+			reloadApplication();
+		}
 	}
 
-	protected void unbindApplication(Analysis application) {
-		analysisPlugins.remove(application);
-		reloadApplication();
+	private Object createInstance(ComponentFactory factory) throws ClassNotFoundException, UnacceptableConfiguration, MissingHandlerException,
+			ConfigurationException {
+
+		ComponentInstance instance = factory.createComponentInstance(null);
+		if (instance.getState() == ComponentInstance.VALID) {
+			Object resourceInstance = ((InstanceManager) instance).getPojoObject();
+			logger.info("PATH  FACTORY " + resourceInstance);
+			return resourceInstance;
+		} else {
+			logger.error("Cannot get an implementation object from an invalid instance");
+		}
+
+		return null;
 	}
 
 	@Path("/")
@@ -78,7 +112,7 @@ public class RestApplicationAdapter {
 		}
 
 		@GET
-		 @RolesAllowed("user")
+		@RolesAllowed("user")
 		public String foo() {
 			return "no auth";
 		}
@@ -87,24 +121,21 @@ public class RestApplicationAdapter {
 		@Path("plugins")
 		public String pluginList() {
 			String r = "Plugins<br><br>";
-			for (Analysis analysis : app.analysisPlugins) {
-				r += "<b>" + analysis.getName() + "</b><br>" + analysis.getPath() + "<br><br>";
+			for (Entry<ServiceReference, Object> entry : app.resourceInstances.entrySet()) {
+				r += "<b>" + entry.getValue().getClass() + "</b><br>" + "<br><br>";
 			}
 			return r;
 		}
 	}
 
-	@Activate
-	protected void activate(BundleContext applicationContext) {
-
-		initServletContainer(applicationContext);
-		initResourceMapping(applicationContext);
-
+	@Validate
+	public void activate() {
+		initServletContainer(context);
+		initResourceMapping(context);
 		reloadApplication();
-
 	}
 
-	@Deactivate
+	@Invalidate
 	protected void deactivate() {
 		tryUnregister(servletContainerRegistration);
 		tryUnregister(resourceMappingRegistration);
@@ -135,16 +166,27 @@ public class RestApplicationAdapter {
 		resourceConfig.register(RolesAllowedDynamicFeature.class);
 		resourceConfig.packages("de.lemo.server.auth");
 		resourceConfig.registerInstances(new Foo(this));
-		for (Analysis analysis : analysisPlugins) {
-			resourceConfig.register(analysis);
+		for (Object resourceInstance : resourceInstances.values()) {
+			resourceConfig.register(resourceInstance);
+		}
+		for (ComponentFactory factory : resourceFactories.values()) {
+			try {
+				Object resourceInstance = createInstance(factory);
+				if (resourceInstance != null) {
+					resourceConfig.register(resourceInstance);
+				}
+			} catch (ClassNotFoundException | UnacceptableConfiguration | MissingHandlerException | ConfigurationException e) {
+				logger.error("ComponentFactory instance creation failed", e);
+			}
+
 		}
 		servletContainer.reload(resourceConfig);
 
 		// reload resource context
 		Map<String, Bundle> pluginPathMapping = new HashMap<>();
-		for (Analysis analysis : analysisPlugins) {
-			Bundle bundle = FrameworkUtil.getBundle(analysis.getClass());
-			String path = "/" + trim(analysis.getPath(), '/');
+		for (Object resource : resourceInstances.values()) {
+			Bundle bundle = FrameworkUtil.getBundle(resource.getClass());
+			String path = "/" + trim(resource.getClass().getAnnotation(Path.class).value(), '/');
 			pluginPathMapping.put(path, bundle);
 		}
 		resourceContext.reload(pluginPathMapping);

@@ -15,9 +15,7 @@
 
 	<name>Lemo ${project.artifactId} bundle</name>
 
-	<properties>
 
-	</properties>
 
 	<dependencies>
 
@@ -25,7 +23,6 @@
 			<groupId>de.lemo</groupId>
 			<artifactId>lemo-analysis-api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
-			<type>bundle</type>
 		</dependency>
 
 		<dependency>
@@ -68,17 +65,19 @@
 			<scope>provided</scope>
 		</dependency>
 
-
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.12.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -93,6 +92,17 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
