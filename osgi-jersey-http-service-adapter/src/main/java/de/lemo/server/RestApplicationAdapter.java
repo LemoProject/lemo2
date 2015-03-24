@@ -2,37 +2,36 @@ package de.lemo.server;
 
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.Servlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.apache.felix.ipojo.ComponentFactory;
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
+import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.InstanceManager;
 import org.apache.felix.ipojo.MissingHandlerException;
 import org.apache.felix.ipojo.UnacceptableConfiguration;
+import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Context;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.apache.felix.ipojo.whiteboard.Wbp;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.ops4j.pax.web.extender.whiteboard.ResourceMapping;
 import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
@@ -40,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 @Instantiate
 @Component
-@Wbp(filter = "(service.pid=*)", onArrival = "onArrival", onDeparture = "onDeparture")
 public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
@@ -57,44 +55,59 @@ public class RestApplicationAdapter {
 	private ServiceRegistration resourceContextRegistration;
 	private ServiceRegistration resourceMappingRegistration;
 
-	private Map<ServiceReference, Object> resourceInstances = new HashMap<>();
-	private Map<ServiceReference, ComponentFactory> resourceFactories = new HashMap<>();
+	private Set<Factory> factories = new HashSet<>();
+	private Map<Factory, Set<ComponentInstance>> factoryInstances = new HashMap<>();
 
 	@Context
 	private BundleContext context;
 
-	public synchronized void onArrival(ServiceReference ref) throws ClassNotFoundException {
+	@Bind(filter = "(service.pid=*)", aggregate = true, optional = true)
+	public void bindIPojoFactory(Factory factory) {
 
-		Object service = context.getService(ref);
-
-		if (service.getClass().isAnnotationPresent(Path.class)) {
-			logger.info("PATH ANNOTATION SINGLETON " + service.getClass());
-			resourceInstances.put(ref, service);
-			reloadApplication();
-		} else if (service instanceof ComponentFactory) {
-			logger.info("PATH ANNOTATION FACTORY " + service.getClass());
-			ComponentFactory factory = (ComponentFactory) service;
-			Class<?> resourceClass = factory.loadClass(factory.getClassName());
+		String className = factory.getDescription().getAttribute("implementation-class");
+		try {
+			Class<?> resourceClass = factory.getBundleContext().getBundle().loadClass(className);
 			if (resourceClass.isAnnotationPresent(Path.class)) {
-				resourceFactories.put(ref, factory);
+				factories.add(factory);
+				try {
+					createInstance(factory, null);
+				} catch (UnacceptableConfiguration | MissingHandlerException | ConfigurationException e) {
+					logger.error("factory failed", e);
+				}
 				reloadApplication();
 			}
+		} catch (ClassNotFoundException e) {
+			logger.error("Failed to bind IPojo Factory", e);
 		}
 	}
 
-	public synchronized void onDeparture(ServiceReference ref) throws ClassNotFoundException {
-		if (resourceInstances.remove(ref) != null) {
+	@Unbind
+	public void unbindIPojoFactory(Factory factory) {
+		boolean removed = factories.remove(factory);
+		if (removed) {
+			for (ComponentInstance componentInstance : factoryInstances.remove(factory)) {
+				componentInstance.dispose();
+			}
 			reloadApplication();
+			return;
 		}
 	}
 
-	private Object createInstance(ComponentFactory factory) throws ClassNotFoundException, UnacceptableConfiguration, MissingHandlerException,
+	private Object createInstance(Factory factory, Dictionary configuration) throws ClassNotFoundException, UnacceptableConfiguration, MissingHandlerException,
 			ConfigurationException {
 
-		ComponentInstance instance = factory.createComponentInstance(null);
-		if (instance.getState() == ComponentInstance.VALID) {
-			Object resourceInstance = ((InstanceManager) instance).getPojoObject();
+		ComponentInstance componentInstance = factory.createComponentInstance(configuration);
+		if (componentInstance.getState() == ComponentInstance.VALID) {
+			Object resourceInstance = ((InstanceManager) componentInstance).getPojoObject();
 			logger.info("PATH  FACTORY " + resourceInstance);
+
+			Set<ComponentInstance> factoryComponentInstances = factoryInstances.get(factory);
+			if (factoryComponentInstances == null) {
+				factoryComponentInstances = new HashSet<>();
+				factoryInstances.put(factory, factoryComponentInstances);
+			}
+			factoryComponentInstances.add(componentInstance);
+
 			return resourceInstance;
 		} else {
 			logger.error("Cannot get an implementation object from an invalid instance");
@@ -111,19 +124,24 @@ public class RestApplicationAdapter {
 			this.app = app;
 		}
 
-		@GET
-		@RolesAllowed("user")
-		public String foo() {
-			return "no auth";
-		}
+		// @GET
+		// @RolesAllowed("user")
+		// public String foo() {
+		// return "no auth";
+		// }
 
 		@GET
-		@Path("plugins")
+		@Path("/")
 		public String pluginList() {
-			String r = "Plugins<br><br>";
-			for (Entry<ServiceReference, Object> entry : app.resourceInstances.entrySet()) {
-				r += "<b>" + entry.getValue().getClass() + "</b><br>" + "<br><br>";
+			String r = "<h2>Plugins</h2>";
+			for (Entry<Factory, Set<ComponentInstance>> entry : app.factoryInstances.entrySet()) {
+				r += "<b>" + entry.getKey().getName() + "</b><br/>";
+				for (ComponentInstance instance : entry.getValue()) {
+					r += "&nbsp;&nbsp;&nbsp;&nbsp;" + instance.getInstanceName() + "</b><br/>";
+				}
+				r += "<br/>";
 			}
+
 			return r;
 		}
 	}
@@ -140,6 +158,10 @@ public class RestApplicationAdapter {
 		tryUnregister(servletContainerRegistration);
 		tryUnregister(resourceMappingRegistration);
 		tryUnregister(resourceContextRegistration);
+
+		for (Factory factory : factories) {
+			unbindIPojoFactory(factory);
+		}
 	}
 
 	private void initServletContainer(BundleContext applicationContext) {
@@ -166,30 +188,36 @@ public class RestApplicationAdapter {
 		resourceConfig.register(RolesAllowedDynamicFeature.class);
 		resourceConfig.packages("de.lemo.server.auth");
 		resourceConfig.registerInstances(new Foo(this));
-		for (Object resourceInstance : resourceInstances.values()) {
+		for (Object resourceInstance : factoryInstances.values()) {
 			resourceConfig.register(resourceInstance);
 		}
-		for (ComponentFactory factory : resourceFactories.values()) {
-			try {
-				Object resourceInstance = createInstance(factory);
-				if (resourceInstance != null) {
-					resourceConfig.register(resourceInstance);
-				}
-			} catch (ClassNotFoundException | UnacceptableConfiguration | MissingHandlerException | ConfigurationException e) {
-				logger.error("ComponentFactory instance creation failed", e);
-			}
-
-		}
+		// for (Factory factory : factories) {
+		//
+		// try {
+		// Dictionary configuration = new Hashtable<>();
+		// // for (PropertyDescription element : factory.getComponentDescription().getProperties()) {
+		// // configuration.put(element.getName(), element.getCurrentValue());
+		// // }
+		// Object resourceInstance = createInstance(factory, configuration);
+		// if (resourceInstance != null) {
+		// resourceConfig.register(resourceInstance);
+		// }
+		// } catch (ClassNotFoundException | UnacceptableConfiguration | MissingHandlerException |
+		// ConfigurationException e) {
+		// logger.error("ComponentFactory instance creation failed", e);
+		// }
+		//
+		// }
 		servletContainer.reload(resourceConfig);
 
 		// reload resource context
-		Map<String, Bundle> pluginPathMapping = new HashMap<>();
-		for (Object resource : resourceInstances.values()) {
-			Bundle bundle = FrameworkUtil.getBundle(resource.getClass());
-			String path = "/" + trim(resource.getClass().getAnnotation(Path.class).value(), '/');
-			pluginPathMapping.put(path, bundle);
-		}
-		resourceContext.reload(pluginPathMapping);
+		// Map<String, Bundle> pluginPathMapping = new HashMap<>();
+		// for (Object resource : resourceInstances.values()) {
+		// Bundle bundle = FrameworkUtil.getBundle(resource.getClass());
+		// String path = "/" + trim(resource.getClass().getAnnotation(Path.class).value(), '/');
+		// pluginPathMapping.put(path, bundle);
+		// }
+		// resourceContext.reload(pluginPathMapping);
 	}
 
 	private boolean tryUnregister(ServiceRegistration registration) {
