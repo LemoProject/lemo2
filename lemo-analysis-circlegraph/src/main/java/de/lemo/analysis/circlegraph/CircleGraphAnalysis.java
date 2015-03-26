@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,20 +21,25 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.ServiceProperty;
+import org.apache.felix.ipojo.annotations.Property;
+import org.jvnet.hk2.annotations.Service;
 
 import de.lemo.plugin.api.Analysis;
 
-@Instantiate
 @Component
-@Provides
+@Service
+@Singleton
 @Path("analysis/circle-graph")
-public class CircleGraphAnalysis {
+public class CircleGraphAnalysis implements Analysis {
 
-	@ServiceProperty(name = "foo", value = "bar")
-	String foo;
+	@Property(name = "lemo.tool.name")
+	private String name = "Circle Graph";
+
+	// @Property(name = "lemo.tool.script")
+	// @Uri("analysis/circle-graph/script")
+	// private String script() {
+	// return "rewr";
+	// }
 
 	Application app;
 
@@ -76,8 +82,8 @@ public class CircleGraphAnalysis {
 		properties.put(Analysis.DESCRIPTION_LONG, "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
 				+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.");
 
-		properties.put(Analysis.ICON_COLOR, "img/icon-color.svg");
-		properties.put(Analysis.ICON_MONOCHROME, "img/icon-monochrome.svg");
+		// properties.put(Analysis.ICON_COLOR, "img/icon-color.svg");
+		// properties.put(Analysis.ICON_MONOCHROME, "img/icon-monochrome.svg");
 		properties.put(Analysis.IMAGE_PREVIEW, "img/preview.png");
 		this.properties = Collections.unmodifiableMap(properties);
 	}

@@ -6,13 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.Service;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
@@ -24,11 +18,11 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
 @ApplicationPath(LemoResourceConfig.APP_PATH)
-@Component(immediate = true, metatype = false)
-@Service(Application.class)
+//@Component(immediate = true, metatype = false)
+//@Service(Application.class)
 public class LemoResourceConfig extends ResourceConfig {
 
-	@Reference(name = "analyses", referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindAnalysis", unbind = "unbindAnalysis")
+//	@Reference(name = "analyses", referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindAnalysis", unbind = "unbindAnalysis")
 	private Map<String, Analysis> analyses = new HashMap<>();
 	private Map<String, Analysis> analysesReadOnlyView = Collections.unmodifiableMap(analyses);
 
@@ -52,6 +46,7 @@ public class LemoResourceConfig extends ResourceConfig {
 	public Map<String, Analysis> getAnalyses() {
 		return analysesReadOnlyView;
 	}
+
 
 	protected void bindAnalysis(Analysis analysis) {
 		analyses.put(getAnalysisPagePath(analysis), analysis);
@@ -88,7 +83,7 @@ public class LemoResourceConfig extends ResourceConfig {
 		// TODO use Pattern.compile once
 
 		// separate letters and diacritics
-		String analysisPath = Normalizer.normalize(analysis.getName(), Normalizer.Form.NFD);
+		String analysisPath = Normalizer.normalize(analysis.getClass().getName(), Normalizer.Form.NFD);
 		// strip non-ascii
 		analysisPath = analysisPath.replaceAll("[^\\p{ASCII}]", "");
 		// trim leading non-alphanumeric

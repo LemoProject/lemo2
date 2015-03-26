@@ -24,7 +24,7 @@ public class AnalyticsPage {
 
 	@Context
 	private LemoResourceConfig webApplication;
-
+ 
 	@GET 
 	@Template(name = "/analysis-list.html")
 	public Object list() throws TemplateModelException {

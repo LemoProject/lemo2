@@ -5,20 +5,21 @@
 	<parent>
 		<groupId>de.lemo</groupId>
 		<artifactId>lemo</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>lemo-webapp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 
+ 
 	<dependencies>
 
 		<dependency>
 			<groupId>de.lemo</groupId>
 			<artifactId>lemo-analysis-api</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>0.1.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -39,11 +40,21 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 
 		<plugins>
+
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -53,7 +64,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-
 				<configuration>
 					<instructions>
 						<Export-Package>

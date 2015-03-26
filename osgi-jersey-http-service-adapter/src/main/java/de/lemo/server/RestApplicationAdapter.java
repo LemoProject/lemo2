@@ -1,28 +1,24 @@
 package de.lemo.server;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.annotation.security.RolesAllowed;
+import javax.inject.Singleton;
 import javax.servlet.Servlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.apache.felix.ipojo.ComponentFactory;
-import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.InstanceManager;
-import org.apache.felix.ipojo.MissingHandlerException;
-import org.apache.felix.ipojo.UnacceptableConfiguration;
+import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Context;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.apache.felix.ipojo.whiteboard.Wbp;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -38,9 +34,11 @@ import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Instantiate
-@Component
-@Wbp(filter = "(service.pid=*)", onArrival = "onArrival", onDeparture = "onDeparture")
+import de.lemo.plugin.api.WebResource;
+
+@SuppressWarnings("rawtypes")
+//@Instantiate
+//@Component
 public class RestApplicationAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestApplicationAdapter.class);
@@ -52,55 +50,35 @@ public class RestApplicationAdapter {
 
 	private ServletContainer servletContainer;
 	private ResourceHttpContext resourceContext;
-
+ 
 	private ServiceRegistration servletContainerRegistration;
 	private ServiceRegistration resourceContextRegistration;
 	private ServiceRegistration resourceMappingRegistration;
 
-	private Map<ServiceReference, Object> resourceInstances = new HashMap<>();
-	private Map<ServiceReference, ComponentFactory> resourceFactories = new HashMap<>();
-
 	@Context
 	private BundleContext context;
 
-	public synchronized void onArrival(ServiceReference ref) throws ClassNotFoundException {
+	List<WebResource> resourceInstances = new ArrayList<>();
 
-		Object service = context.getService(ref);
+	@Bind(aggregate=true, optional=true)
+	public synchronized void bindResources(WebResource resource) {
 
-		if (service.getClass().isAnnotationPresent(Path.class)) {
-			logger.info("PATH ANNOTATION SINGLETON " + service.getClass());
-			resourceInstances.put(ref, service);
-			reloadApplication();
-		} else if (service instanceof ComponentFactory) {
-			logger.info("PATH ANNOTATION FACTORY " + service.getClass());
-			ComponentFactory factory = (ComponentFactory) service;
-			Class<?> resourceClass = factory.loadClass(factory.getClassName());
-			if (resourceClass.isAnnotationPresent(Path.class)) {
-				resourceFactories.put(ref, factory);
-				reloadApplication();
-			}
-		}
-	}
+		boolean isResource = resource.getClass().isAnnotationPresent(Path.class);
+		logger.warn("XXXXXXX " + resource.getClass());
+		boolean isSingleton = resource.getClass().isAnnotationPresent(Singleton.class);
 
-	public synchronized void onDeparture(ServiceReference ref) throws ClassNotFoundException {
-		if (resourceInstances.remove(ref) != null) {
+		if (isResource) {
+			resourceInstances.add(resource);
 			reloadApplication();
 		}
+
 	}
 
-	private Object createInstance(ComponentFactory factory) throws ClassNotFoundException, UnacceptableConfiguration, MissingHandlerException,
-			ConfigurationException {
-
-		ComponentInstance instance = factory.createComponentInstance(null);
-		if (instance.getState() == ComponentInstance.VALID) {
-			Object resourceInstance = ((InstanceManager) instance).getPojoObject();
-			logger.info("PATH  FACTORY " + resourceInstance);
-			return resourceInstance;
-		} else {
-			logger.error("Cannot get an implementation object from an invalid instance");
+	@Unbind
+	public synchronized void unbindResources(WebResource resource) throws ClassNotFoundException {
+		if (resourceInstances.remove(resource)) {
+			reloadApplication();
 		}
-
-		return null;
 	}
 
 	@Path("/")
@@ -111,18 +89,17 @@ public class RestApplicationAdapter {
 			this.app = app;
 		}
 
-		@GET
-		@RolesAllowed("user")
-		public String foo() {
-			return "no auth";
-		}
+		// @GET
+		// @RolesAllowed("user")
+		// public String foo() {
+		// return "no auth";
+		// }
 
 		@GET
-		@Path("plugins")
 		public String pluginList() {
 			String r = "Plugins<br><br>";
-			for (Entry<ServiceReference, Object> entry : app.resourceInstances.entrySet()) {
-				r += "<b>" + entry.getValue().getClass() + "</b><br>" + "<br><br>";
+			for (WebResource entry : app.resourceInstances) {
+				r += "<b>" + entry.getClass() + "</b><br>" + "<br><br>";
 			}
 			return r;
 		}
@@ -166,25 +143,14 @@ public class RestApplicationAdapter {
 		resourceConfig.register(RolesAllowedDynamicFeature.class);
 		resourceConfig.packages("de.lemo.server.auth");
 		resourceConfig.registerInstances(new Foo(this));
-		for (Object resourceInstance : resourceInstances.values()) {
+		for (WebResource resourceInstance : resourceInstances) {
 			resourceConfig.register(resourceInstance);
-		}
-		for (ComponentFactory factory : resourceFactories.values()) {
-			try {
-				Object resourceInstance = createInstance(factory);
-				if (resourceInstance != null) {
-					resourceConfig.register(resourceInstance);
-				}
-			} catch (ClassNotFoundException | UnacceptableConfiguration | MissingHandlerException | ConfigurationException e) {
-				logger.error("ComponentFactory instance creation failed", e);
-			}
-
 		}
 		servletContainer.reload(resourceConfig);
 
 		// reload resource context
 		Map<String, Bundle> pluginPathMapping = new HashMap<>();
-		for (Object resource : resourceInstances.values()) {
+		for (WebResource resource : resourceInstances) {
 			Bundle bundle = FrameworkUtil.getBundle(resource.getClass());
 			String path = "/" + trim(resource.getClass().getAnnotation(Path.class).value(), '/');
 			pluginPathMapping.put(path, bundle);

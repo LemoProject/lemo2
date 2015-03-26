@@ -1,20 +1,10 @@
 package de.lemo.analysis.activitytime;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
-
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateModelException;
 
 @ApplicationPath(ActivityTimeAnalysis.PATH)
-@Component(immediate = true, metatype = false)
-@Service(Application.class)
 public class ActivityTimeApplication extends ResourceConfig {
 
 	public ActivityTimeApplication() {
