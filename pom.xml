@@ -3,7 +3,7 @@
 
 	<groupId>de.lemo</groupId>
 	<artifactId>lemo</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Lemo</name>
@@ -12,7 +12,7 @@
 
 		<module>lemo-analysis-api</module>
 
-		<module>lemo-persistence</module>
+		<!-- <module>lemo-persistence</module> -->
 
 		<module>osgi-jersey-http-service-adapter</module>
 		<module>lemo-webapp</module>
@@ -29,7 +29,7 @@
 
 		<!-- TODO move server properties to server aggregator -->
 
-		<osgi-version>4.2.0</osgi-version>
+		<osgi-version>5.0.0</osgi-version>
 		<servlet-api-version>2.4</servlet-api-version>
 		<jaxrs-api-version>2.0.1</jaxrs-api-version>
 		<jersey-version>2.15</jersey-version>
@@ -60,6 +60,7 @@
 	<dependencyManagement>
 		<dependencies>
 
+			<!-- osgi specifications -->
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
@@ -75,7 +76,7 @@
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.enterprise</artifactId>
-				<version>4.2.0</version>
+				<version>${osgi-version}</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -147,15 +148,6 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -192,7 +184,6 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
 
-
 		</plugins>
 
 		<pluginManagement>
@@ -203,7 +194,7 @@
 				<!-- <version>1.9</version> -->
 				<!-- <configuration> -->
 				<!-- <pomIncludes> -->
-				<!-- <pomInclude>lemo-persistence-entites/pom.xml</pomInclude> -->
+				<!-- <pomInclude>lemo-analysis-api/pom.xml</pomInclude> -->
 				<!-- </pomIncludes> -->
 				<!-- </configuration> -->
 				<!-- <executions> -->
@@ -225,6 +216,7 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
@@ -247,8 +239,7 @@
 							<supportedProjectType>bundle</supportedProjectType>
 						</supportedProjectTypes>
 						<Import-Package>
-							<!-- by default, import all required packages -->
-							*,
+							*
 						</Import-Package>
 					</configuration>
 
@@ -260,20 +251,6 @@
 					<version>1.12.1</version>
 				</plugin>
 
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-scr-plugin</artifactId>
-					<version>1.20.0</version>
-					<executions>
-						<execution>
-							<id>generate-scr-scrdescriptor</id>
-							<phase>process-classes</phase>
-							<goals>
-								<goal>scr</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 
 				<!-- <plugin> -->
 				<!-- <groupId>org.apache.maven.plugins</groupId> -->
