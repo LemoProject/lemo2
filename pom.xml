@@ -87,15 +87,14 @@
 			<!-- declarative service annotations -->
 			<dependency>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.scr.annotations</artifactId>
-				<version>1.9.6</version>
+				<artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+				<version>1.2.8</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.scr.ds-annotations</artifactId>
-				<version>1.2.8</version>
-				<scope>compile</scope>
+				<artifactId>org.apache.felix.scr.annotations</artifactId>
+				<version>1.9.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
@@ -136,6 +135,16 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.felix</groupId> -->
+		<!-- <artifactId>org.apache.felix.scr.annotations</artifactId> -->
+		<!-- </dependency> -->
+
 	</dependencies>
 
 	<build>
@@ -157,22 +166,7 @@
 			</resource>
 		</resources>
 
-		<plugins>
 
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-			</plugin>
-
-		</plugins>
 
 		<pluginManagement>
 			<plugins>
@@ -226,19 +220,36 @@
 						<supportedProjectTypes>
 							<supportedProjectType>bundle</supportedProjectType>
 						</supportedProjectTypes>
-						<Import-Package>
-							*
-						</Import-Package>
 					</configuration>
 
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-ipojo-plugin</artifactId>
-					<version>1.12.1</version>
+					<artifactId>maven-scr-plugin</artifactId>
+					<version>1.15.0</version>
+					<executions>
+						<execution>
+							<id>generate-scr-scrdescriptor</id>
+							<goals>
+								<goal>scr</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-ipojo-plugin</artifactId>
+					<version>1.12.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>ipojo-bundle</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 
 				<!-- <plugin> -->
 				<!-- <groupId>org.apache.maven.plugins</groupId> -->
@@ -261,6 +272,28 @@
 			</plugins>
 
 		</pluginManagement>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+			</plugin>
+		</plugins>
 
 	</build>
 
@@ -297,6 +330,24 @@
 												<versionRange>[0,)</versionRange>
 												<goals>
 													<goal>bundle</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<execute>
+													<runOnIncremental>true</runOnIncremental>
+													<runOnConfiguration>true</runOnConfiguration>
+												</execute>
+											</action>
+										</pluginExecution>
+
+										<pluginExecution>
+											<!-- Execute bundle packaging on save -->
+											<pluginExecutionFilter>
+												<groupId>org.apache.felix</groupId>
+												<artifactId>maven-scr-plugin</artifactId>
+												<versionRange>[0,)</versionRange>
+												<goals>
+													<goal>scr</goal>
 												</goals>
 											</pluginExecutionFilter>
 											<action>
