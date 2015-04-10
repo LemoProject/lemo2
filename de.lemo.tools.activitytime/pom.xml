@@ -13,7 +13,7 @@
 	<packaging>bundle</packaging>
 
 	<name>Lemo Activity Time Tool</name>
-
+ 
 	<dependencies>
 
 		<dependency>
@@ -65,7 +65,7 @@
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
+				<artifactId>maven-ipojo-plugin</artifactId>
 			</plugin>
 
 			<plugin>

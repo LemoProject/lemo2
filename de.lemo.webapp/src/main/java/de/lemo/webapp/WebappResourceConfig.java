@@ -5,37 +5,35 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.ApplicationPath;
-
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
 
-import de.lemo.rest.api.WebResource;
 import de.lemo.tools.api.AnalyticsTool;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
-@ApplicationPath(LemoResourceConfig.APP_PATH)
-//@Component(immediate = true, metatype = false)
-//@Service(Application.class)
-public class LemoResourceConfig extends ResourceConfig {
+public class WebappResourceConfig extends ResourceConfig {
 
-//	@Reference(name = "analyses", referenceInterface = Analysis.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC, bind = "bindAnalysis", unbind = "unbindAnalysis")
+	// @Reference(name = "analyses", referenceInterface = AnalyticsTool.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy =
+	// ReferencePolicy.DYNAMIC, bind = "bindAnalysis", unbind = "unbindAnalysis")
+	// @Requires
 	private Map<String, AnalyticsTool> analyses = new HashMap<>();
 	private Map<String, AnalyticsTool> analysesReadOnlyView = Collections.unmodifiableMap(analyses);
 
-	public static final String APP_PATH = "/lemo";
+	public static final String APP_PATH = "/";
 	public static final String HOME_PAGE = "/";
 	public static final String ANALYTICS_PAGE = "/analytics";
 
-	public static final String ASSETS = APP_PATH + "/assets";
+	public static final String ASSETS = "/assets";
 
-	public LemoResourceConfig() {
+	public WebappResourceConfig() {
+ 
+		packages("de.lemo.webapp");
+		packages("de.lemo.webapp.pages");
 
-		packages(getClass().getPackage().getName());
 		register(new ApplicationBinder());
 
 		property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
@@ -47,7 +45,6 @@ public class LemoResourceConfig extends ResourceConfig {
 	public Map<String, AnalyticsTool> getAnalyses() {
 		return analysesReadOnlyView;
 	}
-
 
 	protected void bindAnalysis(AnalyticsTool analysis) {
 		analyses.put(getAnalysisPagePath(analysis), analysis);
@@ -98,7 +95,7 @@ public class LemoResourceConfig extends ResourceConfig {
 	private class ApplicationBinder extends AbstractBinder {
 		@Override
 		protected void configure() {
-			bind(LemoResourceConfig.this).to(LemoResourceConfig.class);
+			bind(WebappResourceConfig.this).to(WebappResourceConfig.class);
 		}
 	}
 

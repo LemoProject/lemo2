@@ -5,9 +5,7 @@ import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -22,13 +20,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Property;
-import org.jvnet.hk2.annotations.Service;
+
+import de.lemo.rest.api.WebResource;
 
 @Component
-@Service
 @Singleton
 @Path("analysis/circle-graph")
-public class CircleGraphAnalysis  {
+public class CircleGraphAnalysis implements WebResource {
 
 	@Property(name = "lemo.tool.name")
 	private String name = "Circle Graph";
@@ -72,19 +70,19 @@ public class CircleGraphAnalysis  {
 
 	public final static String PATH = "circle-graph";
 
-//	private final Map<String, String> properties;
-//	{
-		// TODO i18n
-//		Map<String, String> properties = new HashMap<String, String>();
-//		properties.put(Analysis.DESCRIPTION_SHORT, "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.");
-//		properties.put(Analysis.DESCRIPTION_LONG, "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
-//				+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.");
-//
-//		// properties.put(Analysis.ICON_COLOR, "img/icon-color.svg");
-//		// properties.put(Analysis.ICON_MONOCHROME, "img/icon-monochrome.svg");
-//		properties.put(Analysis.IMAGE_PREVIEW, "img/preview.png");
-//		this.properties = Collections.unmodifiableMap(properties);
-//	}
+	// private final Map<String, String> properties;
+	// {
+	// TODO i18n
+	// Map<String, String> properties = new HashMap<String, String>();
+	// properties.put(Analysis.DESCRIPTION_SHORT, "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.");
+	// properties.put(Analysis.DESCRIPTION_LONG, "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
+	// + "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.");
+	//
+	// // properties.put(Analysis.ICON_COLOR, "img/icon-color.svg");
+	// // properties.put(Analysis.ICON_MONOCHROME, "img/icon-monochrome.svg");
+	// properties.put(Analysis.IMAGE_PREVIEW, "img/preview.png");
+	// this.properties = Collections.unmodifiableMap(properties);
+	// }
 
 	private final List<String> scripts;
 	{

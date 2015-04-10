@@ -9,19 +9,12 @@
 	</parent>
 
 	<artifactId>de.lemo.rest.adapter</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<name>Lemo Core REST Service Provider</name>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>de.lemo</groupId>
-			<artifactId>de.lemo.rest.api</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -32,23 +25,37 @@
 			<artifactId>org.osgi.compendium</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.lemo</groupId>
+			<artifactId>de.lemo.rest.api</artifactId>
+			<version>0.1.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency><groupId>de.lemo</groupId>
+			<artifactId>de.lemo.tools.api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-api</artifactId>
 			<version>3.1.4</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-whiteboard</artifactId>
 			<version>3.1.4</version>
+			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-
-
+ 
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
@@ -58,7 +65,7 @@
 
 		<dependency>
 			<groupId>org.glassfish.jersey.ext</groupId>
-			<artifactId>jersey-mvc-mustache</artifactId>
+			<artifactId>jersey-mvc-freemarker</artifactId>
 			<version>${jersey-version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -83,22 +90,14 @@
 
 				<configuration>
 					<instructions>
-
+						<Import-Package>
+							*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			
 		</plugins>
 	</build>
 
