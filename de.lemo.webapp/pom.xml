@@ -29,7 +29,16 @@
 			<scope>provided</scope>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-whiteboard</artifactId>
+			<version>3.1.4</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -49,25 +58,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.ds-annotations</artifactId>
-		</dependency>
+
 
 	</dependencies>
 
 	<build>
 
 		<plugins>
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>

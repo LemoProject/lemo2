@@ -4,12 +4,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.osgi.service.component.annotations.Component;
-
 import de.lemo.rest.api.WebResource;
 
-@Component(immediate = true)
-@Singleton
 @Path("/tools")
 public class ServiceCatalog implements WebResource {
 
