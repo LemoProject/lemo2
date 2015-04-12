@@ -41,24 +41,25 @@ public class WebappComponent {
 
 	@Validate
 	public void activate() {
-		ServletContainer servletContainer = new ServletContainer(new WebappResourceConfig());
 
+		// webapp
+		ServletContainer servletContainer = new ServletContainer(new WebappResourceConfig());
 		Dictionary<String, String> props = new Hashtable<>();
 		props.put("alias", path);
 		props.put("servlet-name", name);
 		props.put("init.servlet-name", name);
-
 		webAppServiceRegistration = bundleContext.registerService(Servlet.class.getName(), servletContainer, props);
 
-//		DefaultResourceMapping resourceMapping = new DefaultResourceMapping();
-//		resourceMapping.setAlias("/assets");
-//		resourceMapping.setPath("/");
-//		resourceMappingServiceRegistration = bundleContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
-
+		// static resources
+		DefaultResourceMapping resourceMapping = new DefaultResourceMapping();
+		resourceMapping.setPath("/assets"); // defines the url used to load assets
+		resourceMapping.setAlias("/assets"); // defines the internal path in the bundle
+		resourceMappingServiceRegistration = bundleContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
 	}
 
 	@Invalidate
 	protected void deactivate() {
+
 		try {
 			webAppServiceRegistration.unregister();
 		} catch (Exception e) {
