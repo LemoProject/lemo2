@@ -1,119 +1,58 @@
 package de.lemo.analysis.circlegraph;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Singleton;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Property;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.ServiceProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.lemo.rest.api.WebResource;
+import de.lemo.tools.api.AnalyticsTool;
 
 @Component
+@Provides
+@Instantiate
 @Singleton
-@Path("analysis/circle-graph")
-public class CircleGraphAnalysis implements WebResource {
+@Path("tools/circlegraph")
+public class CircleGraphAnalysis implements WebResource, AnalyticsTool {
 
-	@Property(name = "lemo.tool.name")
+	private static final Logger logger = LoggerFactory.getLogger(CircleGraphAnalysis.class);
+
+	@ServiceProperty(name = "lemo.tool.id")
+	private String id = "circlegraph";
+
+	@ServiceProperty(name = "lemo.tool.name")
 	private String name = "Circle Graph";
 
-	// @Property(name = "lemo.tool.script")
-	// @Uri("analysis/circle-graph/script")
-	// private String script() {
-	// return "rewr";
-	// }
+	@ServiceProperty(name = "lemo.tool.description.short")
+	private String descriptionShort = "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.";
 
-	Application app;
+	@ServiceProperty(name = "lemo.tool.description.long")
+	private String descriptionLong = "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
+			+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.";
 
-	@Context
-	public UriInfo uriInfo;
-
-	@GET
-	public String test() {
-		return "ok!";
-	}
-
-	@GET
-	@Produces("text/html")
-	public String t(@QueryParam("n") String name) {
-		return "Fooo " + name + "-" + this + " - " + app;
-	}
-
-	@GET
-	@Path("js.png")
-	@Produces("image/png")
-	public Response test2() {
-		String name = "/img/preview.png";
-		InputStream is = getClass().getResourceAsStream(name);
-		if (is == null) {
-			throw new WebApplicationException(404);
-		}
-
-		String mt = URLConnection.guessContentTypeFromName(name);// new MimetypesFileTypeMap().getContentType(name);
-		System.out.println("XXXXXXXX " + mt);
-		return Response.ok(new InputStreamReader(is), mt).build();
-	}
-
-	public final static String PATH = "circle-graph";
-
-	// private final Map<String, String> properties;
-	// {
-	// TODO i18n
-	// Map<String, String> properties = new HashMap<String, String>();
-	// properties.put(Analysis.DESCRIPTION_SHORT, "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.");
-	// properties.put(Analysis.DESCRIPTION_LONG, "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
-	// + "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.");
-	//
-	// // properties.put(Analysis.ICON_COLOR, "img/icon-color.svg");
-	// // properties.put(Analysis.ICON_MONOCHROME, "img/icon-monochrome.svg");
-	// properties.put(Analysis.IMAGE_PREVIEW, "img/preview.png");
-	// this.properties = Collections.unmodifiableMap(properties);
-	// }
-
+	@ServiceProperty(name = "lemo.tool.scripts")
 	private final List<String> scripts;
 	{
-		List<String> scripts = new ArrayList<String>();
+		scripts = new ArrayList<>();
 		scripts.add("js/circlegraph.js");
 		scripts.add("js/fake_data.js");
-		this.scripts = Collections.unmodifiableList(scripts);
 	}
 
-	// @Override
-	// public String getPath() {
-	// try {
-	// return "uri: " + uriInfo.getAbsolutePath();
-	// } catch (Exception e) {
-	// return "url fail";
-	// }
-	// }
-	//
-	// @Override
-	// public String getName() {
-	// return "Circle Graph";
-	// }
-	//
-	// @Override
-	// public Map<String, String> getProperties() {
-	// return properties;
-	// }
-	//
-	// @Override
-	// public List<String> getScriptPaths() {
-	// return scripts;
-	// }
+	@ServiceProperty(name = "lemo.tool.image.icon.monochrome")
+	private String iconMonochrome = "img/icon-monochrome.svg";
+
+	@ServiceProperty(name = "lemo.tool.image.icon.color")
+	private String iconColor = "img/icon-color.svg";
+
+	@ServiceProperty(name = "lemo.tool.image.preview")
+	private String imagePreview = "img/preview.png";
 
 }

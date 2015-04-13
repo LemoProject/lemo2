@@ -13,7 +13,7 @@
 	<packaging>bundle</packaging>
 
 	<name>Lemo Activity Time Tool</name>
- 
+
 	<dependencies>
 
 		<dependency>
@@ -54,6 +54,13 @@
 			<groupId>org.glassfish.jersey.ext</groupId>
 			<artifactId>jersey-mvc-freemarker</artifactId>
 			<version>${jersey-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-whiteboard</artifactId>
+			<version>3.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 
