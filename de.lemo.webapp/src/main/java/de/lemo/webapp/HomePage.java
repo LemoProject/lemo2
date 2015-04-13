@@ -7,11 +7,10 @@ import org.glassfish.jersey.server.mvc.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.lemo.rest.api.WebResource;
 import freemarker.template.TemplateModelException;
 
-@Path(WebappResourceConfig.HOME_PAGE)
-public class HomePage implements WebResource {
+@Path(WebappConfig.HOME_PAGE)
+public class HomePage {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
 

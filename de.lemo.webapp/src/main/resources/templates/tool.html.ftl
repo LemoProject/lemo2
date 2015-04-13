@@ -1,7 +1,7 @@
-<#import "layout.html.ftl" as layout> <@layout.page title=analysis.name
-scriptBase="/"+analysis.path+"/assets" scripts=analysis.scriptPaths>
+<#import "layout.html.ftl" as layout> <@layout.page title=tool.name
+scriptBase=tool.assets scripts=tool["lemo.tool.scripts"]>
 
-<h2>${analysis.name}</h2>
+<h2>${tool.name}</h2>
 
 <div class="row">
 

@@ -6,32 +6,26 @@ Analytics" >
 <div class="row">
 	<div class="col-md-12">
 		
-		<div id="carousel-example-generic" class="carousel slide"
-			data-ride="carousel" style="width: 655px; margin: 0 auto;">
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="width: 655px; margin: 0 auto;">
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<#list analysisPlugins.entrySet() as entry>
-				<!--  -->
-				<#assign analysisPage = entry.key> <#assign analysis = entry.value>
-				<#assign pluginAssets = analysisPluginPath + "/" + analysis.path + "/assets">
-				<!--  -->
-				<#assign previewImage =
-				(pluginAssets + "/" + analysis.properties.image_preview)!"holder.js/100x100/auto">
-				<#assign active><#if entry_index==0>active</#if></#assign>
+				<#list tools as tool>
+			
+					<#assign previewImage = (tool["lemo.tool.assets"] + "/" + tool["lemo.tool.image.preview"])!"holder.js/100x100/auto">
+					<#assign active><#if tool_index==0>active</#if></#assign>
  
-
-				<div class="item ${active}">
-					<img src="${previewImage}" alt="${analysis.name}" />
-					<div class="carousel-caption"
-						style="bottom: 0px; padding-bottom: 0px; color: #333; text-shadow: 0 1px 2px rgba(255, 255, 255, .6);">
-						<h3>
-							${analysis.name}
-						</h3>
-						<p>${(analysis.properties.description_short)!""}</p>
+					<div class="item ${active}">
+						<img src="${previewImage}" alt="${tool.name}" />
+						<div class="carousel-caption"
+							style="bottom: 0px; padding-bottom: 0px; color: #333; text-shadow: 0 1px 2px rgba(255, 255, 255, .6);">
+							<h3>
+								${tool.name}
+							</h3>
+							<p>${tool["lemo.tool.description.short"]}</p>
+						</div>
 					</div>
-				</div>
 				</#list>
 			</div>
 
