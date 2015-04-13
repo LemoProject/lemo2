@@ -18,10 +18,8 @@ import de.lemo.tools.api.AnalyticsTool;
 @Component
 @Provides
 @Instantiate
-@Path("tools/activity-time")
+@Path("tools/activitytime")
 public class ActivityTimeAnalysis implements WebResource, AnalyticsTool {
-
-	public final static String PATH = "activity-time";
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityTimeAnalysis.class);
 
@@ -29,7 +27,7 @@ public class ActivityTimeAnalysis implements WebResource, AnalyticsTool {
 	private String id = "activitytime";
 
 	@ServiceProperty(name = "lemo.tool.name")
-	private String name = "Activity-Time";
+	private String name = "Activity Time";
 
 	@ServiceProperty(name = "lemo.tool.description.short")
 	private String descriptionShort = "Zeigt Aktivitäten der Nutzer in Kursen an.";

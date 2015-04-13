@@ -14,13 +14,18 @@ import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Context;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +42,13 @@ public class RestResourceAdapter {
 	private static final String applicationBasePath = "/lemo";
 
 	private ServletContainer servletContainer;
-
 	private ServiceRegistration servletContainerRegistration;
-
 
 	@Context
 	private BundleContext context;
+
+	@Requires
+	HttpService httpService;
 
 	List<WebResource> resourceInstances = new ArrayList<>();
 
@@ -55,15 +61,32 @@ public class RestResourceAdapter {
 		if (isResource) {
 			resourceInstances.add(webResource);
 			reloadApplication();
+
+			String path = trim(webResource.getClass().getAnnotation(Path.class).value(), '/');
+
+			Bundle resourceBundle = FrameworkUtil.getBundle(webResource.getClass());
+			BundleContext resourceBundleContext = resourceBundle.getBundleContext();
+			ResourceHttpContext resourceHttpContext = new ResourceHttpContext(resourceBundleContext);
+
+			try {
+				httpService.registerResources("/lemo/" + path + "/assets", "Bundle" + resourceBundle.getBundleId() + "-Resources", resourceHttpContext);
+			} catch (NamespaceException e) {
+				logger.error("Alias already registered", e);
+			}
+
 		}
 
 	}
 
 	@Unbind
-	public synchronized void unbindResources(WebResource resource) throws ClassNotFoundException {
-		if (resourceInstances.remove(resource)) {
+	public synchronized void unbindResources(WebResource webResource) throws ClassNotFoundException {
+		if (resourceInstances.remove(webResource)) {
 			reloadApplication();
 		}
+
+		String path = trim(webResource.getClass().getAnnotation(Path.class).value(), '/');
+		httpService.unregister("/lemo/" + path + "/assets");
+
 	}
 
 	@Path("/system")
@@ -103,8 +126,10 @@ public class RestResourceAdapter {
 
 	private void initServletContainer(BundleContext applicationContext) {
 		Dictionary<String, Object> webappServletProperties = createServletProperties(applicationName, applicationBasePath);
+
 		servletContainer = new ServletContainer();
 		servletContainerRegistration = applicationContext.registerService(Servlet.class.getName(), servletContainer, webappServletProperties);
+
 	}
 
 	private synchronized void reloadApplication() {
