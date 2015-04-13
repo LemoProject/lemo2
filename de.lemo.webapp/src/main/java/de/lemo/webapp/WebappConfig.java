@@ -128,9 +128,17 @@ public class WebappConfig {
 
 	private void addTool(AnalyticsTool analyticsTool, Map<String, Object> properties) {
 		analyticsTools.put(analyticsTool, properties);
-		String toolId = "" + properties.getOrDefault("lemo.tool.id", analyticsTool.getClass().getName());
+		Object toolId = properties.get("lemo.tool.id");
+		if (toolId == null) {
+			toolId = analyticsTool.getClass().getName();
+		}
+		Object toolName = properties.get("lemo.tool.name");
+		if (toolName == null) {
+			toolName = toolId;
+		}
+
+		properties.put("name", "" + toolName);
 		properties.put("url", "/analytics/" + toolId);
-		properties.put("name", properties.getOrDefault("lemo.tool.name", toolId));
 		properties.put("assets", "/lemo/tools/" + toolId + "/assets");
 
 	}
@@ -173,7 +181,7 @@ public class WebappConfig {
 		}
 	}
 
-	// Enable OSGi-managed component for injection
+	// enable this OSGi-managed component instance for injection
 	private class ApplicationBinder extends AbstractBinder {
 		@Override
 		protected void configure() {
