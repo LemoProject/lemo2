@@ -1,4 +1,4 @@
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import java.util.Map;
 
@@ -11,8 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import de.lemo.dms.db.mapping.abstractions.IMapping;
-import de.lemo.dms.db.mapping.abstractions.ILearningUserAssociation;
+import de.lemo.persistence.entities.abstractions.ILearningUserAssociation;
+import de.lemo.persistence.entities.abstractions.IMapping;
 
 /** 
  * This class represents the table task. 

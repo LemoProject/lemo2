@@ -23,7 +23,7 @@
  * Date 2014-02-05
  * Project Lemo Learning Analytics
  */
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import java.util.Map;
 
@@ -35,8 +35,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import de.lemo.dms.db.mapping.abstractions.ICourseLORelation;
-import de.lemo.dms.db.mapping.abstractions.IMapping;
+import de.lemo.persistence.entities.abstractions.ICourseLORelation;
+import de.lemo.persistence.entities.abstractions.IMapping;
 
 /** This class represents the relationship between courses and resources. */
 @Entity

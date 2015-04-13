@@ -24,7 +24,7 @@
  * Project Lemo Learning Analytics
  */
 
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import java.sql.Timestamp;
 
@@ -33,7 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import de.lemo.dms.db.mapping.abstractions.IMappingClass;
+import de.lemo.persistence.entities.abstractions.IMappingClass;
 
 /** 
  * This class represents the table for configuration information of the extraction tool.

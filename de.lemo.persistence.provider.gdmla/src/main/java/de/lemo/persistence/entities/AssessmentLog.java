@@ -24,7 +24,7 @@
  * Project Lemo Learning Analytics
  */
 
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import java.util.Map;
 
@@ -38,8 +38,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import de.lemo.dms.db.mapping.abstractions.ILog;
-import de.lemo.dms.db.mapping.abstractions.IMapping;
+import de.lemo.persistence.entities.abstractions.ILog;
+import de.lemo.persistence.entities.abstractions.IMapping;
 /**
  * This class represents the log table for the task_logs.
  * @author Sebastian Schwarzrock

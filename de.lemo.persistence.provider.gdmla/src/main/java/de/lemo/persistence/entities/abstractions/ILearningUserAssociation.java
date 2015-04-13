@@ -1,8 +1,8 @@
-package de.lemo.dms.db.mapping.abstractions;
+package de.lemo.persistence.entities.abstractions;
 
-import de.lemo.dms.db.mapping.Course;
-import de.lemo.dms.db.mapping.LearningObj;
-import de.lemo.dms.db.mapping.User;
+import de.lemo.persistence.entities.Course;
+import de.lemo.persistence.entities.LearningObj;
+import de.lemo.persistence.entities.User;
 
 
 /**

@@ -1,5 +1,5 @@
 /**
- * File ./src/main/java/de/lemo/dms/db/mapping/abstractions/ILearningObject.java
+ * File ./src/main/java/de/lemo/dms/db/mapping/abstractions/IMappingClass.java
  * Lemo-Data-Management-Server for learning analytics.
  * Copyright (C) 2013
  * Leonard Kappe, Andreas Pursian, Sebastian Schwarzrock, Boris Wenzlaff
@@ -19,27 +19,25 @@
 **/
 
 /**
- * File ./main/java/de/lemo/dms/db/miningDBclass/abstractions/ILearningObject.java
+ * File ./main/java/de/lemo/dms/db/mapping/abstractions/IMappingClass.java
  * Date 2013-01-24
  * Project Lemo Learning Analytics
  */
 
-package de.lemo.dms.db.mapping.abstractions;
+package de.lemo.persistence.entities.abstractions;
 
 /**
- * Interface to get the title and id for an learning object
+ * Interface for mapping class to control equality
  * @author Boris Wenzlaff
  * @author Leonard Kappe
  * @author Sebastian Schwarzrock
  */
-public interface ILearningObject extends Comparable<ILearningObject> {
+public interface IMappingClass {
 
 	long getId();
+	
+	void setId(long id);
 
-	String getTitle();
-	
-	String getLOType();
-	
-	String getInteractionType();
+	boolean equals(IMappingClass o);
 
 }

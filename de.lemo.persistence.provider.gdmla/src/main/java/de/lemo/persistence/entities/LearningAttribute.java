@@ -1,4 +1,4 @@
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,15 +9,15 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import de.lemo.dms.db.mapping.abstractions.IMapping;
+import de.lemo.persistence.entities.abstractions.IMapping;
 
 
 @Entity
-@Table(name = "lemo_user_attribute")
-public class UserAttribute implements IMapping{
+@Table(name = "lemo_learning_attribute")
+public class LearningAttribute implements IMapping{
 
 	private long id;
-	private User user;
+	private LearningObj learning;
 	private Attribute attribute;
 	private String value;
 	
@@ -42,15 +42,15 @@ public class UserAttribute implements IMapping{
 	 * @return the learningId
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="user_id")
-	public User getUser() {
-		return user;
+	@JoinColumn(name="learning_id")
+	public LearningObj getLearning() {
+		return learning;
 	}
 	/**
 	 * @param learningId the learningId to set
 	 */
-	public void setUser(User user) {
-		this.user = user;
+	public void setLearning(LearningObj learning) {
+		this.learning = learning;
 	}
 	/**
 	 * @return the attributeId
@@ -81,16 +81,14 @@ public class UserAttribute implements IMapping{
 	}
 	@Override
 	public boolean equals(IMapping o) {
-		if (!(o instanceof UserAttribute)) {
+		if (!(o instanceof LearningAttribute)) {
 			return false;
 		}
-		if ((o.getId() == this.getId()) && (o instanceof UserAttribute)) {
+		if ((o.getId() == this.getId()) && (o instanceof LearningAttribute)) {
 			return true;
 		}
 		return false;
 	}
-	
-	
 	
 	
 	

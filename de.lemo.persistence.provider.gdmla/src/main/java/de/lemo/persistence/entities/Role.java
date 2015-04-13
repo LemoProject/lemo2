@@ -1,4 +1,4 @@
-package de.lemo.dms.db.mapping;
+package de.lemo.persistence.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import de.lemo.dms.db.mapping.abstractions.IMapping;
+import de.lemo.persistence.entities.abstractions.IMapping;
 
 @Entity
 @Table(name = "lemo_role")

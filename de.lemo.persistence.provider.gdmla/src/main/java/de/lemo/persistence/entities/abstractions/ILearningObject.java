@@ -1,5 +1,5 @@
 /**
- * File ./src/main/java/de/lemo/dms/db/mapping/abstractions/ICourseRatedObjectAssociation.java
+ * File ./src/main/java/de/lemo/dms/db/mapping/abstractions/ILearningObject.java
  * Lemo-Data-Management-Server for learning analytics.
  * Copyright (C) 2013
  * Leonard Kappe, Andreas Pursian, Sebastian Schwarzrock, Boris Wenzlaff
@@ -19,25 +19,27 @@
 **/
 
 /**
- * File ./main/java/de/lemo/dms/db/mapping/abstractions/ICourseRatedObjectAssociation.java
+ * File ./main/java/de/lemo/dms/db/miningDBclass/abstractions/ILearningObject.java
  * Date 2013-01-24
  * Project Lemo Learning Analytics
  */
 
-package de.lemo.dms.db.mapping.abstractions;
-
-import de.lemo.dms.db.mapping.Course;
+package de.lemo.persistence.entities.abstractions;
 
 /**
- * Interface for the association between the course and an rated object
+ * Interface to get the title and id for an learning object
  * @author Boris Wenzlaff
  * @author Leonard Kappe
  * @author Sebastian Schwarzrock
  */
-public interface ICourseRatedObjectAssociation {
+public interface ILearningObject extends Comparable<ILearningObject> {
 
-	ILearningObject getRatedObject();
+	long getId();
 
-	Course getCourse();
+	String getTitle();
+	
+	String getLOType();
+	
+	String getInteractionType();
 
 }

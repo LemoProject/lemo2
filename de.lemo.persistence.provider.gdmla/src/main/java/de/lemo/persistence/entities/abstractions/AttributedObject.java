@@ -1,4 +1,4 @@
-package de.lemo.dms.db.mapping.abstractions;
+package de.lemo.persistence.entities.abstractions;
 
 public interface AttributedObject {
 	

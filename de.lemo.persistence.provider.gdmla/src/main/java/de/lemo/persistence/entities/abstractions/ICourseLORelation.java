@@ -25,9 +25,9 @@
  */
 
 
-package de.lemo.dms.db.mapping.abstractions;
+package de.lemo.persistence.entities.abstractions;
 
-import de.lemo.dms.db.mapping.Course;
+import de.lemo.persistence.entities.Course;
 
 /**
  * Interface for all Course-LearningObject-Association-Classes
