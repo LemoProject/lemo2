@@ -73,9 +73,7 @@ public class RestResourceAdapter {
 			} catch (NamespaceException e) {
 				logger.error("Alias already registered", e);
 			}
-
 		}
-
 	}
 
 	@Unbind
@@ -86,14 +84,13 @@ public class RestResourceAdapter {
 
 		String path = trim(webResource.getClass().getAnnotation(Path.class).value(), '/');
 		httpService.unregister("/lemo/" + path + "/assets");
-
 	}
 
 	@Path("/system")
-	public static class Foo {
+	public static class PluginListening {
 		private RestResourceAdapter app;
 
-		public Foo(RestResourceAdapter app) {
+		public PluginListening(RestResourceAdapter app) {
 			this.app = app;
 		}
 
@@ -144,7 +141,7 @@ public class RestResourceAdapter {
 		// security
 		resourceConfig.register(RolesAllowedDynamicFeature.class);
 		resourceConfig.packages("de.lemo.server.auth");
-		resourceConfig.registerInstances(new Foo(this));
+		resourceConfig.registerInstances(new PluginListening(this));
 
 		for (WebResource resourceInstance : resourceInstances) {
 			resourceConfig.registerInstances(resourceInstance);
