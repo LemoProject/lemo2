@@ -3,7 +3,10 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0"
           name="lemo-0.1.1">
-
+		  
+	<repository>mvn:org.ops4j.pax.jpa/pax-jpa-features/0.3.0/xml/features</repository>
+	<repository>mvn:org.ops4j.pax.jdbc/pax-jdbc-features/0.5.0/xml/features</repository>
+		  
     <feature name="lemo-develop" version="0.1.0">
 	   <feature>lemo</feature>
 	   <feature>webconsole</feature>	
@@ -20,14 +23,26 @@
 		<feature>eventadmin</feature>
 		<feature>war</feature>
 		<feature>http</feature>
-		<feature>scr</feature>
-
+		<feature>jndi</feature> 
+		<feature>jdbc</feature> 
+		<feature>jpa</feature> 
+		
+		<feature>pax-jdbc-h2</feature> 
+		<feature>pax-jdbc-config</feature> 
+		
+		 
+		 
+		<feature version="4.3.6.Final">hibernate</feature>
+		
 		<feature version="2.15">jersey</feature>
  
+		<bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/1.12.1</bundle>
 		<feature version="1.6.0">ipojo-whiteboard</feature>
 			
 		<feature>lemo-webapp</feature>
 		
+		
+ 
     </feature>
 	
 	
