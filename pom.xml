@@ -10,6 +10,17 @@
 	<name>Lemo</name>
 	<description>Learning Analytics Platform</description>
 
+	<modules>
+		<module>de.lemo.persistence.provider.gdmla</module>
+		<module>de.lemo.pesrsistence.provider.lemo</module>
+		<module>de.lemo.rest.adapter</module>
+		<module>de.lemo.rest.api</module>
+		<module>de.lemo.tools.activitytime</module>
+		<module>de.lemo.tools.api</module>
+		<module>de.lemo.tools.circlegraph</module>
+		<module>de.lemo.webapp</module>
+	</modules>
+	
 	<properties>
 
 		<m2e.wtp.activation>false</m2e.wtp.activation>
