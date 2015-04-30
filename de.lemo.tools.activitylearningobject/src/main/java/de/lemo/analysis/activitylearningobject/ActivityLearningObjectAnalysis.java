@@ -3,9 +3,6 @@ package de.lemo.analysis.activitylearningobject;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
-import javax.ws.rs.Path;
-
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
@@ -13,7 +10,6 @@ import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.lemo.rest.api.WebResource;
 import de.lemo.tools.api.AnalyticsTool;
 
 @Component
