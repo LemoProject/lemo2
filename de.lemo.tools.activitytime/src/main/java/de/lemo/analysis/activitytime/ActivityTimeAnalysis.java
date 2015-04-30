@@ -18,8 +18,7 @@ import de.lemo.tools.api.AnalyticsTool;
 @Component
 @Provides
 @Instantiate
-@Path("tools/activitytime")
-public class ActivityTimeAnalysis implements WebResource, AnalyticsTool {
+public class ActivityTimeAnalysis implements AnalyticsTool {
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityTimeAnalysis.class);
 
