@@ -19,8 +19,7 @@ import de.lemo.tools.api.AnalyticsTool;
 @Component
 @Provides
 @Instantiate
-@Path("tools/activitylearningobject")
-public class ActivityLearningObjectAnalysis implements WebResource, AnalyticsTool {
+public class ActivityLearningObjectAnalysis implements AnalyticsTool {
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityLearningObjectAnalysis.class);
 
