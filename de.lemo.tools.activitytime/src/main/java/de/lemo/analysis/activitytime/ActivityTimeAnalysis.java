@@ -41,6 +41,7 @@ public class ActivityTimeAnalysis implements AnalyticsTool {
 	{
 		scripts = new ArrayList<>();
 		scripts.add("js/activitytime.js");
+		scripts.add("js/fake_data.js");
 		scripts.add("js/nv.d3.js");
 	}
 
