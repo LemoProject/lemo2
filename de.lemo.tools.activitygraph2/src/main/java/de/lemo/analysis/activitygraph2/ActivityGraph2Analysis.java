@@ -43,6 +43,7 @@ public class ActivityGraph2Analysis implements WebResource, AnalyticsTool {
 		scripts = new ArrayList<>();
 		scripts.add("js/ActivityGraph2.js");
 		scripts.add("js/ActivityGraph2Data.js");
+		scripts.add("js/jquery.tipsy.js");
 	}
 
 	@ServiceProperty(name = "lemo.tool.image.icon.monochrome")
