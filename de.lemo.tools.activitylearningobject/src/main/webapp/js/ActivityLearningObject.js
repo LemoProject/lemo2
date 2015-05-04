@@ -1,12 +1,13 @@
 (function(d3custom, $, _) {
 
+	$("#viz").append('<svg class="nvd3Svg" style="height: 500px;"><!-- d3js visualization --></svg>');
+	
 	d3custom.run = function() {
 
 		var data = d3custom.data;
 		var locale = data.pop();
 		var chart;
 
-		$(".row").append('<div id="viz"><svg class="nvd3Svg"><!-- d3js visualization --></svg></div>');
 		if (!data) {
 			// TODO there's some nvd3/d3 function for this case
 			$("#viz").prepend($('<div class="alert">No matching data found. Please check your filter setting.</div>'));
@@ -111,7 +112,7 @@
 			}
 			nv.utils.windowResize(chart.update);
 
-			dataExport.barChartButton('.export-button', d3.select('#viz svg').data(), chart, locale);
+			//dataExport.barChartButton('.export-button', d3.select('#viz svg').data(), chart, locale);
 			return chart;
 		});  
 
