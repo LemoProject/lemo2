@@ -17,7 +17,7 @@
         return d3.time.format(locale.locale)(new Date(d))
       });
 
-  	  $(".row").append('<div id="viz"><svg class="nvd3Svg"><!-- d3js visualization --></svg></div>');
+  	  $("#viz").append('<svg class="nvd3Svg" style="height:500px;"><!-- d3js visualization --></svg>');
       d3.select('#viz svg').datum(data).transition().duration(500).call(chart);
 
       //dataExport.lineWithFocusChartButton('.export-button', d3.select('#viz svg').data(), chart, locale);
