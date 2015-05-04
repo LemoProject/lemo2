@@ -27,10 +27,10 @@ public class TreemapAnalysis implements AnalyticsTool{
 	
 	
 	@ServiceProperty(name = "lemo.tool.description.short")
-	private String descriptionShort = "Ladida.";
+	private String descriptionShort = "Compares the number of activities on learning objects within the course.";
 
 	@ServiceProperty(name = "lemo.tool.description.long")
-	private String descriptionLong = "LLLLAAAADDDDIIIIDDDDAAAA.";
+	private String descriptionLong = "Compares the number of activities on learning objects within the course.";
 	
 
 	@ServiceProperty(name = "lemo.tool.image.icon.monochrome")
