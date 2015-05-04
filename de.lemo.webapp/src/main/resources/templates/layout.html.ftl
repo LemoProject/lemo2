@@ -13,7 +13,6 @@
 	<link rel="stylesheet" href="${assetPath}/css/apps.css">
 	<link rel="stylesheet" href="${assetPath}/css/main.css">
     <link rel="stylesheet" href="${assetPath}/css/nv.d3.css">
-
 	
 	<!-- default libraries -->
 	<script src="${assetPath}/js/lib/jquery-2.1.3.min.js"></script>
