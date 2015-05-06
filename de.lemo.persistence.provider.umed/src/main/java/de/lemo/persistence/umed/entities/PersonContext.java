@@ -50,7 +50,7 @@ public class PersonContext{
 	 * @return the learningContext
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learningcontext_id")
+	@JoinColumn(name="learningContext")
 	public LearningContext getLearningContext() {
 		return learningContext;
 	}
@@ -66,7 +66,7 @@ public class PersonContext{
 	 * @return the person
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="person_id")
+	@JoinColumn(name="person")
 	public Person getPerson() {
 		return person;
 	}
@@ -97,12 +97,12 @@ public class PersonContext{
 		if (persons.get(person) != null)
 		{
 			this.person = persons.get(person);
-			persons.get(person).addCourseUser(this);
+			persons.get(person).addPersonContext(this);
 		}
 		if ((this.person == null) && (oldPersons.get(person) != null))
 		{
 			this.person = oldPersons.get(person);
-			oldPersons.get(person).addCourseUser(this);
+			oldPersons.get(person).addPersonContext(this);
 		}
 	}
 

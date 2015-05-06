@@ -71,7 +71,7 @@ public class LearningActivity{
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learningcontext_id")
+	@JoinColumn(name="learningContext")
 	public LearningContext getLearningContext() {
 		return learningContext;
 	}
@@ -84,7 +84,7 @@ public class LearningActivity{
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="person_id")
+	@JoinColumn(name="person")
 	public Person getPerson() {
 		return person;
 	}
@@ -97,7 +97,7 @@ public class LearningActivity{
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learningobject_id")
+	@JoinColumn(name="learningObject")
 	public LearningObject getLearningObject() {
 		return learningObject;
 	}
@@ -185,7 +185,7 @@ public class LearningActivity{
 	 * @return the reference
 	 */
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinColumn(name="reference_id")
+	@JoinColumn(name="reference")
 	public LearningActivity getReference() {
 		return reference;
 	}

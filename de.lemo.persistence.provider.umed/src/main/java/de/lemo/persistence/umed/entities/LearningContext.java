@@ -68,7 +68,7 @@ public class LearningContext{
 	 * 
 	 * @return a set of entries in the course_resource table which shows the resources in this course
 	 */
-	@OneToMany(mappedBy="learningcontext")
+	@OneToMany(mappedBy="learningContext")
 	public Set<ObjectContext> getObjectContexts() {
 		return this.objectContexts;
 	}
@@ -88,7 +88,7 @@ public class LearningContext{
 		this.learningActivities = learningActivities;
 	}
 
-	@OneToMany(mappedBy="learningcontext")
+	@OneToMany(mappedBy="learningContext")
 	public Set<LearningActivity> getLearningActivities() {
 		return this.learningActivities;
 	}
@@ -100,7 +100,7 @@ public class LearningContext{
 	/**
 	 * @return the courseUsers
 	 */
-	@OneToMany(mappedBy="learningcontext")
+	@OneToMany(mappedBy="learningContext")
 	public Set<PersonContext> getPersonContexts() {
 		return this.personContexts;
 	}
@@ -121,7 +121,7 @@ public class LearningContext{
 	 * @return the parent
 	 */
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name="parent")
 	public LearningContext getParent() {
 		return parent;
 	}

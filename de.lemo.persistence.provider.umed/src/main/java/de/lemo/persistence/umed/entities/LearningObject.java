@@ -122,7 +122,7 @@ public class LearningObject{
 	 * @return the parent
 	 */
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name="parent")
 	public LearningObject getParent() {
 		return parent;
 	}

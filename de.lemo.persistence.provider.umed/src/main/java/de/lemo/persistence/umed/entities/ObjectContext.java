@@ -35,8 +35,8 @@ public class ObjectContext{
 	 * @return the course
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="course_id")
-	public LearningContext getLearninGContext() {
+	@JoinColumn(name="learningContext")
+	public LearningContext getLearningContext() {
 		return learningContext;
 	}
 
@@ -81,7 +81,7 @@ public class ObjectContext{
 	 * @return the learningObject
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learningobject_id")
+	@JoinColumn(name="learningObject")
 	public LearningObject getLearningObject() {
 		return this.learningObject;
 	}

@@ -15,8 +15,9 @@ import javax.persistence.Table;
 public class LearningObjectExt{
 
 	private long id;
-	private LearningObject learning;
+	private LearningObject learningObject;
 	private String value;
+	private String attr;
 	
 
 	
@@ -39,15 +40,15 @@ public class LearningObjectExt{
 	 * @return the learningId
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learning_id")
-	public LearningObject getLearning() {
-		return learning;
+	@JoinColumn(name="learningObject")
+	public LearningObject getLearningObject() {
+		return learningObject;
 	}
 	/**
 	 * @param learningId the learningId to set
 	 */
-	public void setLearning(LearningObject learning) {
-		this.learning = learning;
+	public void setLearningObject(LearningObject learningObject) {
+		this.learningObject = learningObject;
 	}
 
 	/**
@@ -69,6 +70,19 @@ public class LearningObjectExt{
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * @return the attr
+	 */
+	@Column(name="attr")
+	public String getAttr() {
+		return attr;
+	}
+	/**
+	 * @param attr the attr to set
+	 */
+	public void setAttr(String attr) {
+		this.attr = attr;
 	}
 	
 	

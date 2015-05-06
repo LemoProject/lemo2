@@ -16,7 +16,7 @@ public class LearningActivityExt{
 	private long id;
 	private LearningActivity learningActivity;
 	private String value;
-	private String attribute;
+	private String attr;
 	
 
 	
@@ -38,7 +38,7 @@ public class LearningActivityExt{
 	 * @return the learningActivity
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="learningActivity_id")
+	@JoinColumn(name="learningActivity")
 	public LearningActivity getLearningActivity() {
 		return learningActivity;
 	}
@@ -72,15 +72,15 @@ public class LearningActivityExt{
 	/**
 	 * @return the attribute
 	 */
-	@Column(name="attribute")
-	public String getAttribute() {
-		return attribute;
+	@Column(name="attr")
+	public String getAttr() {
+		return attr;
 	}
 	/**
-	 * @param attribute the attribute to set
+	 * @param attr the attribute to set
 	 */
-	public void setAttribute(String attribute) {
-		this.attribute = attribute;
+	public void setAttr(String attr) {
+		this.attr = attr;
 	}
 	
 	

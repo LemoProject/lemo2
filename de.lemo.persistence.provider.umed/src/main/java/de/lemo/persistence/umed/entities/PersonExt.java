@@ -15,7 +15,7 @@ public class PersonExt{
 
 	private long id;
 	private Person person;
-	private String attribute;
+	private String attr;
 	private String value;
 	
 
@@ -38,7 +38,7 @@ public class PersonExt{
 	 * @return the person
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="person_id")
+	@JoinColumn(name="person")
 	public Person getUser() {
 		return person;
 	}
@@ -71,15 +71,15 @@ public class PersonExt{
 	/**
 	 * @return the attribute
 	 */
-	@Column(name="attribute")
+	@Column(name="attr")
 	public String getAttribute() {
-		return attribute;
+		return attr;
 	}
 	/**
 	 * @param attribute the attribute to set
 	 */
 	public void setAttribute(String attribute) {
-		this.attribute = attribute;
+		this.attr = attribute;
 	}
 	
 	

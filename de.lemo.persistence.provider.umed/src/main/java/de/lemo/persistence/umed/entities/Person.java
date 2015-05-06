@@ -35,7 +35,7 @@ public class Person{
 	/**
 	 * @param learningActivities the learningActivities to set
 	 */
-	public void setEventLogs(Set<LearningActivity> learningActivities) {
+	public void setLearningActivities(Set<LearningActivity> learningActivities) {
 		this.learningActivities = learningActivities;
 	}
 	
@@ -83,11 +83,11 @@ public class Person{
 	/**
 	 * @param courseUsers the courseUsers to set
 	 */
-	public void setCourseUsers(Set<PersonContext> personContexts) {
+	public void setPersonContexts(Set<PersonContext> personContexts) {
 		this.personContexts = personContexts;
 	}
 	
-	public void addCourseUser(PersonContext personContext)
+	public void addPersonContext(PersonContext personContext)
 	{
 		this.personContexts.add(personContext);
 	}
