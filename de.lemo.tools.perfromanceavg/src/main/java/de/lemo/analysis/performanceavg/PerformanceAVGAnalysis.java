@@ -1,4 +1,4 @@
-package de.lemo.analysis.circlegraph;
+package de.lemo.analysis.performanceavg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,30 +20,31 @@ import de.lemo.tools.api.AnalyticsTool;
 @Provides
 @Instantiate
 @Singleton
-@Path("tools/circlegraph")
-public class CircleGraphAnalysis implements WebResource, AnalyticsTool {
+@Path("tools/performanceavg")
+public class PerformanceAVGAnalysis implements WebResource, AnalyticsTool {
 
-	private static final Logger logger = LoggerFactory.getLogger(CircleGraphAnalysis.class);
+	private static final Logger logger = LoggerFactory.getLogger(PerformanceAVGAnalysis.class);
 
 	@ServiceProperty(name = "lemo.tool.id")
-	private String id = "circlegraph";
+	private String id = "performanceavg";
 
 	@ServiceProperty(name = "lemo.tool.name")
-	private String name = "Circle Graph";
+	private String name = "Performance Average";
 
 	@ServiceProperty(name = "lemo.tool.description.short")
-	private String descriptionShort = "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.";
+	private String descriptionShort = "Shows the average grade for each learning object.";
 
 	@ServiceProperty(name = "lemo.tool.description.long")
-	private String descriptionLong = "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
-			+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.";
+	private String descriptionLong = "Shows the average grade for each learning object.";
 
 	@ServiceProperty(name = "lemo.tool.scripts")
 	private final List<String> scripts;
 	{
 		scripts = new ArrayList<>();
-		scripts.add("js/circlegraph.js");
-		scripts.add("js/fake_data.js");
+		scripts.add("js/PerformanceAvg.js");
+		scripts.add("js/PerformanceAverageData.js");
+		scripts.add("js/nv.d3.js");
+		scripts.add("js/d3.v2.min.js");
 	}
 
 	@ServiceProperty(name = "lemo.tool.image.icon.monochrome")
