@@ -1,4 +1,4 @@
-package de.lemo.analysis.circlegraph;
+package de.lemo.analysis.frequentpathbide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,30 +20,30 @@ import de.lemo.tools.api.AnalyticsTool;
 @Provides
 @Instantiate
 @Singleton
-@Path("tools/circlegraph")
-public class CircleGraphAnalysis implements WebResource, AnalyticsTool {
+@Path("tools/frequentpathbide")
+public class FrequentPathBideAnalysis implements WebResource, AnalyticsTool {
 
-	private static final Logger logger = LoggerFactory.getLogger(CircleGraphAnalysis.class);
+	private static final Logger logger = LoggerFactory.getLogger(FrequentPathBideAnalysis.class);
 
 	@ServiceProperty(name = "lemo.tool.id")
-	private String id = "circlegraph";
+	private String id = "frequentpathbide";
 
 	@ServiceProperty(name = "lemo.tool.name")
-	private String name = "Circle Graph";
+	private String name = "Frequent Path Bide";
 
 	@ServiceProperty(name = "lemo.tool.description.short")
-	private String descriptionShort = "Zeigt Navigationsschritte der Nutzer zwischen einzelnen Lernobjekten.";
+	private String descriptionShort = "Shows frequent navigational sequences of the users.";
 
 	@ServiceProperty(name = "lemo.tool.description.long")
-	private String descriptionLong = "Mit der Analyse „Circle Graph“ können Sie einen Einblick in das Navigationsverhalten der Nutzer erhalten, "
-			+ "insbesondere in die Reihenfolge, in der Studierende die Lernobjekte aufrufen.";
+	private String descriptionLong = "Shows frequent navigational sequences of the users.";
 
 	@ServiceProperty(name = "lemo.tool.scripts")
 	private final List<String> scripts;
 	{
 		scripts = new ArrayList<>();
-		scripts.add("js/circlegraph.js");
-		scripts.add("js/fake_data.js");
+		scripts.add("js/FrequentPath.js");
+		scripts.add("js/FrequentPathBideData.js");
+		scripts.add("js/jquery.tipsy.js");
 	}
 
 	@ServiceProperty(name = "lemo.tool.image.icon.monochrome")
