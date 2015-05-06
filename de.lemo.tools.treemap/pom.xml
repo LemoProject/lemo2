@@ -27,7 +27,7 @@
 		
 		<dependency>
 			<groupId>de.lemo</groupId>
-			<artifactId>de.lemo.persistence.provider.lemo</artifactId>
+			<artifactId>de.lemo.persistence.provider.umed</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 		
