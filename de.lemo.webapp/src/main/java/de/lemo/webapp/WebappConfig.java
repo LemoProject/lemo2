@@ -138,7 +138,7 @@ public class WebappConfig {
 		}
 
 		properties.put("name", "" + toolName);
-		properties.put("url", "/analytics/" + toolId);
+		properties.put("url", ANALYTICS_PAGE + "/" + toolId);
 		properties.put("assets", "/lemo/tools/" + toolId + "/assets");
 
 	}
