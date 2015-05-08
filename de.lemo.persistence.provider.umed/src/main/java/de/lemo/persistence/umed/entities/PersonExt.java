@@ -39,7 +39,7 @@ public class PersonExt{
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="person")
-	public Person getUser() {
+	public Person getPerson() {
 		return person;
 	}
 	/**

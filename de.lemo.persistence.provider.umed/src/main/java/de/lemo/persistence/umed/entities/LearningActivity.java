@@ -26,6 +26,7 @@ public class LearningActivity{
 	private Long time;
 	private String action;
 	private LearningActivity reference;
+	private String info;
 	
 	public boolean equals(final LearningActivity o) {
 		if ((o.getId() == this.getId()) && (o instanceof LearningActivity)) {
@@ -195,5 +196,20 @@ public class LearningActivity{
 	 */
 	public void setReference(LearningActivity reference) {
 		this.reference = reference;
+	}
+
+	/**
+	 * @return the info
+	 */
+	@Column(name="info")
+	public String getInfo() {
+		return info;
+	}
+
+	/**
+	 * @param info the info to set
+	 */
+	public void setInfo(String info) {
+		this.info = info;
 	}
 }
