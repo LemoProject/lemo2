@@ -384,4 +384,7 @@
 		</profile>
 	</profiles>
 
+	<modules>
+		<module>lemo.data.dm</module>
+	</modules>
 </project>
