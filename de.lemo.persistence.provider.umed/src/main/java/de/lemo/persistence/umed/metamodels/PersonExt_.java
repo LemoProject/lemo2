@@ -10,10 +10,10 @@ import de.lemo.persistence.umed.entities.PersonExt;
 @StaticMetamodel(PersonExt.class)
 public class PersonExt_{
 
-	private static volatile SingularAttribute<PersonExt, Long> id;
-	private static volatile SingularAttribute<PersonExt, Person> person;
-	private static volatile SingularAttribute<PersonExt, String> attr;
-	private static volatile SingularAttribute<PersonExt, String> value;
+	public static volatile SingularAttribute<PersonExt, Long> id;
+	public static volatile SingularAttribute<PersonExt, Person> person;
+	public static volatile SingularAttribute<PersonExt, String> attr;
+	public static volatile SingularAttribute<PersonExt, String> value;
 
 }
 

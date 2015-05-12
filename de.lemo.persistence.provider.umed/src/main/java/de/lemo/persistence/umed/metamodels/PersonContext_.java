@@ -11,9 +11,9 @@ import de.lemo.persistence.umed.entities.PersonContext;
 @StaticMetamodel(PersonContext.class)
 public class PersonContext_{
 	
-	private static volatile SingularAttribute<PersonContext, Long> id;
-	private static volatile SingularAttribute<PersonContext, LearningContext> learningContext;
-	private static volatile SingularAttribute<PersonContext, Person> person;
-	private static volatile SingularAttribute<PersonContext, String> role;
+	public static volatile SingularAttribute<PersonContext, Long> id;
+	public static volatile SingularAttribute<PersonContext, LearningContext> learningContext;
+	public static volatile SingularAttribute<PersonContext, Person> person;
+	public static volatile SingularAttribute<PersonContext, String> role;
 	
 }

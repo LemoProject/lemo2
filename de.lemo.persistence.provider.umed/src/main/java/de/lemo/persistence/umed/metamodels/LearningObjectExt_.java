@@ -10,9 +10,9 @@ import de.lemo.persistence.umed.entities.LearningObjectExt;
 @StaticMetamodel(LearningObjectExt.class)
 public class LearningObjectExt_{
 
-	private static volatile SingularAttribute<LearningObjectExt, Long> id;
-	private static volatile SingularAttribute<LearningObjectExt, LearningObject> learningObject;
-	private static volatile SingularAttribute<LearningObjectExt, String> value;
-	private static volatile SingularAttribute<LearningObjectExt, String> attr;
+	public static volatile SingularAttribute<LearningObjectExt, Long> id;
+	public static volatile SingularAttribute<LearningObjectExt, LearningObject> learningObject;
+	public static volatile SingularAttribute<LearningObjectExt, String> value;
+	public static volatile SingularAttribute<LearningObjectExt, String> attr;
 }
 

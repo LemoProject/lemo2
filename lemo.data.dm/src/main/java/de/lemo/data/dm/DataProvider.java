@@ -7,7 +7,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.GET;
 
 import org.apache.felix.ipojo.annotations.Requires;
 
@@ -18,8 +17,6 @@ public class DataProvider {
 	@Requires
 	private EntityManagerFactory emf;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
-	@GET
 	public String getString()
 	{
 		

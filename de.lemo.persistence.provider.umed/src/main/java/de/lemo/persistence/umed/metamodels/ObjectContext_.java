@@ -11,7 +11,7 @@ import de.lemo.persistence.umed.entities.ObjectContext;
 @StaticMetamodel(ObjectContext.class)
 public class ObjectContext_{
 	
-	private static volatile SingularAttribute<ObjectContext, Long> id;
-	private static volatile SingularAttribute<ObjectContext, LearningContext> learningContext;
-	private static volatile SingularAttribute<ObjectContext, LearningObject> learningObject;
+	public static volatile SingularAttribute<ObjectContext, Long> id;
+	public static volatile SingularAttribute<ObjectContext, LearningContext> learningContext;
+	public static volatile SingularAttribute<ObjectContext, LearningObject> learningObject;
 }

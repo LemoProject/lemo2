@@ -9,8 +9,7 @@ import de.lemo.persistence.umed.entities.Person;
 public class Person_{
 	
 
-
-	private static volatile SingularAttribute<Person, Long> id;
-	private static volatile SingularAttribute<Person, String> name;
+	public static volatile SingularAttribute<Person, Long> id;
+	public static volatile SingularAttribute<Person, String> name;
 	
 }
