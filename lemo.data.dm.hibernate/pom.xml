@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
   <parent>
     <groupId>de.lemo</groupId>
     <artifactId>lemo</artifactId>
@@ -8,7 +7,7 @@
   </parent>
   
   <groupId>de.lemo</groupId>
-  <artifactId>de.lemo.data.dm</artifactId>
+  <artifactId>lemo.data.dm.hibernate</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   
@@ -28,6 +27,12 @@
   		<dependency>
 			<groupId>de.lemo</groupId>
 			<artifactId>de.lemo.persistence.provider.umed</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.lemo</groupId>
+			<artifactId>de.lemo.data.dm</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 		
@@ -54,7 +59,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							de.lemo.data.dm; version="0.1.0",
+							de.lemo.data.dm.hibernate; version="0.1.0",
 						</Export-Package>
 					</instructions>
 				</configuration>

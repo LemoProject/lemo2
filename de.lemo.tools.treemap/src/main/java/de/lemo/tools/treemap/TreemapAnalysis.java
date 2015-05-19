@@ -1,4 +1,5 @@
 package de.lemo.tools.treemap;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.lemo.persistence.umed.entities.Config;
+import de.lemo.persistence.umed.entities.LearningContext;
+import de.lemo.persistence.umed.metamodels.LearningContext_;
 import de.lemo.rest.api.WebResource;
 import de.lemo.tools.api.AnalyticsTool;
 
@@ -59,14 +62,18 @@ public class TreemapAnalysis implements WebResource, AnalyticsTool{
 	public String getString()
 	{
 		
+		List<Long> cids = new ArrayList<Long>();
+		cids.add(1L);
+		
 		EntityManager em = emf.createEntityManager();
-		CriteriaQuery cq = em.getCriteriaBuilder().createQuery(Config.class);
-		Root<Config> r = cq.from(Config.class);
+		CriteriaQuery cq = em.getCriteriaBuilder().createQuery(LearningContext.class);
+		Root<LearningContext> r = cq.from(LearningContext.class);
+		cq.where(r.get(LearningContext_.id).in(cids));
 		cq.select(r);
-		TypedQuery<Config> tq = em.createQuery(cq);
-		List<Config> list = tq.getResultList();
+		TypedQuery<LearningContext> tq = em.createQuery(cq);
+		List<LearningContext> list = tq.getResultList();
 		
 		
-		return list.get(0).getDatabaseModel();
+		return list.get(0).getName();
 	}
 }
