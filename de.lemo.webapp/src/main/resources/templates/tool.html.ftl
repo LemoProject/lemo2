@@ -59,5 +59,4 @@ scriptBase=tool.assets scripts=tool["lemo.tool.scripts"]>
 	})
 </script>
 
-
 </@layout.page>
