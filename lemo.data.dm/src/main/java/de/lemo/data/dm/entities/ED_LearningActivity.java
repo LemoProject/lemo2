@@ -1,5 +1,6 @@
 package de.lemo.data.dm.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ED_LearningActivity {
@@ -12,7 +13,18 @@ public class ED_LearningActivity {
 	private String action;
 	private long reference;
 	private String info;
-	private Map<String, String> extensions;
+	private Map<String, String> extensions = new HashMap<String, String>();
+	
+	/**
+	 * Adds an extension attribute-value pair to the LearningActivity
+	 * 
+	 * @param attr	The attribute's name
+	 * @param value The attribute's value
+	 */
+	public void addExtension(String attr, String value)
+	{
+		this.extensions.put(attr, value);
+	}
 	
 	
 	/**

@@ -13,7 +13,7 @@ public interface IDataProvider {
 	
 	List<ED_LearningContext> getLearningContexts(List<Long> ids);
 	
-	List<ED_LearningContext> getLearningContextsPerson(Long person);
+	List<ED_LearningContext> getLearningContextsPerson(Long person, String role);
 	
 	List<ED_Person> getPersons(Long context, String role);
 	

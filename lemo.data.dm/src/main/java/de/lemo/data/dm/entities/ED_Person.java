@@ -1,13 +1,36 @@
 package de.lemo.data.dm.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ED_Person {
 	
 	private Long id;
 	private String name;
-	private Map<Long, String> contextRoles;
-	private Map<String, String> extensions;
+	private Map<Long, String> contextRoles = new HashMap<Long, String>();
+	private Map<String, String> extensions = new HashMap<String, String>();
+	
+	/**
+	 * Adds a context-role pair to the Person
+	 * 
+	 * @param attr	The LearningContext id
+	 * @param value The Person's role within the LearningContext
+	 */
+	public void addContextRole(Long context, String role)
+	{
+		this.contextRoles.put(context, role);
+	}
+	
+	/**
+	 * Adds an extension attribute-value pair to the Person
+	 * 
+	 * @param attr	The attribute's name
+	 * @param value The attribute's value
+	 */
+	public void addExtension(String attr, String value)
+	{
+		this.extensions.put(attr, value);
+	}
 	
 	
 	/**

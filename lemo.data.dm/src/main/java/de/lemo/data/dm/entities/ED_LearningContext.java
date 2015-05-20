@@ -1,5 +1,7 @@
 package de.lemo.data.dm.entities;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,9 +13,38 @@ public class ED_LearningContext {
 	private Long firstAccess;
 	private Long lastAccess;
 	private Long userCount;
-	private Set<Long> children;
+	private Set<Long> children = new HashSet<Long>();
+	private Set<Long> learningObjects = new HashSet<Long>();;
+	private Map<String, String> extensions = new HashMap<String, String>();
 	
+	/**
+	 * Increases the user count of the LearningContext by one.
+	 */
+	public void increaseUserCount()
+	{
+		this.userCount++;
+	}
 	
+	/**
+	 * Adds a LearningObject id
+	 * 
+	 * @param object The id of the LearningObject
+	 */
+	public void addLearningobject(Long object)
+	{
+		this.learningObjects.add(object);
+	}
+	
+	/**
+	 * Adds an extension attribute-value pair to the LearningContext
+	 * 
+	 * @param attr	The attribute's name
+	 * @param value The attribute's value
+	 */
+	public void addExtension(String attr, String value)
+	{
+		this.extensions.put(attr, value);
+	}
 	/**
 	 * @return the id
 	 */
@@ -80,6 +111,7 @@ public class ED_LearningContext {
 	public Long getUserCount() {
 		return userCount;
 	}
+
 	/**
 	 * @param userCount the userCount to set
 	 */
@@ -110,6 +142,7 @@ public class ED_LearningContext {
 	public void setLearningObjects(Set<Long> learningObjects) {
 		this.learningObjects = learningObjects;
 	}
+	
 	/**
 	 * @return the extensions
 	 */
@@ -122,7 +155,6 @@ public class ED_LearningContext {
 	public void setExtensions(Map<String, String> extensions) {
 		this.extensions = extensions;
 	}
-	private Set<Long> learningObjects;
-	private Map<String, String> extensions;
+
 
 }

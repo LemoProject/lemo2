@@ -1,5 +1,6 @@
 package de.lemo.data.dm.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +11,18 @@ public class ED_LearningObject {
 	private String type;
 	private Long parent;
 	private Set<Long> children;
-	private Map<String, String> extensions;
+	private Map<String, String> extensions = new HashMap<String, String>();
+	
+	/**
+	 * Adds an extension attribute-value pair to the LearningObject
+	 * 
+	 * @param attr	The attribute's name
+	 * @param value The attribute's value
+	 */
+	public void addExtension(String attr, String value)
+	{
+		this.extensions.put(attr, value);
+	}
 	
 	/**
 	 * @return the id
