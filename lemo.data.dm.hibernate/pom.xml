@@ -1,13 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  	<modelVersion>4.0.0</modelVersion>
+  
+  
   <parent>
     <groupId>de.lemo</groupId>
     <artifactId>lemo</artifactId>
     <version>0.2.0-SNAPSHOT</version>
   </parent>
   
-  <groupId>de.lemo</groupId>
-  <artifactId>lemo.data.dm.hibernate</artifactId>
+  <name>Lemo Data Management Hibernate Implementation</name>
+  
+  <artifactId>de.lemo.data.dm.hibernate</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   
@@ -18,6 +22,7 @@
 			<artifactId>de.lemo.rest.api</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>de.lemo</groupId>
 			<artifactId>de.lemo.tools.api</artifactId>
@@ -42,11 +47,23 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		
+		<dependency>
+   	 		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-core</artifactId>
+    		<version>3.6.3.Final</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>
 			<scope>provided</scope>
 		</dependency>
+	
 	</dependencies>
 	
 	<build>

@@ -59,6 +59,7 @@
 							</Import-Package>
 							<Export-Package>
 								de.lemo.persistence.umed.entities;version="0.1.0",
+								de.lemo.persistence.umed.metamodels;version="0.1.0",
 							</Export-Package>
 							<Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
 						</instructions>
