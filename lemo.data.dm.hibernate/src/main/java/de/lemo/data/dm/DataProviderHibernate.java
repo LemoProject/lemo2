@@ -31,6 +31,12 @@ import de.lemo.persistence.umed.entities.Person;
 import de.lemo.persistence.umed.entities.PersonContext;
 import de.lemo.persistence.umed.entities.PersonExt;
 
+/**
+ * Implements the de.lemo.dm.IDataProvider interface using org.hibernate
+ * 
+ * @author sschwarzrock
+ *
+ */
 @Component
 @Provides
 @Instantiate
@@ -44,6 +50,8 @@ public class DataProviderHibernate implements IDataProvider{
 	@Override
 	public ED_LearningContext getLearningContext(Long id) {
 		
+		logger.info("Starting getLearningContext for LearningContextId " + id);
+		
 		EntityManager em = emf.createEntityManager();
 		Session session = em.unwrap(org.hibernate.Session.class);
 		
@@ -54,7 +62,11 @@ public class DataProviderHibernate implements IDataProvider{
 		if(criteria.list().size() > 0)
 			context = (LearningContext) criteria.list().get(0);
 		else
+		{
+			session.clear();
+			session.close();
 			return new ED_LearningContext();
+		}
 		
 		ED_LearningContext edContext = new ED_LearningContext();
 		edContext.setId(context.getId());
@@ -83,6 +95,9 @@ public class DataProviderHibernate implements IDataProvider{
 			if(pc.getRole().equals("student"))
 				edContext.increaseUserCount();
 		}
+		
+		session.clear();
+		session.close();
 
 		return edContext;
 	}
@@ -90,6 +105,9 @@ public class DataProviderHibernate implements IDataProvider{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ED_LearningContext> getLearningContexts(List<Long> ids) {
+		
+		
+		logger.info("Starting getLearningContext for LearningContextIds ");
 		
 		Map<Long, ED_LearningContext> edContexts = new HashMap<Long, ED_LearningContext>();
 		
@@ -144,6 +162,8 @@ public class DataProviderHibernate implements IDataProvider{
 				edContexts.get(oc.getLearningContext().getId()).addLearningobject(oc.getLearningObject().getId());
 		}
 
+		session.clear();
+		session.close();
 		
 		return new ArrayList<ED_LearningContext>(edContexts.values());
 	}
@@ -151,6 +171,8 @@ public class DataProviderHibernate implements IDataProvider{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ED_LearningContext> getLearningContextsPerson(Long person, String role) {
+		
+		logger.info("Starting getLearningContext for Person " + person);
 		
 		Map<Long, ED_LearningContext> edContexts = new HashMap<Long, ED_LearningContext>();
 		EntityManager em = emf.createEntityManager();
@@ -168,7 +190,11 @@ public class DataProviderHibernate implements IDataProvider{
 		}
 		
 		if(ids.isEmpty())
+		{
+			session.clear();
+			session.close();
 			return new ArrayList<ED_LearningContext>();
+		}
 			
 		criteria = session.createCriteria(LearningContext.class, "context");
 		criteria.add(Restrictions.in("context.id", ids));
@@ -218,6 +244,8 @@ public class DataProviderHibernate implements IDataProvider{
 				edContexts.get(oc.getLearningContext().getId()).addLearningobject(oc.getLearningObject().getId());
 		}
 		
+		session.clear();
+		session.close();
 		
 		return new ArrayList<ED_LearningContext>(edContexts.values());
 	}
@@ -270,6 +298,9 @@ public class DataProviderHibernate implements IDataProvider{
 			}
 		}
 		
+		session.clear();
+		session.close();
+		
 		
 		return new ArrayList<ED_Person>(persons.values());
 	}
@@ -314,6 +345,9 @@ public class DataProviderHibernate implements IDataProvider{
 		{
 			activities.get(laExt.getLearningActivity().getId()).addExtension(laExt.getAttr(), laExt.getValue());
 		}
+		
+		session.clear();
+		session.close();
 		
 		
 		return new ArrayList<ED_LearningActivity>(activities.values());
@@ -363,6 +397,8 @@ public class DataProviderHibernate implements IDataProvider{
 			activities.get(laExt.getLearningActivity().getId()).addExtension(laExt.getAttr(), laExt.getValue());
 		}
 		
+		session.clear();
+		session.close();
 		
 		return new ArrayList<ED_LearningActivity>(activities.values());
 	}
@@ -414,6 +450,8 @@ public class DataProviderHibernate implements IDataProvider{
 			activities.get(laExt.getLearningActivity().getId()).addExtension(laExt.getAttr(), laExt.getValue());
 		}
 		
+		session.clear();
+		session.close();		
 		
 		return new ArrayList<ED_LearningActivity>(activities.values());
 	}

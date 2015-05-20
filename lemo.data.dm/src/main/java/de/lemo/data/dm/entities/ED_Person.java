@@ -3,6 +3,12 @@ package de.lemo.data.dm.entities;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains information about a Person
+ * 
+ * @author sschwarzrock
+ *
+ */
 public class ED_Person {
 	
 	private Long id;

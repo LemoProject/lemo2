@@ -2,6 +2,12 @@ package de.lemo.data.dm.entities;
 
 import java.util.List;
 
+/**
+ * Represents a sequence of user interactions with LearningObjects
+ * 
+ * @author sschwarzrock
+ *
+ */
 public class ED_Path {
 	
 	private Long id;

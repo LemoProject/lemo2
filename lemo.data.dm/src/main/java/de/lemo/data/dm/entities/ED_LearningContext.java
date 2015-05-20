@@ -5,6 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Contains information about a LearningContext 
+ * 
+ * @author sschwarzrock
+ *
+ */
 public class ED_LearningContext {
 	
 	private Long id;

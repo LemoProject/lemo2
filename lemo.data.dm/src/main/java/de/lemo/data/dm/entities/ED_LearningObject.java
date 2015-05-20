@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Contains information about a LearningObject
+ * 
+ * @author sschwarzrock
+ *
+ */
 public class ED_LearningObject {
 	
 	private Long id;

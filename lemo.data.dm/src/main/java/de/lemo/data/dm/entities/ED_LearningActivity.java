@@ -3,6 +3,12 @@ package de.lemo.data.dm.entities;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains information about a Person's interaction with a LearningObject
+ * 
+ * @author sschwarzrock
+ *
+ */
 public class ED_LearningActivity {
 	
 	private Long id;
