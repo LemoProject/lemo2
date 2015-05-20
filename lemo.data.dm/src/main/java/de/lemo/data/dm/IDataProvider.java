@@ -17,13 +17,13 @@ public interface IDataProvider {
 	
 	List<ED_Person> getPersons(Long context, String role);
 	
-	List<ED_LearningActivity> getLearningActivities(Long person);
+	List<ED_LearningActivity> getLearningActivities(Long person, Long startTime, Long endTime);
 	
-	List<ED_LearningActivity> getLearningActivities(Long context, String action);
+	List<ED_LearningActivity> getLearningActivities(Long context, String action, Long startTime, Long endTime);
 	
-	List<ED_LearningActivity> getLearningActivities(Long context, Long person, List<Long> objects);
+	List<ED_LearningActivity> getLearningActivities(Long context, Long person, List<Long> objects, Long startTime, Long endTime);
 	
-	List<ED_Path> getPaths(Long context);
+	List<ED_Path> getPaths(Long context, Long startTime, Long endTime);
 	
 	
 
