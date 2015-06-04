@@ -47,7 +47,6 @@ public class DataProviderHibernate implements IDataProvider{
 	private static final Logger logger = LoggerFactory.getLogger(DataProviderHibernate.class);
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public ED_LearningContext getLearningContext(Long id) {
 		
 		logger.info("Starting getLearningContext for LearningContextId " + id);
@@ -103,7 +102,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_LearningContext> getLearningContexts(List<Long> ids) {
 		
 		
@@ -169,7 +167,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_LearningContext> getLearningContextsPerson(Long person, String role) {
 		
 		logger.info("Starting getLearningContext for Person " + person);
@@ -251,7 +248,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_Person> getPersons(Long context, String role) {
 		
 		EntityManager em = emf.createEntityManager();
@@ -306,7 +302,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_LearningActivity> getLearningActivities(Long person, Long startTime, Long endTime) {
 		
 		EntityManager em = emf.createEntityManager();
@@ -354,7 +349,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_LearningActivity> getLearningActivities(Long context,
 			String action, Long startTime, Long endTime) {
 		
@@ -404,7 +398,6 @@ public class DataProviderHibernate implements IDataProvider{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<ED_LearningActivity> getLearningActivities(Long context,
 			Long person, List<Long> objects, Long startTime, Long endTime) {
 
@@ -456,7 +449,7 @@ public class DataProviderHibernate implements IDataProvider{
 		return new ArrayList<ED_LearningActivity>(activities.values());
 	}
 
-	@Override
+
 	public List<ED_Path> getPaths(Long context, Long startTime, Long endTime) {
 		// TODO Auto-generated method stub
 		return null;
