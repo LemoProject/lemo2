@@ -59,7 +59,11 @@
 								*
 							</Import-Package>
 							<Export-Package>
-								de.lemo.dp;version="0.1.0"
+								de.lemo.dp;version="0.1.0",
+								de.lemo.dp.umed;version="0.1.0"
+								de.lemo.dp.umed.entities;version="0.1.0",
+								de.lemo.dp.umed.interfaces;version="0.1.0",
+								de.lemo.dp.umed.adapters;version="0.1.0"
 							</Export-Package>
 						</instructions>
 					</configuration>
