@@ -47,18 +47,22 @@ public class DataProviderUmed implements DataProvider{
 		EntityManager em = emf.createEntityManager();
 		Session session = em.unwrap(org.hibernate.Session.class);
 		
-		Criteria criteria = session.createCriteria(IContext.class, "context");
-		
-		if(criteria.list().size() > 0)
-			this.contexts = new HashSet<ED_Context>(criteria.list());
-		else
+		if(this.contexts == null)
 		{
+			Criteria criteria = session.createCriteria(IContext.class, "context");
+			criteria.add(Restrictions.isNull("context.parent"));
+			
+			if(criteria.list().size() > 0)
+				this.contexts = new HashSet<ED_Context>(criteria.list());
+			else
+			{
+				session.clear();
+				session.close();
+				return new HashSet<ED_Context>();
+			}
 			session.clear();
 			session.close();
-			return new HashSet<ED_Context>();
 		}
-		session.clear();
-		session.close();
 		return this.contexts;
 	}
 
