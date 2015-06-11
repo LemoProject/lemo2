@@ -76,7 +76,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							de.lemo.data.dm.hibernate; version="0.1.0",
+							de.lemo.data.dm.hibernate; version="0.1.0"
 						</Export-Package>
 					</instructions>
 				</configuration>

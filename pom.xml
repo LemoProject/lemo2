@@ -387,5 +387,7 @@
 	<modules>
 		<module>lemo.data.dm</module>
 		<module>lemo.data.dm.hibernate</module>
+		<module>de.lemo.dp</module>
+		<module>lemo.dp</module>
 	</modules>
 </project>
