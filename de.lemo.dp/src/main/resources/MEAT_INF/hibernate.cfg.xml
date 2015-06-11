@@ -5,10 +5,10 @@
 <hibernate-configuration>
 	
 		<session-factory>
-			<property name="hibernate.connection.driver_class">org.apache.derby.jdbc.EmbeddedDriver</property>
-			<property name="hibernate.connection.url">jdbc:derby:c:/Users/Leo/db3;create=true</property>
-			<property name="hibernate.connection.username">sa</property>
-			<property name="hibernate.connection.password"></property>
+			<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="hibernate.connection.url">jdbc:mysql://localhost/lemo_umed_moodle</property>
+			<property name="hibernate.connection.username">lemo</property>
+			<property name="hibernate.connection.password">lemo1234</property>
 
 			<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
 			<property name="hibernate.show_sql">true</property>

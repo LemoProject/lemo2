@@ -11,8 +11,7 @@
   <name>DataProvider</name>
   
   
-    	<dependencies>
-  	
+    	<dependencies>	
 
 
 		<dependency>
@@ -38,6 +37,23 @@
 			<artifactId>javassist</artifactId>
 			<version>3.18.1-GA</version>
 			<scope>provided</scope>
+		</dependency>
+		
+				<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+		</dependency>
+		
+		  		<dependency>
+			<groupId>de.lemo</groupId>
+			<artifactId>de.lemo.rest.api</artifactId>
+			<version>0.1.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.lemo</groupId>
+			<artifactId>de.lemo.tools.api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
@@ -65,6 +81,7 @@
 								de.lemo.dp.umed.interfaces;version="0.1.0",
 								de.lemo.dp.umed.adapters;version="0.1.0"
 							</Export-Package>
+							<Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
 						</instructions>
 					</configuration>
 				</plugin>

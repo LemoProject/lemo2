@@ -6,6 +6,9 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -19,26 +22,16 @@ import de.lemo.dp.umed.entities.PersonContext;
 import de.lemo.dp.umed.interfaces.IContext;
 import de.lemo.dp.umed.interfaces.IPerson;
 
+@Component
+@Provides
+@Instantiate
 public class DataProviderUmed implements DataProvider{
 	
 	@Requires
 	private EntityManagerFactory emf;
 	private Set<ED_Context> contexts = null; 
-	private static DataProviderUmed instance;
 	
-	private DataProviderUmed()
-	{
-		
-	}
-	
-	public DataProviderUmed getInstance()
-	{
-		if(instance == null)
-		{
-			instance = new DataProviderUmed();
-		}
-		return instance;
-	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
