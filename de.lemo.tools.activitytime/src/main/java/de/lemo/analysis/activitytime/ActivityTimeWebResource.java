@@ -93,11 +93,11 @@ public class ActivityTimeWebResource implements WebResource{
 		// Calculate size of time intervalls
 		final double intervall = (endTime - startTime) / (resolution);
 		
-		initializeVariables(userPerResStep,result,courses,resolution,resourceTypes);
+		initializeVariables(userPerResStep,result,dataProvider.getCourses(),resolution,resourceTypes);
 		
-		sumActivities(userPerResStep,result,resolution,resourceTypes, startTime, intervall);
+		sumActivities(userPerResStep,result,dataProvider.getCourses(),resolution,resourceTypes, startTime, intervall);
 		
-		copyUserPerResStepIntoResult(userPerResStep,result,courses,resolution);
+		copyUserPerResStepIntoResult(userPerResStep,result,dataProvider.getCourses(),resolution);
 		
 		final ResultListHashMapObject resultObject = createReturnObject(result);
 		
@@ -123,16 +123,20 @@ public class ActivityTimeWebResource implements WebResource{
 		return resultObject;
 	}
 
-	private void copyUserPerResStepIntoResult(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, Map<Long, ResultListLongObject> result, List<Long> courses, Long resolution) {
-		for (final Long c : courses)
+	private void copyUserPerResStepIntoResult(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
+			Map<Long, ResultListLongObject> result, 
+			Set<ED_Context> set, 
+			Long resolution) {
+		for (final ED_Context context : set)
 		{
+			long contextHash = (long)context.hashCode();
 			for (int i = 0; i < resolution; i++)
 			{
-				if (userPerResStep.get(c).get(i) == null)
+				if (userPerResStep.get(contextHash).get(i) == null)
 				{
-					result.get(c).getElements().add(0L);
+					result.get(contextHash).getElements().add(0L);
 				} else {
-					result.get(c).getElements().add(Long.valueOf(userPerResStep.get(c).get(i).size()));
+					result.get(contextHash).getElements().add(Long.valueOf(userPerResStep.get(contextHash).get(i).size()));
 				}
 			}
 		}		
@@ -140,6 +144,7 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private void sumActivities(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
 			Map<Long, ResultListLongObject> result, 
+			Set<ED_Context> set, 
 			Long resolution, 
 			List<String> resourceTypes, 
 			Long startTime, 
@@ -161,15 +166,16 @@ public class ActivityTimeWebResource implements WebResource{
 				if (pos > (resolution - 1)) {
 					pos = resolution.intValue() - 1;
 				}
-				result.get(activity.getContext().hashCode()).getElements()
-							.set(pos, result.get(activity.getContext().hashCode()).getElements().get(pos) + 1);
-				if (userPerResStep.get(activity.getContext().hashCode()).get(pos) == null)
+				long contextHash = (long)activity.getContext().hashCode();
+				result.get(contextHash).getElements()
+							.set(pos, result.get(contextHash).getElements().get(pos) + 1);
+				if (userPerResStep.get(contextHash).get(pos) == null)
 				{
 					final Set<Long> s = new HashSet<Long>();
 					s.add((long)activity.getPerson().hashCode());
-					userPerResStep.get(activity.getContext().hashCode()).put(pos, s);
+					userPerResStep.get(contextHash).put(pos, s);
 				} else {
-					userPerResStep.get(activity.getContext().hashCode()).get(pos).add((long)activity.getPerson().hashCode());
+					userPerResStep.get(contextHash).get(pos).add((long)activity.getPerson().hashCode());
 				}
 			}
 		}
@@ -178,14 +184,14 @@ public class ActivityTimeWebResource implements WebResource{
 	private void initializeVariables(
 			Map<Long, HashMap<Integer, Set<Long>>> userPerResStep,
 			Map<Long, ResultListLongObject> result, 
-			List<Long> courses, 
+			Set<ED_Context> contexts, 
 			Long resolution, 
 			List<String> resourceTypes ) {
-		ED_Context context = getDemoContext();
+		
 		// Create and initialize array for results
-		for (int j = 0; j < courses.size(); j++)
-		{
-
+		int j=0;
+		for (ED_Context context:contexts)
+		{			
 			final Long[] resArr = new Long[resolution.intValue()];
 			for (int i = 0; i < resArr.length; i++)
 			{
@@ -193,11 +199,12 @@ public class ActivityTimeWebResource implements WebResource{
 			}
 			final List<Long> l = new ArrayList<Long>();
 			Collections.addAll(l, resArr);
-			result.put(courses.get(j), new ResultListLongObject(l));
+			result.put((long)context.hashCode(), new ResultListLongObject(l));
+			j++;
 		}
 
-		for (final Long course : courses) {
-			userPerResStep.put(course, new HashMap<Integer, Set<Long>>());
+		for (final ED_Context context : contexts) {
+			userPerResStep.put((long)context.hashCode(), new HashMap<Integer, Set<Long>>());
 		}
 
 		for (String resourceType : resourceTypes) {
