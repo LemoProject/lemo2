@@ -1,4 +1,4 @@
-package lemo2.dp;
+package de.lemo.analysis.activitytime.dp;
 
 import java.util.ArrayList;
 import java.util.Date;

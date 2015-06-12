@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.BadRequestException;
 
+import de.lemo.analysis.activitytime.dp.*;
+import de.lemo.analysis.activitytime.returntypes.*;
 import de.lemo.rest.api.WebResource;
-import lemo2.dp.*;
-import lemo1.*;
 
 
 @Component

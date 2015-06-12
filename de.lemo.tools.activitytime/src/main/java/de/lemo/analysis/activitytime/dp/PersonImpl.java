@@ -1,4 +1,4 @@
-package lemo2.dp;
+package de.lemo.analysis.activitytime.dp;
 
 public class PersonImpl implements ED_Person {
 

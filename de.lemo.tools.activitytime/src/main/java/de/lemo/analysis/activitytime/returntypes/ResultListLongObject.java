@@ -24,7 +24,7 @@
  * Project Lemo Learning Analytics
  */
 
-package lemo1;
+package de.lemo.analysis.activitytime.returntypes;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
