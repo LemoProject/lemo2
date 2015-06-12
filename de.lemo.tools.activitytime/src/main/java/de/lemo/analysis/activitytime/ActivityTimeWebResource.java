@@ -85,6 +85,12 @@ public class ActivityTimeWebResource implements WebResource{
 		
 		initializeVariables(userPerResStep,result,courses,resolution,resourceTypes);
 		
+		sumActivities(userPerResStep,result,resolution,resourceTypes, startTime, intervall);
+		
+		copyUserPerResStepIntoResult(userPerResStep,result,courses,resolution);
+		
+		final ResultListHashMapObject resultObject = createReturnObject(result);
+		
 		//Map<Long, Long> userMap = StudentHelper.getCourseStudentsAliasKeys(courses, gender);
 		// Set up db-connection
 /*
@@ -124,6 +130,47 @@ public class ActivityTimeWebResource implements WebResource{
 		}
 		*/
 
+		return resultObject;
+	}
+	
+	private ResultListHashMapObject createReturnObject(Map<Long, ResultListLongObject> result) {
+		final ResultListHashMapObject resultObject = new ResultListHashMapObject(result);
+		if ((resultObject != null) && (resultObject.getElements() != null)) {
+			final Set<Long> keySet = resultObject.getElements().keySet();
+			final Iterator<Long> it = keySet.iterator();
+			while (it.hasNext()) 
+			{
+				final Long learnObjectTypeName = it.next();
+				this.logger.info("Result Course IDs: " + learnObjectTypeName);
+			}
+
+		} else {
+			this.logger.info("Returning empty resultset.");
+		}
+		return resultObject;
+	}
+
+	private void copyUserPerResStepIntoResult(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, Map<Long, ResultListLongObject> result, List<Long> courses, Long resolution) {
+		for (final Long c : courses)
+		{
+			for (int i = 0; i < resolution; i++)
+			{
+				if (userPerResStep.get(c).get(i) == null)
+				{
+					result.get(c).getElements().add(0L);
+				} else {
+					result.get(c).getElements().add(Long.valueOf(userPerResStep.get(c).get(i).size()));
+				}
+			}
+		}		
+	}
+
+	private void sumActivities(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
+			Map<Long, ResultListLongObject> result, 
+			Long resolution, 
+			List<String> resourceTypes, 
+			Long startTime, 
+			double intervall) {
 		Set<ED_Context> contexts = dataProvider.getCourses();
 		ED_Context context = null;
 	    for (Iterator<ED_Context> it = contexts.iterator(); it.hasNext(); ) {
@@ -158,36 +205,8 @@ public class ActivityTimeWebResource implements WebResource{
 				}
 			}
 		}
-
-		for (final Long c : courses)
-		{
-			for (int i = 0; i < resolution; i++)
-			{
-				if (userPerResStep.get(c).get(i) == null)
-				{
-					result.get(c).getElements().add(0L);
-				} else {
-					result.get(c).getElements().add(Long.valueOf(userPerResStep.get(c).get(i).size()));
-				}
-			}
-		}
-
-		final ResultListHashMapObject resultObject = new ResultListHashMapObject(result);
-		if ((resultObject != null) && (resultObject.getElements() != null)) {
-			final Set<Long> keySet = resultObject.getElements().keySet();
-			final Iterator<Long> it = keySet.iterator();
-			while (it.hasNext()) 
-			{
-				final Long learnObjectTypeName = it.next();
-				this.logger.info("Result Course IDs: " + learnObjectTypeName);
-			}
-
-		} else {
-			this.logger.info("Returning empty resultset.");
-		}
-		return resultObject;
 	}
-	
+
 	private void initializeVariables(
 			Map<Long, HashMap<Integer, Set<Long>>> userPerResStep,
 			Map<Long, ResultListLongObject> result, 
