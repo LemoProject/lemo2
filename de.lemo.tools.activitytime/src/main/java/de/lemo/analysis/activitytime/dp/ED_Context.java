@@ -4,8 +4,6 @@ import java.util.*;
 
 public interface ED_Context {
 	
-	public long getId();
-	
 	public String getName();
 	
 	public ED_Context getParent();

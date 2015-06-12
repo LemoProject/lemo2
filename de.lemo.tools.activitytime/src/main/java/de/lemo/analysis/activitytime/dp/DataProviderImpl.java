@@ -9,7 +9,7 @@ public class DataProviderImpl implements DataProvider {
 	
 	public DataProviderImpl() {
 		this.courses = new HashSet<ED_Context>();
-		ED_Context context = new ContextImpl(1, "Toll");	
+		ED_Context context = new ContextImpl("Toll");	
 		this.courses.add(context);
 	}
 
