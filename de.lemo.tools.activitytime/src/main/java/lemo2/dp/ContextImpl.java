@@ -24,14 +24,24 @@ public class ContextImpl implements ED_Context {
 		
 		ED_Person person = new PersonImpl();
 		
-		ED_Activity activity = new ActivityImpl();
+		ED_Activity activity = new ActivityImpl(1434025149950L);
 		activity.addObject(object);
 		activity.addContext(this);
 		activity.addPerson(person);
 		activities.add(activity);
 		
-
+		activity = new ActivityImpl(1434025149940L);
+		activity.addObject(object);
+		activity.addContext(this);
+		activity.addPerson(person);
+		activities.add(activity);
 		
+		activity = new ActivityImpl(1434025149930L);
+		activity.addObject(object);
+		activity.addContext(this);
+		activity.addPerson(person);
+		activities.add(activity);
+	
 	}
 
 	@Override

@@ -14,11 +14,16 @@ public class ActivityImpl implements ED_Activity {
 		action = "test";
 		time = (long)(System.currentTimeMillis()-Math.random()*10);
 	}
-
+	
+	public ActivityImpl(long time) {
+		action = "test";
+		this.time = time;
+	}
+	
 	@Override
 	public ED_Person getPerson() {
 		// TODO Auto-generated method stub
-		return null;
+		return person;
 	}
 
 	@Override
