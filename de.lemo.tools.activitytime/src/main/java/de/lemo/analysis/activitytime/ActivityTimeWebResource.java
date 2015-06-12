@@ -49,6 +49,7 @@ public class ActivityTimeWebResource implements WebResource{
 	public String getResult(){
 		String json = "";
 		String xml = "";
+		
 		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,1434025148950L,
 				1434025149951L,10L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
 		logger.info(resultListHashMap.toString());
@@ -64,6 +65,15 @@ public class ActivityTimeWebResource implements WebResource{
 			logger.error("Error converting result list to json", e);
 		}
 		return json;
+	}
+
+	private ED_Context getDemoContext() {
+		Set<ED_Context> contexts = dataProvider.getCourses();
+		ED_Context context = null;
+	    for (Iterator<ED_Context> it = contexts.iterator(); it.hasNext(); ) {
+	    	context = it.next();
+	    }
+		return context;
 	}
 
 	public ResultListHashMapObject computeActivities(final List<Long> courses,
@@ -91,44 +101,7 @@ public class ActivityTimeWebResource implements WebResource{
 		
 		final ResultListHashMapObject resultObject = createReturnObject(result);
 		
-		//Map<Long, Long> userMap = StudentHelper.getCourseStudentsAliasKeys(courses, gender);
-		// Set up db-connection
-/*
-		if (users.isEmpty()) {
-			users = new ArrayList<Long>(userMap.values());
-			if (users.isEmpty()) {
-				// TODO no users in course, maybe send some http error
-				this.logger.debug("No users found for course. Returning empty resultset.");
-				return new ResultListHashMapObject();
-			}
-		}
-		else
-		{
-			List<Long> tmp = new ArrayList<Long>();
-			for(int i = 0; i < users.size(); i++)
-			{
-				tmp.add(userMap.get(users.get(i)));
-			}
-			users = tmp;
-		}
-*/
-
-		
-	
-//		final Map<Long, Long> idToAlias = StudentHelper.getCourseStudentsRealKeys(courses, gender);
-
-
-
-/*		final Criteria criteria = session.createCriteria(ILog.class, "log")
-				.add(Restrictions.in("log.course.id", courses))
-				.add(Restrictions.between("log.timestamp", startTime, endTime))
-				.add(Restrictions.in("log.user.id", users));
-
-		if(!learningObjects.isEmpty())
-		{
-			criteria.add(Restrictions.in("log.learning.id", learningObjects));
-		}
-		*/
+		// Alias keys from StudentHelper class are removed.
 
 		return resultObject;
 	}
@@ -171,37 +144,32 @@ public class ActivityTimeWebResource implements WebResource{
 			List<String> resourceTypes, 
 			Long startTime, 
 			double intervall) {
-		Set<ED_Context> contexts = dataProvider.getCourses();
-		ED_Context context = null;
-	    for (Iterator<ED_Context> it = contexts.iterator(); it.hasNext(); ) {
-	    	context = it.next();
-	    }
 
-//		List<ILog> logs = criteria.list();
-
-		for (ED_Activity log : context.getActivities("test",new Date(),new Date()))
+		ED_Context context = getDemoContext();
+		
+		for (ED_Activity activity : context.getActivities("test",new Date(),new Date()))
 		{
-			logger.info("Activity: "+ log.getObject()+ "at "+log.getTime()+ "added.");
+			logger.info("Activity: "+ activity.getObject()+ "at "+activity.getTime()+ "added.");
 			boolean isInRT = false;
-			if ((resourceTypes != null) && (resourceTypes.size() > 0) && resourceTypes.contains(log.getObject().getType()))
+			if ((resourceTypes != null) && (resourceTypes.size() > 0) && resourceTypes.contains(activity.getObject().getType()))
 			{
 				isInRT = true;
 			}
 			if ((resourceTypes == null) || (resourceTypes.size() == 0) || isInRT)
 			{
-				Integer pos = new Double((log.getTime() - startTime) / intervall).intValue();
+				Integer pos = new Double((activity.getTime() - startTime) / intervall).intValue();
 				if (pos > (resolution - 1)) {
 					pos = resolution.intValue() - 1;
 				}
-				result.get(log.getContext().getId()).getElements()
-							.set(pos, result.get(log.getContext().getId()).getElements().get(pos) + 1);
-				if (userPerResStep.get(log.getContext().getId()).get(pos) == null)
+				result.get(activity.getContext().hashCode()).getElements()
+							.set(pos, result.get(activity.getContext().hashCode()).getElements().get(pos) + 1);
+				if (userPerResStep.get(activity.getContext().hashCode()).get(pos) == null)
 				{
 					final Set<Long> s = new HashSet<Long>();
-					s.add(log.getPerson().getId());
-					userPerResStep.get(log.getContext().getId()).put(pos, s);
+					s.add((long)activity.getPerson().hashCode());
+					userPerResStep.get(activity.getContext().hashCode()).put(pos, s);
 				} else {
-					userPerResStep.get(log.getContext().getId()).get(pos).add(log.getPerson().getId());
+					userPerResStep.get(activity.getContext().hashCode()).get(pos).add((long)activity.getPerson().hashCode());
 				}
 			}
 		}
@@ -213,6 +181,7 @@ public class ActivityTimeWebResource implements WebResource{
 			List<Long> courses, 
 			Long resolution, 
 			List<String> resourceTypes ) {
+		ED_Context context = getDemoContext();
 		// Create and initialize array for results
 		for (int j = 0; j < courses.size(); j++)
 		{
