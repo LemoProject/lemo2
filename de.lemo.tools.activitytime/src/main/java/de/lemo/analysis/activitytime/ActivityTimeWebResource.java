@@ -14,8 +14,6 @@ import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -30,7 +28,10 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.BadRequestException;
 
 import de.lemo.analysis.activitytime.dp.*;
-import de.lemo.analysis.activitytime.returntypes.*;
+import de.lemo.analysis.activitytime.returntypes.ActivityTimeList;
+import de.lemo.analysis.activitytime.returntypes.ActivityTimeResult;
+import de.lemo.analysis.activitytime.returntypes.ResultListHashMapObject;
+import de.lemo.analysis.activitytime.returntypes.ResultListLongObject;
 import de.lemo.rest.api.WebResource;
 
 
@@ -52,12 +53,14 @@ public class ActivityTimeWebResource implements WebResource{
 		
 		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,1434025148950L,
 				1434025149951L,10L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
-		logger.info(resultListHashMap.toString());
+		
+		
+		ActivityTimeResult result = new ActivityTimeResult(resultListHashMap);
 		try {
-			JAXBContext jc = JAXBContext.newInstance(ResultListHashMapObject.class);
+			JAXBContext jc = JAXBContext.newInstance(ActivityTimeResult.class);
 			Marshaller m = jc.createMarshaller();
 			ByteArrayOutputStream bost = new ByteArrayOutputStream();
-			m.marshal( resultListHashMap, bost );
+			m.marshal( result, bost );
 			xml = bost.toString();
 	        JSONObject xmlJSONObj = XML.toJSONObject(xml);
 	        json = xmlJSONObj.toString(); 
