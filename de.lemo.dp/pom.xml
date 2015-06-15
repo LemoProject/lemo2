@@ -81,7 +81,6 @@
 								de.lemo.dp.umed.interfaces;version="0.1.0",
 								de.lemo.dp.umed.adapters;version="0.1.0"
 							</Export-Package>
-							<Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
 						</instructions>
 					</configuration>
 				</plugin>
