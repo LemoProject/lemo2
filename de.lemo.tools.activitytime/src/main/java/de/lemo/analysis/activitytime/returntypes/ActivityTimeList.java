@@ -18,14 +18,16 @@ public class ActivityTimeList{
 		
 	}
 	
-	public ActivityTimeList(List<Long> list, String key) {
+	public ActivityTimeList(List<Long> list, String key, long startDate, double intervall) {
 		this.key = key;
 		long[] valuePair = null;
+		int i = 0;
 		for(Long longObject : list){
 			valuePair = new long[2];
-			valuePair[0] =  0L;
+			valuePair[0] =  startDate + (long)(intervall*i);
 			valuePair[1] =  longObject;
 			this.values.add(valuePair);
+			i++;
 		}
 	}
 	

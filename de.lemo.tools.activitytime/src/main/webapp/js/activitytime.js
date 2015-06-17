@@ -3,7 +3,8 @@
   d3custom.run = function() {
 
     var data = d3custom.data;
-    var locale = data.pop();
+ //   var locale = data.pop();
+    var locale =  JSON.parse('{"locale" : "%m.%d.%Y","currentlyVisible" : "Currently visible data","exportString" : "Choose the data to download as CSV file.","loadedData" : "All loaded data","close" : "Close"}');
     
     nv.addGraph(function() {
       var chart = nv.models.lineWithFocusChart().x(function(d) {

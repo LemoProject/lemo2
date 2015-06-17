@@ -43,6 +43,7 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityTimeWebResource.class);
 	private DataProvider dataProvider = new DataProviderImpl();
+	private double intervall;
 	
 	@GET
 //	@Produces(MediaType.APPLICATION_JSON)
@@ -50,12 +51,12 @@ public class ActivityTimeWebResource implements WebResource{
 	public String getResult(){
 		String json = "";
 		String xml = "";
-		
-		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,1434025148950L,
+		Long startDate = 1434025148950L;
+		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,startDate,
 				1434025149951L,10L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
 		
 		
-		ActivityTimeResult result = new ActivityTimeResult(resultListHashMap);
+		ActivityTimeResult result = new ActivityTimeResult(resultListHashMap, startDate, intervall);
 		try {
 			JAXBContext jc = JAXBContext.newInstance(ActivityTimeResult.class);
 			Marshaller m = jc.createMarshaller();
@@ -94,7 +95,7 @@ public class ActivityTimeWebResource implements WebResource{
 		validateTimestamps(startTime, endTime, resolution);
 
 		// Calculate size of time intervalls
-		final double intervall = (endTime - startTime) / (resolution);
+		this.intervall = (endTime - startTime) / (resolution);
 		
 		initializeVariables(userPerResStep,result,dataProvider.getCourses(),resolution,resourceTypes);
 		
