@@ -4,7 +4,7 @@
 
     var data = d3custom.data;
     var locale = data.pop();
-    
+ 
     nv.addGraph(function() {
       var chart = nv.models.lineWithFocusChart().x(function(d) {
         return d[0];
