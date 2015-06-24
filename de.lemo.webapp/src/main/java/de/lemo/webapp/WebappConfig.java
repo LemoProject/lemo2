@@ -1,12 +1,23 @@
 package de.lemo.webapp;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Dictionary;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
@@ -23,9 +34,14 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.ops4j.pax.web.extender.whiteboard.ResourceMapping;
 import org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import de.lemo.tools.api.AnalyticsTool;
 import freemarker.cache.ClassTemplateLoader;
@@ -82,7 +98,23 @@ public class WebappConfig {
 		resourceMappingServiceRegistration = bundleContext.registerService(ResourceMapping.class.getName(), resourceMapping, null);
 
 		logger.info("resourcemapping initialized");
+		
+		Dictionary filterProps = new Hashtable();
+		String[] urls = {"/*"};
+		filterProps.put("filter-name", "Spring Security Filter");
+		filterProps.put("urlPatterns", urls);
+		filterProps.put("servlet-name", name);
+		bundleContext.registerService(Filter.class.getName(), new DelegatingFilterProxy(), filterProps );
+		
+		logger.info("filter chain initialized");
+		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContainer.getServletContext());
+		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(applicationContext);
 
+		Dictionary listenerProps = new Hashtable();
+		listenerProps.put("listener-name", "Spring Security Listener");
+		listenerProps.put("servlet-name", name);
+		bundleContext.addServiceListener((ServiceListener) contextLoaderListener);		
+		logger.info("contextloaderlistener initialized");
 	}
 
 	@Invalidate
@@ -149,7 +181,7 @@ public class WebappConfig {
 		resourceConfig.packages("de.lemo.webapp");
 
 		resourceConfig.register(new ApplicationBinder());
-
+		
 		Configuration freemarkerConfiguration = createFreemarkerConiguration();
 		resourceConfig.property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, freemarkerConfiguration);
 		resourceConfig.property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/templates");
@@ -187,6 +219,34 @@ public class WebappConfig {
 		protected void configure() {
 			bind(WebappConfig.this).to(WebappConfig.class);
 		}
+	}
+	
+	private class SpringFilterChain implements Filter {
+		private FilterConfig filterConfig = null;
+		@Override
+		public void init(FilterConfig filterConfig) throws ServletException {
+			this.filterConfig = filterConfig;			
+		}
+
+		@Override
+		public void doFilter(ServletRequest request, ServletResponse response,
+				FilterChain chain) throws IOException, ServletException {
+    	      if (filterConfig == null)
+    	         return;
+    	      StringWriter sw = new StringWriter();
+    	      PrintWriter writer = new PrintWriter(sw);
+    	      logger.error("Filter reched!");
+    	      filterConfig.getServletContext().
+    	         log(sw.getBuffer().toString());
+    	      chain.doFilter(request, response);			
+		}
+
+		@Override
+		public void destroy() {
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 
 }
