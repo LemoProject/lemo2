@@ -92,7 +92,7 @@ public class JDBC_Activity implements ED_Activity {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,REFERENCE from d4la_activity");
+			sb.append("SELECT ID,REFERENCE from d4la_activity ");
 			sb.append("WHERE REFERENCE IS NOT NULL");
 			rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {

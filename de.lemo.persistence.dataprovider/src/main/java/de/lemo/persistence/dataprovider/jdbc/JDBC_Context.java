@@ -214,7 +214,7 @@ public class JDBC_Context implements ED_Context {
 		}
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,PERSON,OBJECT,TIME,ACTION,INFO FROM d4la_activity");
+			sb.append("SELECT ID,PERSON,OBJECT,TIME,ACTION,INFO FROM d4la_activity ");
 			sb.append("WHERE CONTEXT IN (");
 			boolean first = true;
 			for ( Long cid : contextIds ) {
@@ -222,7 +222,7 @@ public class JDBC_Context implements ED_Context {
 				else sb.append(" , ");
 				sb.append(cid.longValue());
 			}
-			sb.append(" ) ORDER BY TIME ASC");
+			sb.append(") ORDER BY TIME ASC");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
 				Long aid = new Long(rs.getLong(1));

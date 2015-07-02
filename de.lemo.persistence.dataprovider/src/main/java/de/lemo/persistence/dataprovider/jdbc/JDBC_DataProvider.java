@@ -16,8 +16,8 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	static private final String DRIVER = "com.mysql.jdbc.Driver";
 	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle";
-	static private final String USER = "root";
-	static private final String PASSWORD = "";
+	static private final String USER = "lemo";
+	static private final String PASSWORD = "lemo1234";
 	
 	public Set<ED_Context> getCourses() {
 		Set<ED_Context> courses = new HashSet<ED_Context>();
