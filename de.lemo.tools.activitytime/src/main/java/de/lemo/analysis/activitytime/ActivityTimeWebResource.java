@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +19,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.json.JSONObject;
 import org.json.XML;
 import org.slf4j.Logger;
@@ -27,11 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.BadRequestException;
 
-import de.lemo.analysis.activitytime.dp.*;
-import de.lemo.analysis.activitytime.returntypes.ActivityTimeList;
 import de.lemo.analysis.activitytime.returntypes.ActivityTimeResult;
 import de.lemo.analysis.activitytime.returntypes.ResultListHashMapObject;
 import de.lemo.analysis.activitytime.returntypes.ResultListLongObject;
+import de.lemo.persistence.dataprovider.DataProvider;
+import de.lemo.persistence.dataprovider.ED_Activity;
+import de.lemo.persistence.dataprovider.ED_Context;
 import de.lemo.rest.api.WebResource;
 
 
@@ -41,8 +42,10 @@ import de.lemo.rest.api.WebResource;
 @Path("tools/activitytime")
 public class ActivityTimeWebResource implements WebResource{
 
+	@Requires
+	private DataProvider dataProvider;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ActivityTimeWebResource.class);
-	private DataProvider dataProvider = new DataProviderImpl();
 	private double intervall;
 	
 	@GET
@@ -118,11 +121,11 @@ public class ActivityTimeWebResource implements WebResource{
 			while (it.hasNext()) 
 			{
 				final Long learnObjectTypeName = it.next();
-				this.logger.info("Result Course IDs: " + learnObjectTypeName);
+				ActivityTimeWebResource.logger.info("Result Course IDs: " + learnObjectTypeName);
 			}
 
 		} else {
-			this.logger.info("Returning empty resultset.");
+			ActivityTimeWebResource.logger.info("Returning empty resultset.");
 		}
 		return resultObject;
 	}
@@ -156,7 +159,7 @@ public class ActivityTimeWebResource implements WebResource{
 
 		ED_Context context = getDemoContext();
 		
-		for (ED_Activity activity : context.getActivities("test",new Date(),new Date()))
+		for (ED_Activity activity : context.getActivities())
 		{
 			logger.info("Activity: "+ activity.getObject()+ "at "+activity.getTime()+ "added.");
 			boolean isInRT = false;

@@ -49,9 +49,11 @@
 					<artifactId>maven-bundle-plugin</artifactId>
 					<configuration>
 						<instructions>
+							<Import-Package>
+							<!--  com.mysql.jdbc.Driver;version="[5.1.35)", -->	
+							</Import-Package>
 							<Export-Package>
-								de.lemo.persistence.umed.entities;version="0.1.0",
-								de.lemo.persistence.umed.metamodels;version="0.1.0",
+								de.lemo.persistence.dataprovider;version="0.1.0",
 							</Export-Package>
 						</instructions>
 					</configuration>

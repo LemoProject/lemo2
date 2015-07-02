@@ -6,8 +6,18 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.lemo.persistence.dataprovider.*;
 
+
+@Component
+@Instantiate
+@Provides
 public class JDBC_DataProvider implements DataProvider {
 
 	static private boolean INITIALIZED = false;
@@ -18,6 +28,9 @@ public class JDBC_DataProvider implements DataProvider {
 	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle";
 	static private final String USER = "lemo";
 	static private final String PASSWORD = "lemo1234";
+	
+	private static final Logger logger = LoggerFactory.getLogger(JDBC_DataProvider.class);
+
 	
 	public Set<ED_Context> getCourses() {
 		Set<ED_Context> courses = new HashSet<ED_Context>();
@@ -34,7 +47,9 @@ public class JDBC_DataProvider implements DataProvider {
 				courseIds.add(cid);
 				idName.put(cid, rs.getString(2));
 			}			
-		} catch ( Exception e ) { e.printStackTrace(); }
+		} catch ( Exception e ) { 
+			logger.error("Error during first access to courses", e);
+		}
 		for ( Long cid : courseIds ) {
 			courses.add(new JDBC_Context(cid, idName.get(cid)));
 		}
@@ -63,7 +78,9 @@ public class JDBC_DataProvider implements DataProvider {
 				idName.put(cid, rs.getString(2));
 			}
 			rs.close();
-		} catch ( Exception e ) { e.printStackTrace(); }
+		} catch ( Exception e ) { 
+			logger.error("Error while querrying courses by instructor",e);
+		}
 		for ( Long cid : courseIds ) {
 			courses.add(new JDBC_Context(cid, idName.get(cid)));
 		}
@@ -89,7 +106,9 @@ public class JDBC_DataProvider implements DataProvider {
 				Class.forName(DRIVER);
 				INITIALIZED = true;
 			}
-			catch ( Exception e ) { e.printStackTrace(); }
+			catch ( Exception e ) { 
+				logger.error("Error executing sql-query", e);
+			}
 		}
 		if ( CONNECTION == null ) {
 			CONNECTION = DriverManager.getConnection(URI, USER, PASSWORD);
@@ -103,7 +122,9 @@ public class JDBC_DataProvider implements DataProvider {
 			try {
 				CONNECTION.close();
 				CONNECTION = null;
-			} catch ( Exception e ) { e.printStackTrace(); }
+			} catch ( Exception e ) { 
+				logger.error("Error closing jdbc connection", e);
+			}
 		}
 	}
 	
