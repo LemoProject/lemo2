@@ -24,7 +24,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
 		requestContext.setSecurityContext(securityContext);
 
-//		logger.info("############## FILTER");
+		logger.info("############## FILTER");
 	}
 
 }

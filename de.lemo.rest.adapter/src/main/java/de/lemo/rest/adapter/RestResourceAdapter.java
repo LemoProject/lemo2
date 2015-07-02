@@ -67,7 +67,6 @@ public class RestResourceAdapter {
 			Bundle resourceBundle = FrameworkUtil.getBundle(webResource.getClass());
 			BundleContext resourceBundleContext = resourceBundle.getBundleContext();
 			ResourceHttpContext resourceHttpContext = new ResourceHttpContext(resourceBundleContext);
-
 			try {
 				httpService.registerResources("/lemo/" + path + "/assets", "Bundle" + resourceBundle.getBundleId() + "-Resources", resourceHttpContext);
 			} catch (NamespaceException e) {
@@ -140,7 +139,7 @@ public class RestResourceAdapter {
 
 		// security
 		resourceConfig.register(RolesAllowedDynamicFeature.class);
-		resourceConfig.packages("de.lemo.server.auth");
+		resourceConfig.packages("de.lemo.rest.adapter.auth");
 		resourceConfig.registerInstances(new PluginListening(this));
 
 		for (WebResource resourceInstance : resourceInstances) {
