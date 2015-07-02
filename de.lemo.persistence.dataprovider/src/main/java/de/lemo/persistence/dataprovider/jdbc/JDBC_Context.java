@@ -5,7 +5,7 @@ import de.lemo.persistence.dataprovider.*;
 import java.sql.ResultSet;
 import java.util.*;
 
-public class JDBC_Context implements ED_Context {
+public class JDBC_Context implements LA_Context {
 	
 	/**
 	 * all instantiated learning contexts, referenced by database ID
@@ -15,12 +15,12 @@ public class JDBC_Context implements ED_Context {
 	private Long _cid;
 	private String _name;
 	private String _descriptor;
-	private ED_Context _parent = null;
-	private List<ED_Context> _children = new ArrayList<ED_Context>();
-	private Set<ED_Person> _students = null;
-	private Set<ED_Person> _instructors = null;
-	private List<ED_Object> _objects = null;
-	private List<ED_Activity> _activities = null;
+	private LA_Context _parent = null;
+	private List<LA_Context> _children = new ArrayList<LA_Context>();
+	private Set<LA_Person> _students = null;
+	private Set<LA_Person> _instructors = null;
+	private List<LA_Object> _objects = null;
+	private List<LA_Activity> _activities = null;
 	
 	private Map<String,String> _extAttributes = new HashMap<String,String>();
 	
@@ -70,36 +70,36 @@ public class JDBC_Context implements ED_Context {
 		return _descriptor;
 	}
 	
-	public ED_Context getParent() {
+	public LA_Context getParent() {
 		return _parent;
 	}
 	
-	public List<ED_Context> getChildren() {
+	public List<LA_Context> getChildren() {
 		return _children;
 	}
 	
-	public List<ED_Object> getObjects() {
+	public List<LA_Object> getObjects() {
 		if ( _objects == null ) {
 			initContents();
 		}
 		return _objects;
 	}
 			
-	public Set<ED_Person> getStudents() {
+	public Set<LA_Person> getStudents() {
 		if ( _students == null ) {
 			initContents();
 		}
 		return _students;
 	}
 			
-	public Set<ED_Person> getInstructors() {
+	public Set<LA_Person> getInstructors() {
 		if ( _instructors == null ) {
 			initContents();
 		}
 		return _instructors;
 	}
 	
-	public List<ED_Activity> getActivities() {
+	public List<LA_Activity> getActivities() {
 		if ( _activities == null ) {
 			initContents();
 		}
@@ -107,7 +107,7 @@ public class JDBC_Context implements ED_Context {
 	}
 	
 	private void initInstructors() {
-		_instructors = new HashSet<ED_Person>();
+		_instructors = new HashSet<LA_Person>();
 		List<Long> personIds = new ArrayList<>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
@@ -131,7 +131,7 @@ public class JDBC_Context implements ED_Context {
 			}
 			_instructors.add(person);
 		}
-		for ( ED_Context child : _children ) {
+		for ( LA_Context child : _children ) {
 			JDBC_Context c = (JDBC_Context) child;
 			c.initInstructors();
 			_instructors.addAll(c._instructors);
@@ -139,7 +139,7 @@ public class JDBC_Context implements ED_Context {
 	}
 	
 	private void initStudents() {
-		_students = new HashSet<ED_Person>();
+		_students = new HashSet<LA_Person>();
 		List<Long> personIds = new ArrayList<>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
@@ -163,7 +163,7 @@ public class JDBC_Context implements ED_Context {
 			}
 			_students.add(person);
 		}
-		for ( ED_Context child : _children ) {
+		for ( LA_Context child : _children ) {
 			JDBC_Context c = (JDBC_Context) child;
 			c.initStudents();
 			_students.addAll(c._students);
@@ -171,7 +171,7 @@ public class JDBC_Context implements ED_Context {
 	}
 	
 	private void initObjects() {
-		_objects = new ArrayList<ED_Object>();
+		_objects = new ArrayList<LA_Object>();
 		List<Long> objectIds = new ArrayList<Long>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		Map<Long,String> idType = new HashMap<Long,String>();
@@ -197,7 +197,7 @@ public class JDBC_Context implements ED_Context {
 			}
 			_objects.add(object);
 		}
-		for ( ED_Context child : _children ) {
+		for ( LA_Context child : _children ) {
 			JDBC_Context c = (JDBC_Context) child;
 			c.initObjects();
 			_objects.addAll(c._objects);
@@ -205,10 +205,10 @@ public class JDBC_Context implements ED_Context {
 	}
 	
 	private Set<Long> initActivities() {
-		_activities = new ArrayList<ED_Activity>();
+		_activities = new ArrayList<LA_Activity>();
 		Set<Long> contextIds = new HashSet<Long>();
 		contextIds.add(_cid);
-		for ( ED_Context c : _children ) {
+		for ( LA_Context c : _children ) {
 			JDBC_Context child = (JDBC_Context) c;
 			contextIds.addAll(child.initActivities());
 		}

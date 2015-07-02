@@ -31,8 +31,8 @@ import de.lemo.analysis.activitytime.returntypes.ActivityTimeResult;
 import de.lemo.analysis.activitytime.returntypes.ResultListHashMapObject;
 import de.lemo.analysis.activitytime.returntypes.ResultListLongObject;
 import de.lemo.persistence.dataprovider.DataProvider;
-import de.lemo.persistence.dataprovider.ED_Activity;
-import de.lemo.persistence.dataprovider.ED_Context;
+import de.lemo.persistence.dataprovider.LA_Activity;
+import de.lemo.persistence.dataprovider.LA_Context;
 import de.lemo.rest.api.WebResource;
 
 
@@ -74,10 +74,10 @@ public class ActivityTimeWebResource implements WebResource{
 		return json;
 	}
 
-	private ED_Context getDemoContext() {
-		Set<ED_Context> contexts = dataProvider.getCourses();
-		ED_Context context = null;
-	    for (Iterator<ED_Context> it = contexts.iterator(); it.hasNext(); ) {
+	private LA_Context getDemoContext() {
+		Set<LA_Context> contexts = dataProvider.getCourses();
+		LA_Context context = null;
+	    for (Iterator<LA_Context> it = contexts.iterator(); it.hasNext(); ) {
 	    	context = it.next();
 	    }
 		return context;
@@ -132,9 +132,9 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private void copyUserPerResStepIntoResult(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
 			Map<Long, ResultListLongObject> result, 
-			Set<ED_Context> set, 
+			Set<LA_Context> set, 
 			Long resolution) {
-		for (final ED_Context context : set)
+		for (final LA_Context context : set)
 		{
 			long contextHash = (long)context.hashCode();
 			for (int i = 0; i < resolution; i++)
@@ -151,15 +151,15 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private void sumActivities(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
 			Map<Long, ResultListLongObject> result, 
-			Set<ED_Context> set, 
+			Set<LA_Context> set, 
 			Long resolution, 
 			List<String> resourceTypes, 
 			Long startTime, 
 			double intervall) {
 
-		ED_Context context = getDemoContext();
+		LA_Context context = getDemoContext();
 		
-		for (ED_Activity activity : context.getActivities())
+		for (LA_Activity activity : context.getActivities())
 		{
 			logger.info("Activity: "+ activity.getObject()+ "at "+activity.getTime()+ "added.");
 			boolean isInRT = false;
@@ -191,13 +191,13 @@ public class ActivityTimeWebResource implements WebResource{
 	private void initializeVariables(
 			Map<Long, HashMap<Integer, Set<Long>>> userPerResStep,
 			Map<Long, ResultListLongObject> result, 
-			Set<ED_Context> contexts, 
+			Set<LA_Context> contexts, 
 			Long resolution, 
 			List<String> resourceTypes ) {
 		
 		// Create and initialize array for results
 		int j=0;
-		for (ED_Context context:contexts)
+		for (LA_Context context:contexts)
 		{			
 			final Long[] resArr = new Long[resolution.intValue()];
 			for (int i = 0; i < resArr.length; i++)
@@ -210,7 +210,7 @@ public class ActivityTimeWebResource implements WebResource{
 			j++;
 		}
 
-		for (final ED_Context context : contexts) {
+		for (final LA_Context context : contexts) {
 			userPerResStep.put((long)context.hashCode(), new HashMap<Integer, Set<Long>>());
 		}
 

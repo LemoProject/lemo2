@@ -26,14 +26,14 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	static private final String DRIVER = "com.mysql.jdbc.Driver";
 	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle";
-	static private final String USER = "lemo";
-	static private final String PASSWORD = "lemo1234";
+	static private final String USER = "root";
+	static private final String PASSWORD = "";
 	
 	private static final Logger logger = LoggerFactory.getLogger(JDBC_DataProvider.class);
 
 	
-	public Set<ED_Context> getCourses() {
-		Set<ED_Context> courses = new HashSet<ED_Context>();
+	public Set<LA_Context> getCourses() {
+		Set<LA_Context> courses = new HashSet<LA_Context>();
 		List<Long> courseIds = new ArrayList<Long>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		StringBuffer sb;
@@ -57,8 +57,8 @@ public class JDBC_DataProvider implements DataProvider {
 		return courses;
 	}
 	
-	public Set<ED_Context> getCoursesByInstructor(String instructor) {
-		Set<ED_Context> courses = new HashSet<ED_Context>();
+	public Set<LA_Context> getCoursesByInstructor(String instructor) {
+		Set<LA_Context> courses = new HashSet<LA_Context>();
 		List<Long> courseIds = new ArrayList<Long>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		StringBuffer sb;
@@ -88,15 +88,15 @@ public class JDBC_DataProvider implements DataProvider {
 		return courses;
 	}
 	
-	public ED_Context getContext(String descriptor) {
+	public LA_Context getContext(String descriptor) {
 		return JDBC_Context.findByDescriptor(descriptor);
 	}
 	
-	public ED_Person getPerson(String descriptor) {
+	public LA_Person getPerson(String descriptor) {
 		return JDBC_Person.findByDescriptor(descriptor);
 	}
 	
-	public ED_Object getObject(String descriptor) {
+	public LA_Object getObject(String descriptor) {
 		return JDBC_Object.findByDescriptor(descriptor);
 	}
 	

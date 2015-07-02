@@ -2,7 +2,7 @@ package de.lemo.persistence.dataprovider;
 
 import java.util.Set;
 
-public interface ED_Person {
+public interface LA_Person {
 	
 	public String getName();
 	

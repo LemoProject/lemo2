@@ -3,7 +3,7 @@ package de.lemo.persistence.dataprovider;
 import java.util.Set;
 import java.util.List;
 
-public interface ED_Object {
+public interface LA_Object {
 		
 	public String getName();
 	
@@ -15,8 +15,8 @@ public interface ED_Object {
 
 	public String getExtAttribute(String attr);
 	
-	public ED_Object getParent();
+	public LA_Object getParent();
 	
-	public List<ED_Object> getChildren();
+	public List<LA_Object> getChildren();
 
 }

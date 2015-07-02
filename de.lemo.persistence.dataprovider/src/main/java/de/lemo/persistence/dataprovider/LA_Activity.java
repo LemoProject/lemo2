@@ -2,7 +2,7 @@ package de.lemo.persistence.dataprovider;
 
 import java.util.Set;
 
-public interface ED_Activity {
+public interface LA_Activity {
 	
 	public long getTime();
 	
@@ -14,12 +14,12 @@ public interface ED_Activity {
 	
 	public String getExtAttribute(String attr);
 			
-	public ED_Activity getReference();
+	public LA_Activity getReference();
 	
-	public ED_Person getPerson();
+	public LA_Person getPerson();
 	
-	public ED_Context getContext();
+	public LA_Context getContext();
 	
-	public ED_Object getObject();
+	public LA_Object getObject();
 	
 }
