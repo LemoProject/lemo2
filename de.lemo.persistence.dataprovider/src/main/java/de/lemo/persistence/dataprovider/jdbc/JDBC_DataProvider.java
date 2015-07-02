@@ -27,7 +27,7 @@ public class JDBC_DataProvider implements DataProvider {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM D4LA_CONTEXT WHERE PARENT IS NULL");
+			sb.append("SELECT ID,NAME FROM d4la_context WHERE PARENT IS NULL");
 			rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
 				Long cid = new Long(rs.getLong(1));
@@ -50,9 +50,9 @@ public class JDBC_DataProvider implements DataProvider {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM D4LA_CONTEXT WHERE PARENT IS NULL ");
-			sb.append("AND ID IN (SELECT CONTEXT FROM D4LA_PERSON_CONTEXT ");
-			sb.append("WHERE PERSON IN (SELECT ID FROM D4LA_PERSON_EXT ");
+			sb.append("SELECT ID,NAME FROM d4la_context WHERE PARENT IS NULL ");
+			sb.append("AND ID IN (SELECT CONTEXT FROM d4la_person_context");
+			sb.append("WHERE PERSON IN (SELECT ID FROM d4la_person_ext");
 			sb.append("WHERE ATTR = 'login' AND VALUE = '");
 			sb.append(instructor);
 			sb.append("'))");

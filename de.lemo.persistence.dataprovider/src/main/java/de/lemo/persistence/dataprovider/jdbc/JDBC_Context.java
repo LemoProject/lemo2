@@ -34,7 +34,7 @@ public class JDBC_Context implements ED_Context {
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM D4LA_CONTEXT WHERE PARENT=");
+			sb.append("SELECT ID,NAME FROM d4la_context WHERE PARENT=");
 			sb.append(cid.longValue());
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
@@ -112,8 +112,8 @@ public class JDBC_Context implements ED_Context {
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM D4LA_PERSON WHERE ID IN ");
-			sb.append("(SELECT PERSON FROM D4LA_PERSON_CONTEXT WHERE CONTEXT = ");
+			sb.append("SELECT ID,NAME FROM d4la_person WHERE ID IN ");
+			sb.append("(SELECT PERSON FROM d4la_person_context WHERE CONTEXT = ");
 			sb.append(_cid.longValue());
 			sb.append(" AND ROLE = 'instructor')");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
@@ -144,8 +144,8 @@ public class JDBC_Context implements ED_Context {
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM D4LA_PERSON WHERE ID IN ");
-			sb.append("(SELECT PERSON FROM D4LA_PERSON_CONTEXT WHERE CONTEXT = ");
+			sb.append("SELECT ID,NAME FROM d4la_person WHERE ID IN ");
+			sb.append("(SELECT PERSON FROM d4la_person_context WHERE CONTEXT = ");
 			sb.append(_cid.longValue());
 			sb.append(" AND ROLE = 'student')");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
@@ -177,8 +177,8 @@ public class JDBC_Context implements ED_Context {
 		Map<Long,String> idType = new HashMap<Long,String>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,NAME,TYPE FROM D4LA_OBJECT WHERE ID IN ");
-			sb.append("(SELECT OBJECT FROM D4LA_OBJECT_CONTEXT WHERE CONTEXT = ");
+			sb.append("SELECT ID,NAME,TYPE FROM d4la_object WHERE ID IN ");
+			sb.append("(SELECT OBJECT FROM d4la_object_context WHERE CONTEXT = ");
 			sb.append(_cid.longValue());
 			sb.append(")");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
@@ -214,7 +214,7 @@ public class JDBC_Context implements ED_Context {
 		}
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,PERSON,OBJECT,TIME,ACTION,INFO FROM D4LA_ACTIVITY ");
+			sb.append("SELECT ID,PERSON,OBJECT,TIME,ACTION,INFO FROM d4la_activity");
 			sb.append("WHERE CONTEXT IN (");
 			boolean first = true;
 			for ( Long cid : contextIds ) {
@@ -259,7 +259,7 @@ public class JDBC_Context implements ED_Context {
 	
 	static void initExtAttributes() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ATTR,VALUE,CONTEXT FROM D4LA_CONTEXT_EXT");
+		sb.append("SELECT ATTR,VALUE,CONTEXT FROM d4la_context_ext");
 		try {
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {

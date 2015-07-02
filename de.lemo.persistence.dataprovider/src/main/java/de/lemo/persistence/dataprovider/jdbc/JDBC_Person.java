@@ -40,7 +40,7 @@ public class JDBC_Person implements ED_Person {
 	
 	static void initExtAttributes() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ATTR,VALUE,PERSON FROM D4LA_PERSON_EXT");
+		sb.append("SELECT ATTR,VALUE,PERSON FROM d4la_person_ext");
 		try {
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {

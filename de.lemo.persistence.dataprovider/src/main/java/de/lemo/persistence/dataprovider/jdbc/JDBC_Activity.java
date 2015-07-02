@@ -74,7 +74,7 @@ public class JDBC_Activity implements ED_Activity {
 	
 	static void initExtAttributes() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ATTR,VALUE,ACTIVITY FROM D4LA_ACTIVITY_EXT");
+		sb.append("SELECT ATTR,VALUE,ACTIVITY FROM d4la_activity_ext");
 		try {
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
@@ -92,7 +92,7 @@ public class JDBC_Activity implements ED_Activity {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,REFERENCE from D4LA_ACTIVITY ");
+			sb.append("SELECT ID,REFERENCE from d4la_activity");
 			sb.append("WHERE REFERENCE IS NOT NULL");
 			rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
