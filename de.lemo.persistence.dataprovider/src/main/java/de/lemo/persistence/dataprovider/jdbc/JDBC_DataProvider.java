@@ -12,6 +12,8 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mysql.jdbc.Driver;
+
 import de.lemo.persistence.dataprovider.*;
 
 
@@ -101,16 +103,9 @@ public class JDBC_DataProvider implements DataProvider {
 	}
 	
 	static ResultSet executeQuery(String sql) throws Exception {
-		if ( ! INITIALIZED ) {
-			try {
-				Class.forName(DRIVER);
-				INITIALIZED = true;
-			}
-			catch ( Exception e ) { 
-				logger.error("Error executing sql-query", e);
-			}
-		}
 		if ( CONNECTION == null ) {
+			Driver driver = new Driver();
+			DriverManager.registerDriver(driver);
 			CONNECTION = DriverManager.getConnection(URI, USER, PASSWORD);
 			STATEMENT = CONNECTION.createStatement();
 		}
