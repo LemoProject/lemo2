@@ -55,8 +55,10 @@ public class ActivityTimeWebResource implements WebResource{
 		String json = "";
 		String xml = "";
 		Long startDate = 1434025148950L;
-		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,startDate,
-				1434025149951L,10L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
+		Long startDate2 = new Long(1432001445);
+		Long endDate2 = new Long(1432091445);
+		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,startDate2,
+				endDate2,1000L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
 		
 		
 		ActivityTimeResult result = new ActivityTimeResult(resultListHashMap, startDate, intervall);
@@ -136,6 +138,7 @@ public class ActivityTimeWebResource implements WebResource{
 			Long resolution) {
 		for (final LA_Context context : set)
 		{
+			try{
 			long contextHash = (long)context.hashCode();
 			for (int i = 0; i < resolution; i++)
 			{
@@ -145,6 +148,9 @@ public class ActivityTimeWebResource implements WebResource{
 				} else {
 					result.get(contextHash).getElements().add(Long.valueOf(userPerResStep.get(contextHash).get(i).size()));
 				}
+			}
+			} catch(Exception e){
+				logger.error("UserPerRes copy error ", e);
 			}
 		}		
 	}
@@ -161,7 +167,8 @@ public class ActivityTimeWebResource implements WebResource{
 		
 		for (LA_Activity activity : context.getActivities())
 		{
-			logger.info("Activity: "+ activity.getObject()+ "at "+activity.getTime()+ "added.");
+			logger.info("Activity: "+ activity.getObject()+ " at "+activity.getTime()+ " added.");
+			if(activity.getObject()!=null && activity.getContext()!=null && activity.getPerson()!=null){
 			boolean isInRT = false;
 			if ((resourceTypes != null) && (resourceTypes.size() > 0) && resourceTypes.contains(activity.getObject().getType()))
 			{
@@ -185,6 +192,7 @@ public class ActivityTimeWebResource implements WebResource{
 					userPerResStep.get(contextHash).get(pos).add((long)activity.getPerson().hashCode());
 				}
 			}
+		}
 		}
 	}
 
