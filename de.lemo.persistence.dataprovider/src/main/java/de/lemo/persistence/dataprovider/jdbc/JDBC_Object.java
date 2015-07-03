@@ -5,7 +5,7 @@ import de.lemo.persistence.dataprovider.*;
 import java.sql.ResultSet;
 import java.util.*;
 
-public class JDBC_Object implements ED_Object {
+public class JDBC_Object implements LA_Object {
 	
 	/**
 	 * all instantiated learning objects, referenced by database ID
@@ -15,8 +15,8 @@ public class JDBC_Object implements ED_Object {
 	private String _name;
 	private String _descriptor;
 	private String _type;
-	ED_Object _parent = null;
-	List<ED_Object> _children = new ArrayList<ED_Object>();
+	LA_Object _parent = null;
+	List<LA_Object> _children = new ArrayList<LA_Object>();
 	
 	private Map<String,String> _extAttributes = new HashMap<String,String>();
 	
@@ -71,11 +71,11 @@ public class JDBC_Object implements ED_Object {
 		return _extAttributes.get(attr);
 	}
 	
-	public ED_Object getParent() {
+	public LA_Object getParent() {
 		return _parent;
 	}
 	
-	public List<ED_Object> getChildren() {
+	public List<LA_Object> getChildren() {
 		return _children;
 	}
 	

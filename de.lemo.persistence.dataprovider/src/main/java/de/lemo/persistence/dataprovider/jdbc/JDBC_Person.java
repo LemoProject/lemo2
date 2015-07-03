@@ -5,7 +5,7 @@ import de.lemo.persistence.dataprovider.*;
 import java.util.*;
 import java.sql.ResultSet;
 
-public class JDBC_Person implements ED_Person {
+public class JDBC_Person implements LA_Person {
 	
 	/**
 	 * all instantiated persons, referenced by database ID

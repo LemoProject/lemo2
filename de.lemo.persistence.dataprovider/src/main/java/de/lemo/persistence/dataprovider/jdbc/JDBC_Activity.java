@@ -5,20 +5,20 @@ import de.lemo.persistence.dataprovider.*;
 import java.sql.ResultSet;
 import java.util.*;
 
-public class JDBC_Activity implements ED_Activity {
+public class JDBC_Activity implements LA_Activity {
 	
 	/**
 	 * all instantiated learning activities, referenced by database ID
 	 */
 	static Map<Long,JDBC_Activity> ACTIVITY = new HashMap<Long,JDBC_Activity>();
 		
-	private ED_Person _person;
-	private ED_Context _context;
-	private ED_Object _object;
+	private LA_Person _person;
+	private LA_Context _context;
+	private LA_Object _object;
 	private long _time;
 	private String _action;
 	private String _info;
-	private ED_Activity _reference = null;	
+	private LA_Activity _reference = null;	
 	private Map<String,String> _extAttributes = new HashMap<String,String>();
 	
 	public JDBC_Activity(Long aid, Long cid, Long oid, Long pid,
@@ -40,15 +40,15 @@ public class JDBC_Activity implements ED_Activity {
 		return _extAttributes.get(attr);
 	}
 	
-	public ED_Person getPerson() {
+	public LA_Person getPerson() {
 		return _person;
 	}
 	
-	public ED_Context getContext() {
+	public LA_Context getContext() {
 		return _context;
 	}
 	
-	public ED_Object getObject() {
+	public LA_Object getObject() {
 		return _object;
 	}
 	
@@ -64,11 +64,11 @@ public class JDBC_Activity implements ED_Activity {
 		return _info;
 	}
 	
-	public ED_Activity getReference() {
+	public LA_Activity getReference() {
 		return _reference;
 	}
 	
-	void setReference(ED_Activity reference) {
+	void setReference(LA_Activity reference) {
 		_reference = reference;
 	}
 	
