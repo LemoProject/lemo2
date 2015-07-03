@@ -15,8 +15,9 @@ public class Test_JDBC_DataProvider {
 		System.out.println(">>>> time needed for instantiating contexts: " + (time2-time1) + " ms");
 		printContexts(courses, "", true);
 	}
-
+	
 	static private void printContexts(Collection<LA_Context> contexts, String prefix, boolean timing) {
+		System.out.println("printContexts: " + contexts.size());
 		long time1 = 0, time2 = 0;
 		for (LA_Context context : contexts ) {
 			if ( timing ) time1 = System.currentTimeMillis();

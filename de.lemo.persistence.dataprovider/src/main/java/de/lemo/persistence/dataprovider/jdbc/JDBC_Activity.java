@@ -23,6 +23,7 @@ public class JDBC_Activity implements LA_Activity {
 	
 	public JDBC_Activity(Long aid, Long cid, Long oid, Long pid,
 			long time, String action, String info) {
+		System.out.println("JDBC_Activity " + aid.longValue() + " " + cid.longValue() + " " + oid.longValue() + " "+ pid.longValue() + " " + time + " " + action + " " + info);
 		ACTIVITY.put(aid, this);
 		_context = JDBC_Context.findById(cid);
 		_object = JDBC_Object.findById(oid);
@@ -74,7 +75,7 @@ public class JDBC_Activity implements LA_Activity {
 	
 	static void initExtAttributes() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ATTR,VALUE,ACTIVITY FROM d4la_activity_ext");
+		sb.append("SELECT attr,value,activity FROM D4LA_Activity_Ext");
 		try {
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
@@ -92,8 +93,8 @@ public class JDBC_Activity implements LA_Activity {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,REFERENCE from d4la_activity ");
-			sb.append("WHERE REFERENCE IS NOT NULL");
+			sb.append("SELECT id,reference from D4LA_Activity ");
+			sb.append("WHERE reference IS NOT NULL");
 			rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
 				JDBC_Activity activity = findById(new Long(rs.getLong(1)));

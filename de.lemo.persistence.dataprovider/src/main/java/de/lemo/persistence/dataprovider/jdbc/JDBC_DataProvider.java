@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import de.lemo.persistence.dataprovider.*;
 
-
 @Component
 @Instantiate
 @Provides
@@ -25,7 +24,7 @@ public class JDBC_DataProvider implements DataProvider {
 	static private Statement STATEMENT = null;
 	
 	static private final String DRIVER = "com.mysql.jdbc.Driver";
-	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle";
+	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle_ws14";
 	static private final String USER = "root";
 	static private final String PASSWORD = "";
 	
@@ -40,7 +39,7 @@ public class JDBC_DataProvider implements DataProvider {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM d4la_context WHERE PARENT IS NULL");
+			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL");
 			rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
 				Long cid = new Long(rs.getLong(1));
@@ -65,10 +64,10 @@ public class JDBC_DataProvider implements DataProvider {
 		ResultSet rs;
 		try {
 			sb = new StringBuffer();
-			sb.append("SELECT ID,NAME FROM d4la_context WHERE PARENT IS NULL ");
-			sb.append("AND ID IN (SELECT CONTEXT FROM d4la_person_context");
-			sb.append("WHERE PERSON IN (SELECT ID FROM d4la_person_ext");
-			sb.append("WHERE ATTR = 'login' AND VALUE = '");
+			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL ");
+			sb.append("AND id IN (SELECT context FROM D4LA_Person_Context");
+			sb.append("WHERE person IN (SELECT id FROM D4LA_Person_Ext");
+			sb.append("WHERE attr = 'login' AND value = '");
 			sb.append(instructor);
 			sb.append("'))");
 			rs = executeQuery(new String(sb));

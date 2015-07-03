@@ -31,7 +31,7 @@ public class JDBC_Object implements LA_Object {
 		Map<Long,String> idType = new HashMap<Long,String>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ID,NAME,TYPE FROM d4la_object WHERE PARENT=");
+			sb.append("SELECT id,name,type FROM D4LA_Object WHERE parent=");
 			sb.append(oid.longValue());
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
@@ -81,7 +81,7 @@ public class JDBC_Object implements LA_Object {
 	
 	static void initExtAttributes() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ATTR,VALUE,OBJECT FROM d4la_object_ext");
+		sb.append("SELECT attr,value,object FROM D4LA_Object_Ext");
 		try {
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
