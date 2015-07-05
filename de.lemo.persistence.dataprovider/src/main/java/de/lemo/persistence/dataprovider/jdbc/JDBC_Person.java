@@ -38,7 +38,7 @@ public class JDBC_Person implements LA_Person {
 		return _extAttributes.get(attr);
 	}
 	
-	static void initExtAttributes() {
+	static void initExtAttrbutes() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT attr,value,person FROM D4LA_Person_Ext");
 		try {
@@ -50,6 +50,33 @@ public class JDBC_Person implements LA_Person {
 				}
 			}
 			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+	}
+	
+	static void initExtAttributes() {
+		Set<Long> done = new HashSet<>();
+		for ( Long pid : PERSON.keySet() ) {
+			JDBC_Person person = PERSON.get(pid);
+			if ( person._extAttributes == null ) {
+				person._extAttributes = new HashMap<String,String>();
+			}
+			else {
+				done.add(pid);
+			}
+		}
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT attr,value,person FROM D4LA_Person_Ext");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long pid = new Long(rs.getLong(3));
+				if ( ! done.contains(pid)) {
+					JDBC_Person person = PERSON.get(pid);
+					if ( person != null ) {
+						person._extAttributes.put(rs.getString(1), rs.getString(2));
+					}
+				}
+			}
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 	

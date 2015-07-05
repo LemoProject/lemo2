@@ -21,8 +21,8 @@ public interface LA_Context {
 	
 	public List<LA_Activity> getActivities();
 	
-	public Set<LA_Person> getStudents();
+	public List<LA_Person> getStudents();
 		
-	public Set<LA_Person> getInstructors();
+	public List<LA_Person> getInstructors();
 	
 }

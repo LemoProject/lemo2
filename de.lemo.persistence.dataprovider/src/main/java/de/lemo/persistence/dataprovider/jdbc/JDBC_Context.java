@@ -16,42 +16,19 @@ public class JDBC_Context implements LA_Context {
 	private String _name;
 	private String _descriptor;
 	private LA_Context _parent = null;
-	private List<LA_Context> _children = new ArrayList<LA_Context>();
-	private Set<LA_Person> _students = null;
-	private Set<LA_Person> _instructors = null;
+	private List<LA_Context> _children = null;
+	private List<LA_Person> _students = null;
+	private List<LA_Person> _instructors = null;
 	private List<LA_Object> _objects = null;
 	private List<LA_Activity> _activities = null;
 	
-	private Map<String,String> _extAttributes = new HashMap<String,String>();
+	private Map<String,String> _extAttributes = null;
 	
 	public JDBC_Context(Long cid, String name) {
 		CONTEXT.put(cid, this);
 		_cid = cid;
 		_name = name;
 		_descriptor = Integer.toString(hashCode());
-		// find children
-		List<Long> childrenIds = new ArrayList<Long>();
-		Map<Long,String> idName = new HashMap<Long,String>();
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,name FROM D4LA_Context WHERE parent=");
-			sb.append(cid.longValue());
-			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
-			while ( rs.next() ) {
-				Long child = new Long(rs.getLong(1));
-				childrenIds.add(child);
-				idName.put(child, rs.getString(2));
-			}
-			rs.close();
-		} catch ( Exception e ) { e.printStackTrace(); }
-		for ( Long child : childrenIds ) {
-			JDBC_Context context = findById(child);
-			if ( context == null ) {
-				context = new JDBC_Context(child, idName.get(child));
-			}
-			context._parent = this;
-			_children.add(context);
-		}
 	}
 
 	public Set<String> extAttributes() {
@@ -85,14 +62,14 @@ public class JDBC_Context implements LA_Context {
 		return _objects;
 	}
 			
-	public Set<LA_Person> getStudents() {
+	public List<LA_Person> getStudents() {
 		if ( _students == null ) {
 			initContents();
 		}
 		return _students;
 	}
 			
-	public Set<LA_Person> getInstructors() {
+	public List<LA_Person> getInstructors() {
 		if ( _instructors == null ) {
 			initContents();
 		}
@@ -107,7 +84,8 @@ public class JDBC_Context implements LA_Context {
 	}
 	
 	private void initInstructors() {
-		_instructors = new HashSet<LA_Person>();
+		if ( _instructors != null ) return;
+		_instructors = new ArrayList<LA_Person>();
 		List<Long> personIds = new ArrayList<>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
@@ -139,7 +117,8 @@ public class JDBC_Context implements LA_Context {
 	}
 	
 	private void initStudents() {
-		_students = new HashSet<LA_Person>();
+		if ( _students != null ) return;
+		_students = new ArrayList<LA_Person>();
 		List<Long> personIds = new ArrayList<>();
 		Map<Long,String> idName = new HashMap<Long,String>();
 		try {
@@ -171,6 +150,7 @@ public class JDBC_Context implements LA_Context {
 	}
 	
 	private void initObjects() {
+		if ( _objects != null ) return;
 		_objects = new ArrayList<LA_Object>();
 		List<Long> objectIds = new ArrayList<Long>();
 		Map<Long,String> idName = new HashMap<Long,String>();
@@ -204,44 +184,19 @@ public class JDBC_Context implements LA_Context {
 		}
 	}
 	
-	private Set<Long> initActivities() {
-		_activities = new ArrayList<LA_Activity>();
-		Set<Long> contextIds = new HashSet<Long>();
-		contextIds.add(_cid);
-		for ( LA_Context c : _children ) {
-			JDBC_Context child = (JDBC_Context) c;
-			contextIds.addAll(child.initActivities());
+	private List<Long> initActivities(JDBC_Context context) {
+		List<Long> familyIds = new ArrayList<Long>();
+		familyIds.add(context._cid);
+		for ( LA_Context child : context._children ) {
+			List<Long> cids = initActivities((JDBC_Context) child);
+			for ( Long cid : cids ) {
+				if ( ! context._children.contains(cid) ) familyIds.add(cid);
+			}
 		}
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,person,object,time,action,info FROM D4LA_Activity ");
-			sb.append("WHERE context IN (");
-			boolean first = true;
-			for ( Long cid : contextIds ) {
-				if ( first ) first = false;
-				else sb.append(" , ");
-				sb.append(cid.longValue());
-			}
-			sb.append(") ORDER BY time ASC");
-			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
-			while ( rs.next() ) {
-				Long aid = new Long(rs.getLong(1));
-				JDBC_Activity activity = JDBC_Activity.findById(aid);
-				if ( activity == null ) {
-					Long pid = new Long(rs.getLong(2));
-					Long oid = new Long(rs.getLong(3));
-					long time = rs.getLong(4);
-					String action = rs.getString(5);
-					String info = rs.getString(6);
-					activity = new JDBC_Activity(aid, _cid, pid, oid, time, action, info);
-				}
-				_activities.add(activity);
-			}
-			rs.close();
-		} catch ( Exception e ) { e.printStackTrace(); }
-		return contextIds;
+		context._activities = JDBC_Activity.initActivities(familyIds);
+		return familyIds;
 	}
-	
+		
 	private void initContents() {
 		JDBC_Context context = this;
 		while ( context._parent != null ) {
@@ -251,21 +206,79 @@ public class JDBC_Context implements LA_Context {
 		context.initStudents();
 		JDBC_Person.initExtAttributes();
 		context.initObjects();
+		JDBC_Object.initChildren();
 		JDBC_Object.initExtAttributes();
-		context.initActivities();
+		initActivities(context);
 		JDBC_Activity.initExtAttributes();
 		JDBC_Activity.initReferences();
 	}
 	
-	static void initExtAttributes() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT attr,value,context FROM D4LA_Context_Ext");
+	static void initChildren() {
+		Set<Long> newIds = new HashSet<Long>();
+		for ( Long cid : CONTEXT.keySet() ) {
+			JDBC_Context context = findById(cid);
+			if ( context._children == null ) {
+				context._children = new ArrayList<LA_Context>();
+				newIds.add(cid);
+			}
+		}
+		if ( ! newIds.isEmpty() ) initChildren(newIds);
+	}
+	
+	private static void initChildren(Set<Long> contextIds) {
+		Set<Long> newIds = new HashSet<Long>();
 		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT id,name,parent FROM D4LA_Context WHERE parent IN ");
+			sb.append("(");
+			boolean first = true;
+			for ( Long cid : contextIds ) {
+				if ( first ) first = false;
+				else sb.append(",");
+				sb.append(cid.longValue());
+			}
+			sb.append(")");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				JDBC_Context context = findById(new Long(rs.getLong(3)));
-				if ( context != null ) {
-					context._extAttributes.put(rs.getString(1), rs.getString(2));
+				Long cid = new Long(rs.getLong(1));
+				JDBC_Context child = CONTEXT.get(cid);
+				if ( child == null ) {
+					child = new JDBC_Context(cid, rs.getString(2));
+					newIds.add(cid);
+				}			
+				JDBC_Context parent = CONTEXT.get(new Long(rs.getLong(3)));
+				parent._children.add(child);
+				child._parent = parent;
+			}
+			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+		if ( ! newIds.isEmpty() ) {
+			initChildren(newIds);
+		}
+	}
+	
+	static void initExtAttributes() {
+		Set<Long> done = new HashSet<>();
+		for ( Long cid : CONTEXT.keySet() ) {
+			JDBC_Context context = CONTEXT.get(cid);
+			if ( context._extAttributes == null ) {
+				context._extAttributes = new HashMap<String,String>();
+			}
+			else {
+				done.add(cid);
+			}
+		}
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT attr,value,context FROM D4LA_Context_Ext");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long cid = new Long(rs.getLong(3));
+				if ( ! done.contains(cid)) {
+					JDBC_Context context = CONTEXT.get(cid);
+					if ( context != null ) {
+						context._extAttributes.put(rs.getString(1), rs.getString(2));
+					}
 				}
 			}
 		} catch ( Exception e ) { e.printStackTrace(); }

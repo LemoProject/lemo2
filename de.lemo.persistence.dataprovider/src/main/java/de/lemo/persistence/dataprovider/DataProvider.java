@@ -1,6 +1,6 @@
 package de.lemo.persistence.dataprovider;
 
-import java.util.Set;
+import java.util.List;
 
 public interface DataProvider {
 	
@@ -9,14 +9,14 @@ public interface DataProvider {
 	 * course is a ED_Context with no parents
 	 * @return set of all courses, or null, if there is no database connection
 	 */
-	public Set<LA_Context> getCourses();
+	public List<LA_Context> getCourses();
 	
 	/**
 	 * 
 	 * @param String identifying instructor (e.g. userID)
 	 * @return set of all courses for instructor, or null
 	 */
-	public Set<LA_Context> getCoursesByInstructor(String userId);
+	public List<LA_Context> getCoursesByInstructor(String userId);
 	
 	/**
 	 * 

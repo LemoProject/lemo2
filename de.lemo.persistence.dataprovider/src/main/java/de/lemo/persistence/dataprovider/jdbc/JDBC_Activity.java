@@ -19,11 +19,10 @@ public class JDBC_Activity implements LA_Activity {
 	private String _action;
 	private String _info;
 	private LA_Activity _reference = null;	
-	private Map<String,String> _extAttributes = new HashMap<String,String>();
+	private Map<String,String> _extAttributes = null;
 	
-	public JDBC_Activity(Long aid, Long cid, Long oid, Long pid,
+	public JDBC_Activity(Long aid, Long cid, Long pid, Long oid,
 			long time, String action, String info) {
-		System.out.println("JDBC_Activity " + aid.longValue() + " " + cid.longValue() + " " + oid.longValue() + " "+ pid.longValue() + " " + time + " " + action + " " + info);
 		ACTIVITY.put(aid, this);
 		_context = JDBC_Context.findById(cid);
 		_object = JDBC_Object.findById(oid);
@@ -74,17 +73,29 @@ public class JDBC_Activity implements LA_Activity {
 	}
 	
 	static void initExtAttributes() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT attr,value,activity FROM D4LA_Activity_Ext");
+		Set<Long> done = new HashSet<>();
+		for ( Long aid : ACTIVITY.keySet() ) {
+			JDBC_Activity activity = ACTIVITY.get(aid);
+			if ( activity._extAttributes == null ) {
+				activity._extAttributes = new HashMap<String,String>();
+			}
+			else {
+				done.add(aid);
+			}
+		}
 		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT attr,value,activity FROM D4LA_Activity_Ext");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				JDBC_Activity activity = findById(new Long(rs.getLong(3)));
-				if ( activity != null ) {
-					activity._extAttributes.put(rs.getString(1), rs.getString(2));
+				Long aid = new Long(rs.getLong(3));
+				if ( ! done.contains(aid)) {
+					JDBC_Activity activity = ACTIVITY.get(aid);
+					if ( activity != null ) {
+						activity._extAttributes.put(rs.getString(1), rs.getString(2));
+					}
 				}
 			}
-			rs.close();
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 	
@@ -104,6 +115,39 @@ public class JDBC_Activity implements LA_Activity {
 			}
 			rs.close();
 		} catch ( Exception e ) { e.printStackTrace(); }
+	}
+	
+	static List<LA_Activity> initActivities(List<Long> cids) {
+		List<LA_Activity> activities = new ArrayList<LA_Activity>();
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT id,context,person,object,time,action,info FROM D4LA_Activity ");
+			sb.append("WHERE context IN (");
+			boolean first = true;
+			for ( Long cid : cids ) {
+				if ( first ) first = false;
+				else sb.append(" , ");
+				sb.append(cid.longValue());
+			}
+			sb.append(") ORDER BY time ASC");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long aid = new Long(rs.getLong(1));
+				JDBC_Activity activity = ACTIVITY.get(aid);
+				if ( activity == null ) {
+					Long cid = new Long(rs.getLong(2));
+					Long pid = new Long(rs.getLong(3));
+					Long oid = new Long(rs.getLong(4));
+					long time = rs.getLong(5);
+					String action = rs.getString(6);
+					String info = rs.getString(7);
+					activity = new JDBC_Activity(aid, cid, pid, oid, time, action, info);
+				}
+				activities.add(activity);
+			}
+			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+		return activities;
 	}
 	
 	static JDBC_Activity findById(Long pid) {

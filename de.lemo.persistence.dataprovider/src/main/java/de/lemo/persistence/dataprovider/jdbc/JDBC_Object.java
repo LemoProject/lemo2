@@ -16,39 +16,15 @@ public class JDBC_Object implements LA_Object {
 	private String _descriptor;
 	private String _type;
 	LA_Object _parent = null;
-	List<LA_Object> _children = new ArrayList<LA_Object>();
+	List<LA_Object> _children = null;
 	
-	private Map<String,String> _extAttributes = new HashMap<String,String>();
+	private Map<String,String> _extAttributes = null;
 	
 	public JDBC_Object(Long oid, String name, String type) {
 		OBJECT.put(oid, this);
 		_name = name;
 		_descriptor = Integer.toString(hashCode());
 		_type = type;
-		// find children
-		List<Long> childrenIds = new ArrayList<Long>();
-		Map<Long,String> idName = new HashMap<Long,String>();
-		Map<Long,String> idType = new HashMap<Long,String>();
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,name,type FROM D4LA_Object WHERE parent=");
-			sb.append(oid.longValue());
-			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
-			while ( rs.next() ) {
-				Long child = new Long(rs.getLong(1));
-				idName.put(child, rs.getString(2));
-				idType.put(child, rs.getString(3));
-			}
-			rs.close();
-		} catch ( Exception e ) { e.printStackTrace(); }
-		for ( Long child : childrenIds ) {
-			JDBC_Object object = JDBC_Object.findById(child);
-			if ( object == null ) {
-				object = new JDBC_Object(child, idName.get(child), idType.get(child));
-			}
-			object._parent = this;
-			_children.add(object);
-		}
 	}
 
 	public String getName() {
@@ -79,15 +55,72 @@ public class JDBC_Object implements LA_Object {
 		return _children;
 	}
 	
-	static void initExtAttributes() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT attr,value,object FROM D4LA_Object_Ext");
+	static void initChildren() {
+		Set<Long> newIds = new HashSet<Long>();
+		for ( Long oid : OBJECT.keySet() ) {
+			JDBC_Object object = findById(oid);
+			if ( object._children == null ) {
+				object._children = new ArrayList<LA_Object>();
+				newIds.add(oid);
+			}
+		}
+		if ( ! newIds.isEmpty() ) initChildren(newIds);
+	}
+	
+	private static void initChildren(Set<Long> objectIds) {
+		Set<Long> newIds = new HashSet<Long>();
 		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT id,name,type,parent FROM D4LA_Object WHERE parent IN ");
+			sb.append("(");
+			boolean first = true;
+			for ( Long oid : objectIds ) {
+				if ( first ) first = false;
+				else sb.append(",");
+				sb.append(oid.longValue());
+			}
+			sb.append(")");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				JDBC_Object object = findById(new Long(rs.getLong(3)));
-				if ( object != null ) {
-					object._extAttributes.put(rs.getString(1), rs.getString(2));
+				Long oid = new Long(rs.getLong(1));
+				JDBC_Object child = OBJECT.get(oid);
+				if ( child == null ) {
+					child = new JDBC_Object(oid, rs.getString(2), rs.getString(3));
+					newIds.add(oid);
+				}			
+				JDBC_Object parent = OBJECT.get(new Long(rs.getLong(3)));
+				parent._children.add(child);
+				child._parent = parent;
+			}
+			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+		if ( ! newIds.isEmpty() ) {
+			initChildren(newIds);
+		}
+	}
+	
+	static void initExtAttributes() {
+		Set<Long> done = new HashSet<>();
+		for ( Long oid : OBJECT.keySet() ) {
+			JDBC_Object object = OBJECT.get(oid);
+			if ( object._extAttributes == null ) {
+				object._extAttributes = new HashMap<String,String>();
+			}
+			else {
+				done.add(oid);
+			}
+		}
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT attr,value,object FROM D4LA_Object_Ext");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long oid = new Long(rs.getLong(3));
+				if ( ! done.contains(oid)) {
+					JDBC_Object object = OBJECT.get(oid);
+					if ( object != null ) {
+						object._extAttributes.put(rs.getString(1), rs.getString(2));
+					}
 				}
 			}
 		} catch ( Exception e ) { e.printStackTrace(); }

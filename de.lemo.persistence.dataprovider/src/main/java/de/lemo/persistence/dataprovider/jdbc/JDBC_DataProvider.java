@@ -12,20 +12,17 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.Driver;
-
 import de.lemo.persistence.dataprovider.*;
 
 @Component
 @Instantiate
 @Provides
 public class JDBC_DataProvider implements DataProvider {
+	
+	static final boolean DEBUG = false;
 
-	static private boolean INITIALIZED = false;
-	static private Connection CONNECTION = null;
 	static private Statement STATEMENT = null;
 	
-	static private final String DRIVER = "com.mysql.jdbc.Driver";
 	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle_ws14";
 	static private final String USER = "root";
 	static private final String PASSWORD = "";
@@ -33,59 +30,56 @@ public class JDBC_DataProvider implements DataProvider {
 	private static final Logger logger = LoggerFactory.getLogger(JDBC_DataProvider.class);
 
 	
-	public Set<LA_Context> getCourses() {
-		Set<LA_Context> courses = new HashSet<LA_Context>();
-		List<Long> courseIds = new ArrayList<Long>();
-		Map<Long,String> idName = new HashMap<Long,String>();
-		StringBuffer sb;
-		ResultSet rs;
+	public List<LA_Context> getCourses() {
+		List<LA_Context> courses = new ArrayList<LA_Context>();
 		try {
-			sb = new StringBuffer();
+			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL");
-			rs = executeQuery(new String(sb));
+			ResultSet rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
 				Long cid = new Long(rs.getLong(1));
-				courseIds.add(cid);
-				idName.put(cid, rs.getString(2));
-			}			
+				JDBC_Context context = JDBC_Context.findById(cid);
+				if ( context == null ) {
+					String name = rs.getString(2);
+					context = new JDBC_Context(cid, name);
+				}
+				if ( ! courses.contains(context) ) courses.add(context);
+			}
+			rs.close();
 		} catch ( Exception e ) { 
 			logger.error("Error during first access to courses", e);
 		}
-		for ( Long cid : courseIds ) {
-			courses.add(new JDBC_Context(cid, idName.get(cid)));
-		}
-//		closeConnection();
+		JDBC_Context.initChildren();
+		JDBC_Context.initExtAttributes();
 		return courses;
 	}
 	
-	public Set<LA_Context> getCoursesByInstructor(String instructor) {
-		Set<LA_Context> courses = new HashSet<LA_Context>();
-		List<Long> courseIds = new ArrayList<Long>();
-		Map<Long,String> idName = new HashMap<Long,String>();
-		StringBuffer sb;
-		ResultSet rs;
+	public List<LA_Context> getCoursesByInstructor(String instructor) {
+		List<LA_Context> courses = new ArrayList<LA_Context>();
 		try {
-			sb = new StringBuffer();
+			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL ");
 			sb.append("AND id IN (SELECT context FROM D4LA_Person_Context");
 			sb.append("WHERE person IN (SELECT id FROM D4LA_Person_Ext");
 			sb.append("WHERE attr = 'login' AND value = '");
 			sb.append(instructor);
 			sb.append("'))");
-			rs = executeQuery(new String(sb));
+			ResultSet rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
 				Long cid = new Long(rs.getLong(1));
-				courseIds.add(cid);
-				idName.put(cid, rs.getString(2));
+				JDBC_Context context = JDBC_Context.findById(cid);
+				if ( context == null ) {
+					String name = rs.getString(2);
+					context = new JDBC_Context(cid, name);
+				}
+				if ( ! courses.contains(context) ) courses.add(context);
 			}
 			rs.close();
 		} catch ( Exception e ) { 
-			logger.error("Error while querrying courses by instructor",e);
+			logger.error("Error during first access to courses", e);
 		}
-		for ( Long cid : courseIds ) {
-			courses.add(new JDBC_Context(cid, idName.get(cid)));
-		}
-//		closeConnection();
+		JDBC_Context.initChildren();
+		JDBC_Context.initExtAttributes();
 		return courses;
 	}
 	
@@ -102,24 +96,20 @@ public class JDBC_DataProvider implements DataProvider {
 	}
 	
 	static ResultSet executeQuery(String sql) throws Exception {
-		if ( CONNECTION == null ) {
-			Driver driver = new Driver();
-			DriverManager.registerDriver(driver);
-			CONNECTION = DriverManager.getConnection(URI, USER, PASSWORD);
-			STATEMENT = CONNECTION.createStatement();
+		if ( STATEMENT == null ) {
+//			Driver driver = new Driver();
+//			DriverManager.registerDriver(driver);
+			Connection connection = DriverManager.getConnection(URI, USER, PASSWORD);
+			STATEMENT = connection.createStatement();
+		}
+		if ( DEBUG ) {
+			int count = 0;
+			System.err.print(sql);
+			ResultSet rs = STATEMENT.executeQuery(sql);
+			while ( rs.next() ) count++;
+			System.err.println(": " + count);
 		}
 		return STATEMENT.executeQuery(sql);
 	}
-	
-	static void closeConnection() {
-		if ( CONNECTION != null) {
-			try {
-				CONNECTION.close();
-				CONNECTION = null;
-			} catch ( Exception e ) { 
-				logger.error("Error closing jdbc connection", e);
-			}
-		}
-	}
-	
+		
 }
