@@ -15,11 +15,9 @@ public interface LA_Activity {
 	public String getExtAttribute(String attr);
 			
 	public LA_Activity getReference();
+		
+	public LA_Object getObject();
 	
 	public LA_Person getPerson();
-	
-	public LA_Context getContext();
-	
-	public LA_Object getObject();
 	
 }

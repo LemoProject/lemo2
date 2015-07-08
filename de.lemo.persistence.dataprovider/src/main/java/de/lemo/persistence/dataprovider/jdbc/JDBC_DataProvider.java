@@ -19,11 +19,11 @@ import de.lemo.persistence.dataprovider.*;
 @Provides
 public class JDBC_DataProvider implements DataProvider {
 	
-	static final boolean DEBUG = false;
-
+	static final boolean DEBUG = true;
+	
 	static private Statement STATEMENT = null;
 	
-	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle_ws14";
+	static private final String URI = "jdbc:mysql://localhost:3306/d4la_iversity";
 	static private final String USER = "root";
 	static private final String PASSWORD = "";
 	
@@ -32,33 +32,34 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	public List<LA_Context> getCourses() {
 		List<LA_Context> courses = new ArrayList<LA_Context>();
+		Set<Long> ids = new HashSet<Long>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL");
+			sb.append("SELECT id FROM D4LA_Context WHERE parent IS NULL");
 			ResultSet rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
-				Long cid = new Long(rs.getLong(1));
-				JDBC_Context context = JDBC_Context.findById(cid);
+				Long id = new Long(rs.getLong(1));
+				JDBC_Context context = JDBC_Context.findById(id);
 				if ( context == null ) {
-					String name = rs.getString(2);
-					context = new JDBC_Context(cid, name);
+					context = new JDBC_Context(id);
+					ids.add(id);
 				}
-				if ( ! courses.contains(context) ) courses.add(context);
+				courses.add(context);
 			}
 			rs.close();
 		} catch ( Exception e ) { 
 			logger.error("Error during first access to courses", e);
 		}
-		JDBC_Context.initChildren();
-		JDBC_Context.initExtAttributes();
+		JDBC_Context.initialize(ids);
 		return courses;
 	}
 	
 	public List<LA_Context> getCoursesByInstructor(String instructor) {
 		List<LA_Context> courses = new ArrayList<LA_Context>();
+		Set<Long> ids = new HashSet<Long>();
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,name FROM D4LA_Context WHERE parent IS NULL ");
+			sb.append("SELECT id FROM D4LA_Context WHERE parent IS NULL ");
 			sb.append("AND id IN (SELECT context FROM D4LA_Person_Context");
 			sb.append("WHERE person IN (SELECT id FROM D4LA_Person_Ext");
 			sb.append("WHERE attr = 'login' AND value = '");
@@ -66,20 +67,19 @@ public class JDBC_DataProvider implements DataProvider {
 			sb.append("'))");
 			ResultSet rs = executeQuery(new String(sb));
 			while ( rs.next() ) {
-				Long cid = new Long(rs.getLong(1));
-				JDBC_Context context = JDBC_Context.findById(cid);
+				Long id = new Long(rs.getLong(1));
+				JDBC_Context context = JDBC_Context.findById(id);
 				if ( context == null ) {
-					String name = rs.getString(2);
-					context = new JDBC_Context(cid, name);
+					context = new JDBC_Context(id);
+					ids.add(id);
 				}
-				if ( ! courses.contains(context) ) courses.add(context);
+				courses.add(context);
 			}
 			rs.close();
 		} catch ( Exception e ) { 
 			logger.error("Error during first access to courses", e);
 		}
-		JDBC_Context.initChildren();
-		JDBC_Context.initExtAttributes();
+		JDBC_Context.initialize(ids);
 		return courses;
 	}
 	
@@ -97,19 +97,20 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	static ResultSet executeQuery(String sql) throws Exception {
 		if ( STATEMENT == null ) {
-//			Driver driver = new Driver();
-//			DriverManager.registerDriver(driver);
 			Connection connection = DriverManager.getConnection(URI, USER, PASSWORD);
 			STATEMENT = connection.createStatement();
 		}
+		ResultSet rs;
+		long timing1, timing2;
 		if ( DEBUG ) {
-			int count = 0;
-			System.err.print(sql);
-			ResultSet rs = STATEMENT.executeQuery(sql);
-			while ( rs.next() ) count++;
-			System.err.println(": " + count);
+			timing1 = System.currentTimeMillis();
 		}
-		return STATEMENT.executeQuery(sql);
+		rs = STATEMENT.executeQuery(sql);
+		if ( DEBUG ) {
+			timing2 = System.currentTimeMillis();
+			System.out.println(">> SQL " + sql + ": " + (timing2-timing1) + " ms");
+		}
+		return rs;
 	}
 		
 }

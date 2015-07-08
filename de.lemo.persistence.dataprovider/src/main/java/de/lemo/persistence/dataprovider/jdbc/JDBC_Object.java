@@ -10,21 +10,18 @@ public class JDBC_Object implements LA_Object {
 	/**
 	 * all instantiated learning objects, referenced by database ID
 	 */
-	static Map<Long,JDBC_Object> OBJECT = new HashMap<Long,JDBC_Object>();
+	static Map<Long,JDBC_Object> OBJECTS = new HashMap<Long,JDBC_Object>();
 	
-	private String _name;
+	private String _name = null;
 	private String _descriptor;
-	private String _type;
-	LA_Object _parent = null;
-	List<LA_Object> _children = null;
-	
+	private String _type = null;
+	private LA_Object _parent = null;
+	private List<LA_Object> _children = null;
 	private Map<String,String> _extAttributes = null;
 	
-	public JDBC_Object(Long oid, String name, String type) {
-		OBJECT.put(oid, this);
-		_name = name;
+	public JDBC_Object(Long id) {
+		OBJECTS.put(id, this);
 		_descriptor = Integer.toString(hashCode());
-		_type = type;
 	}
 
 	public String getName() {
@@ -40,10 +37,12 @@ public class JDBC_Object implements LA_Object {
 	}
 	
 	public Set<String> extAttributes() {
+		if ( _extAttributes == null ) return null;
 		return _extAttributes.keySet();
 	}
 	
 	public String getExtAttribute(String attr) {
+		if ( _extAttributes == null ) return null;
 		return _extAttributes.get(attr);
 	}
 	
@@ -54,84 +53,100 @@ public class JDBC_Object implements LA_Object {
 	public List<LA_Object> getChildren() {
 		return _children;
 	}
-	
-	static void initChildren() {
-		Set<Long> newIds = new HashSet<Long>();
-		for ( Long oid : OBJECT.keySet() ) {
-			JDBC_Object object = findById(oid);
-			if ( object._children == null ) {
-				object._children = new ArrayList<LA_Object>();
-				newIds.add(oid);
-			}
+
+	static void initialize(Set<Long> ids) {
+		Set<Long> allIds = new HashSet<Long>();
+		while ( ! ids.isEmpty() ) {
+			allIds.addAll(ids);
+			try {
+				StringBuffer sb = new StringBuffer();
+				sb.append("SELECT id,parent FROM D4LA_Object WHERE parent IN (");
+				boolean first = true;
+				for ( Long id : ids ) {
+					if ( first ) first = false;
+					else sb.append(",");
+					sb.append(id.longValue());
+				}
+				sb.append(")");
+				ids = new HashSet<Long>();
+				ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+				while ( rs.next() ) {
+					Long id = new Long(rs.getLong(2));
+					JDBC_Object parent = OBJECTS.get(id);
+					id = new Long(rs.getLong(1));
+					JDBC_Object child = OBJECTS.get(id);
+					if ( child == null ) {
+						child = new JDBC_Object(id);
+						ids.add(id);
+					}
+					if ( parent._children == null ) parent._children = new ArrayList<LA_Object>();
+					parent._children.add(child);
+					child._parent = parent;
+				}
+				rs.close();
+			} catch ( Exception e ) { e.printStackTrace(); }
 		}
-		if ( ! newIds.isEmpty() ) initChildren(newIds);
+		initNames(allIds);
+		initTypes(allIds);
+		initExtAttributes(allIds);
 	}
-	
-	private static void initChildren(Set<Long> objectIds) {
-		Set<Long> newIds = new HashSet<Long>();
+		
+	private static void initNames(Set<Long> ids) {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT id,name,type,parent FROM D4LA_Object WHERE parent IN ");
-			sb.append("(");
-			boolean first = true;
-			for ( Long oid : objectIds ) {
-				if ( first ) first = false;
-				else sb.append(",");
-				sb.append(oid.longValue());
-			}
-			sb.append(")");
+			sb.append("SELECT id,name FROM D4LA_Object WHERE name IS NOT NULL");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				Long oid = new Long(rs.getLong(1));
-				JDBC_Object child = OBJECT.get(oid);
-				if ( child == null ) {
-					child = new JDBC_Object(oid, rs.getString(2), rs.getString(3));
-					newIds.add(oid);
-				}			
-				JDBC_Object parent = OBJECT.get(new Long(rs.getLong(3)));
-				parent._children.add(child);
-				child._parent = parent;
+				Long id = new Long(rs.getLong(1));
+				if ( ids.contains(id)) {
+					JDBC_Object object = OBJECTS.get(id);
+					object._name = rs.getString(2);
+				}
 			}
 			rs.close();
 		} catch ( Exception e ) { e.printStackTrace(); }
-		if ( ! newIds.isEmpty() ) {
-			initChildren(newIds);
-		}
 	}
 	
-	static void initExtAttributes() {
-		Set<Long> done = new HashSet<>();
-		for ( Long oid : OBJECT.keySet() ) {
-			JDBC_Object object = OBJECT.get(oid);
-			if ( object._extAttributes == null ) {
-				object._extAttributes = new HashMap<String,String>();
+	private static void initTypes(Set<Long> ids) {
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT id,type FROM D4LA_Object WHERE type IS NOT NULL");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long id = new Long(rs.getLong(1));
+				if ( ids.contains(id)) {
+					JDBC_Object object = OBJECTS.get(id);
+					object._type = rs.getString(2);
+				}
 			}
-			else {
-				done.add(oid);
-			}
-		}
+			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+	}
+	
+	private static void initExtAttributes(Set<Long> ids) {
 		try {
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT attr,value,object FROM D4LA_Object_Ext");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				Long oid = new Long(rs.getLong(3));
-				if ( ! done.contains(oid)) {
-					JDBC_Object object = OBJECT.get(oid);
-					if ( object != null ) {
-						object._extAttributes.put(rs.getString(1), rs.getString(2));
-					}
+				Long id = new Long(rs.getLong(3));
+				if ( ids.contains(id)) {
+					JDBC_Object object = OBJECTS.get(id);
+					if ( object._extAttributes == null ) object._extAttributes = new HashMap<String,String>();
+					object._extAttributes.put(rs.getString(1), rs.getString(2));
 				}
 			}
+			rs.close();
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 	
-	static JDBC_Object findById(Long pid) {
-		return OBJECT.get(pid);
+
+	static JDBC_Object findById(Long id) {
+		return OBJECTS.get(id);
 	}
 	
 	static JDBC_Object findByDescriptor(String descriptor) {
-		for ( JDBC_Object object : OBJECT.values() ) {
+		for ( JDBC_Object object : OBJECTS.values() ) {
 			if ( descriptor.equals(object.getDescriptor()) ) {
 				return object;
 			}

@@ -10,15 +10,14 @@ public class JDBC_Person implements LA_Person {
 	/**
 	 * all instantiated persons, referenced by database ID
 	 */
-	static Map<Long,JDBC_Person> PERSON = new HashMap<Long,JDBC_Person>();
+	static Map<Long,JDBC_Person> PERSONS = new HashMap<Long,JDBC_Person>();
 	
 	private String _name;
 	private String _descriptor;
-	private Map<String,String> _extAttributes = new HashMap<String,String>();
+	private Map<String,String> _extAttributes = null;
 	
-	public JDBC_Person(Long pid, String name) {
-		PERSON.put(pid, this);
-		_name = name;
+	public JDBC_Person(Long id) {
+		PERSONS.put(id, this);
 		_descriptor = Integer.toString(hashCode());
 	}
 
@@ -31,21 +30,46 @@ public class JDBC_Person implements LA_Person {
 	}
 	
 	public Set<String> extAttributes() {
+		if ( _extAttributes == null ) return null;
 		return _extAttributes.keySet();
 	}
 	
 	public String getExtAttribute(String attr) {
+		if ( _extAttributes == null ) return null;
 		return _extAttributes.get(attr);
 	}
 	
-	static void initExtAttrbutes() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT attr,value,person FROM D4LA_Person_Ext");
+	static void initialize(Set<Long> ids) {
+		initNames(ids);
+		initExtAttributes(ids);
+	}
+	
+	private static void initNames(Set<Long> ids) {
 		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT id,name FROM D4LA_Person WHERE name IS NOT NULL");
 			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
 			while ( rs.next() ) {
-				JDBC_Person person = findById(new Long(rs.getLong(3)));
-				if ( person != null ) {
+				Long id = new Long(rs.getLong(1));
+				if ( ids.contains(id)) {
+					JDBC_Person person = PERSONS.get(id);
+					person._name = rs.getString(2);
+				}
+			}
+			rs.close();
+		} catch ( Exception e ) { e.printStackTrace(); }
+	}
+	
+	static void initExtAttributes(Set<Long> ids) {
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT attr,value,person FROM D4LA_Person_Ext");
+			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
+			while ( rs.next() ) {
+				Long id = new Long(rs.getLong(3));
+				if ( ids.contains(id)) {
+					JDBC_Person person = PERSONS.get(id);
+					if ( person._extAttributes == null ) person._extAttributes = new HashMap<String,String>();
 					person._extAttributes.put(rs.getString(1), rs.getString(2));
 				}
 			}
@@ -53,39 +77,12 @@ public class JDBC_Person implements LA_Person {
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 	
-	static void initExtAttributes() {
-		Set<Long> done = new HashSet<>();
-		for ( Long pid : PERSON.keySet() ) {
-			JDBC_Person person = PERSON.get(pid);
-			if ( person._extAttributes == null ) {
-				person._extAttributes = new HashMap<String,String>();
-			}
-			else {
-				done.add(pid);
-			}
-		}
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT attr,value,person FROM D4LA_Person_Ext");
-			ResultSet rs = JDBC_DataProvider.executeQuery(new String(sb));
-			while ( rs.next() ) {
-				Long pid = new Long(rs.getLong(3));
-				if ( ! done.contains(pid)) {
-					JDBC_Person person = PERSON.get(pid);
-					if ( person != null ) {
-						person._extAttributes.put(rs.getString(1), rs.getString(2));
-					}
-				}
-			}
-		} catch ( Exception e ) { e.printStackTrace(); }
-	}
-	
-	static JDBC_Person findById(Long pid) {
-		return PERSON.get(pid);
+	static JDBC_Person findById(Long id) {
+		return PERSONS.get(id);
 	}
 	
 	static JDBC_Person findByDescriptor(String descriptor) {
-		for ( JDBC_Person person : PERSON.values() ) {
+		for ( JDBC_Person person : PERSONS.values() ) {
 			if ( descriptor.equals(person.getDescriptor()) ) {
 				return person;
 			}
