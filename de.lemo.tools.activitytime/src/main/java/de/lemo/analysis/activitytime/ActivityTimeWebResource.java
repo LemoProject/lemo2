@@ -77,7 +77,7 @@ public class ActivityTimeWebResource implements WebResource{
 	}
 
 	private LA_Context getDemoContext() {
-		Set<LA_Context> contexts = dataProvider.getCourses();
+		List<LA_Context> contexts = dataProvider.getCourses();
 		LA_Context context = null;
 	    for (Iterator<LA_Context> it = contexts.iterator(); it.hasNext(); ) {
 	    	context = it.next();
@@ -134,9 +134,9 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private void copyUserPerResStepIntoResult(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
 			Map<Long, ResultListLongObject> result, 
-			Set<LA_Context> set, 
+			List<LA_Context> list, 
 			Long resolution) {
-		for (final LA_Context context : set)
+		for (final LA_Context context : list)
 		{
 			try{
 			long contextHash = (long)context.hashCode();
@@ -157,7 +157,7 @@ public class ActivityTimeWebResource implements WebResource{
 
 	private void sumActivities(Map<Long, HashMap<Integer, Set<Long>>> userPerResStep, 
 			Map<Long, ResultListLongObject> result, 
-			Set<LA_Context> set, 
+			List<LA_Context> list, 
 			Long resolution, 
 			List<String> resourceTypes, 
 			Long startTime, 
@@ -168,7 +168,7 @@ public class ActivityTimeWebResource implements WebResource{
 		for (LA_Activity activity : context.getActivities())
 		{
 			logger.info("Activity: "+ activity.getObject()+ " at "+activity.getTime()+ " added.");
-			if(activity.getObject()!=null && activity.getContext()!=null && activity.getPerson()!=null){
+			if(activity.getObject()!=null && activity.getPerson()!=null){
 			boolean isInRT = false;
 			if ((resourceTypes != null) && (resourceTypes.size() > 0) && resourceTypes.contains(activity.getObject().getType()))
 			{
@@ -180,7 +180,7 @@ public class ActivityTimeWebResource implements WebResource{
 				if (pos > (resolution - 1)) {
 					pos = resolution.intValue() - 1;
 				}
-				long contextHash = (long)activity.getContext().hashCode();
+				long contextHash = (long)context.hashCode();
 				result.get(contextHash).getElements()
 							.set(pos, result.get(contextHash).getElements().get(pos) + 1);
 				if (userPerResStep.get(contextHash).get(pos) == null)
@@ -199,13 +199,13 @@ public class ActivityTimeWebResource implements WebResource{
 	private void initializeVariables(
 			Map<Long, HashMap<Integer, Set<Long>>> userPerResStep,
 			Map<Long, ResultListLongObject> result, 
-			Set<LA_Context> contexts, 
+			List<LA_Context> list, 
 			Long resolution, 
 			List<String> resourceTypes ) {
 		
 		// Create and initialize array for results
 		int j=0;
-		for (LA_Context context:contexts)
+		for (LA_Context context:list)
 		{			
 			final Long[] resArr = new Long[resolution.intValue()];
 			for (int i = 0; i < resArr.length; i++)
@@ -218,7 +218,7 @@ public class ActivityTimeWebResource implements WebResource{
 			j++;
 		}
 
-		for (final LA_Context context : contexts) {
+		for (final LA_Context context : list) {
 			userPerResStep.put((long)context.hashCode(), new HashMap<Integer, Set<Long>>());
 		}
 
