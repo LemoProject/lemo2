@@ -19,9 +19,7 @@ import de.lemo.tools.api.AnalyticsTool;
 @Component
 @Provides
 @Instantiate
-@Singleton
-@Path("tools/activitygraph2")
-public class ActivityGraph2Analysis implements WebResource, AnalyticsTool {
+public class ActivityGraph2Analysis implements AnalyticsTool {
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityGraph2Analysis.class);
 
