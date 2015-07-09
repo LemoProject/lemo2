@@ -1,29 +1,31 @@
-package de.lemo.analysis.activitytime.dp;
+package de.lemo.dataprovider.mock;
 
 import java.util.ArrayList;
-import java.util.Date;
+
+import de.lemo.dataprovider.api.*;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ContextImpl implements ED_Context {
+public class ContextImpl implements LA_Context {
 	
 	String name = null;
-	List<ED_Activity> activities = null;
-	Set<ED_Object> objects = null;
+	List<LA_Activity> activities = null;
+	Set<LA_Object> objects = null;
 	
 	public ContextImpl(String name) {
 		this.name = name;
-		activities = new ArrayList<ED_Activity>();
-		objects = new HashSet<ED_Object>();
+		activities = new ArrayList<LA_Activity>();
+		objects = new HashSet<LA_Object>();
 
-		ED_Object object = new ObjectImpl();
+		LA_Object object = new ObjectImpl();
 		objects.add(object);
 		
-		ED_Person person = new PersonImpl();
-		ED_Person person2 = new PersonImpl();
+		LA_Person person = new PersonImpl();
+		LA_Person person2 = new PersonImpl();
 		
-		ED_Activity activity = new ActivityImpl(1434025149950L);
+		ActivityImpl activity = new ActivityImpl(1434025149950L);
 		activity.addObject(object);
 		activity.addContext(this);
 		activity.addPerson(person);
@@ -56,51 +58,58 @@ public class ContextImpl implements ED_Context {
 	}
 
 	@Override
-	public ED_Context getParent() {
+	public LA_Context getParent() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<ED_Context> getChildren() {
+	public List<LA_Context> getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<LA_Person> getStudents() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Set<ED_Object> getObjects(String type) {
-		// TODO Auto-generated method stub
-		return objects;
-	}
-
-	@Override
-	public List<ED_Activity> getActivities(String action) {
+	public List<LA_Person> getInstructors() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<ED_Activity> getActivities(String action, Date begin, Date end) {
+	public String getDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> extAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Object> getObjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Activity> getActivities() {
 		// TODO Auto-generated method stub
 		return activities;
-	}
-
-	@Override
-	public Set<ED_Person> getPersons(String role) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<ED_Person> getStudents() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<ED_Person> getInstructors() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -1,14 +1,16 @@
-package de.lemo.analysis.activitytime.dp;
+package de.lemo.dataprovider.mock;
 
-import java.util.Date;
+import java.util.Set;
 
-public class ActivityImpl implements ED_Activity {
+import de.lemo.dataprovider.api.*;
+
+public class ActivityImpl implements LA_Activity {
 	
-	ED_Context context = null;
+	LA_Context context = null;
 	String action = null;
 	long time;
-	ED_Object object = null;
-	ED_Person person = null;
+	LA_Object object = null;
+	LA_Person person = null;
 	
 	public ActivityImpl() {
 		action = "test";
@@ -21,19 +23,13 @@ public class ActivityImpl implements ED_Activity {
 	}
 	
 	@Override
-	public ED_Person getPerson() {
+	public LA_Person getPerson() {
 		// TODO Auto-generated method stub
 		return person;
 	}
 
 	@Override
-	public ED_Context getContext() {
-		// TODO Auto-generated method stub
-		return context;
-	}
-
-	@Override
-	public ED_Object getObject() {
+	public LA_Object getObject() {
 		// TODO Auto-generated method stub
 		return object;
 	}
@@ -56,24 +52,33 @@ public class ActivityImpl implements ED_Activity {
 	}
 
 	@Override
-	public ED_Activity getReference() {
+	public LA_Activity getReference() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void addObject(LA_Object object) {
+		this.object = object;		
+	}
+
+	public void addContext(LA_Context context) {
+		this.context = context;		
+	}
+
+	public void addPerson(LA_Person person) {
+		this.person = person;		
+	}
+
+	@Override
+	public Set<String> extAttributes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addObject(ED_Object object) {
-		this.object = object;		
-	}
-
-	@Override
-	public void addContext(ED_Context context) {
-		this.context = context;		
-	}
-
-	@Override
-	public void addPerson(ED_Person person) {
-		this.person = person;		
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
