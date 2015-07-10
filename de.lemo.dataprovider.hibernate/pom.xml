@@ -8,11 +8,11 @@
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
   
-  <artifactId>de.lemo.persistence.provider.d4la</artifactId>
+  <artifactId>de.lemo.dataprovider.hibernate</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   
-  	<name>Lemo persistence provider for d4la data and configuration</name>
+  	<name>Lemo persistence provider for hibernate</name>
   	
   	<properties>
 
@@ -47,6 +47,12 @@
 			<artifactId>de.lemo.dataprovider.api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.lemo</groupId>
+			<artifactId>de.lemo.persistence.provider.umed</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 		<build>
@@ -66,8 +72,7 @@
 								*
 							</Import-Package>
 							<Export-Package>
-								de.lemo.persistence.d4la.entities;version="0.1.0",
-								de.lemo.persistence.d4la.metamodels;version="0.1.0",
+								de.lemo.dataprovider.hibernate;version="0.1.0",
 							</Export-Package>
 							<Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
 						</instructions>
