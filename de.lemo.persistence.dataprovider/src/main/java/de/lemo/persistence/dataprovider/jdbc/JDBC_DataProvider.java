@@ -12,6 +12,8 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mysql.jdbc.Driver;
+
 import de.lemo.persistence.dataprovider.*;
 
 @Component
@@ -23,7 +25,7 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	static private Statement STATEMENT = null;
 	
-	static private final String URI = "jdbc:mysql://localhost:3306/d4la_iversity";
+	static private final String URI = "jdbc:mysql://localhost:3306/d4la_moodle";
 	static private final String USER = "root";
 	static private final String PASSWORD = "";
 	
@@ -97,6 +99,8 @@ public class JDBC_DataProvider implements DataProvider {
 	
 	static ResultSet executeQuery(String sql) throws Exception {
 		if ( STATEMENT == null ) {
+			Driver driver = new Driver();
+			DriverManager.registerDriver(driver);
 			Connection connection = DriverManager.getConnection(URI, USER, PASSWORD);
 			STATEMENT = connection.createStatement();
 		}
