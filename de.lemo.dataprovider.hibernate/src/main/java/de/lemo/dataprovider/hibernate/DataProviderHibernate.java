@@ -1,5 +1,6 @@
 package de.lemo.dataprovider.hibernate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,11 @@ import org.hibernate.criterion.Restrictions;
 
 import de.lemo.dataprovider.api.DataProvider;
 import de.lemo.dataprovider.api.LA_Context;
+import de.lemo.dataprovider.api.LA_Object;
 import de.lemo.dataprovider.api.LA_Person;
+import de.lemo.persistence.d4la.entities.Context;
+import de.lemo.persistence.d4la.entities.Person;
+import de.lemo.persistence.d4la.entities.PersonContext;
 
 
 
@@ -42,16 +47,16 @@ public class DataProviderHibernate implements DataProvider{
 		
 		if(this.contexts == null)
 		{
-			Criteria criteria = session.createCriteria(IContext.class, "context");
+			Criteria criteria = session.createCriteria(Context.class, "context");
 			criteria.add(Restrictions.isNull("context.parent"));
 			
 			if(criteria.list().size() > 0)
-				this.contexts = new HashSet<LA_Context>(criteria.list());
+				this.contexts = new ArrayList<LA_Context>(criteria.list());
 			else
 			{
 				session.clear();
 				session.close();
-				return new HashSet<LA_Context>();
+				return new ArrayList<LA_Context>();
 			}
 			session.clear();
 			session.close();
@@ -59,19 +64,19 @@ public class DataProviderHibernate implements DataProvider{
 		return this.contexts;
 	}
 
-	@Override
-	public Set<LA_Context> getCourses(LA_Person person) {
+
+	public List<LA_Context> getCourses(LA_Person person) {
 		EntityManager em = emf.createEntityManager();
 		Session session = em.unwrap(org.hibernate.Session.class);
 		
-		Set<LA_Context> contexts = new HashSet<LA_Context>();
-		Criteria criteria = session.createCriteria(IPerson.class, "person");
+		List<LA_Context> contexts = new ArrayList<LA_Context>();
+		Criteria criteria = session.createCriteria(Person.class, "person");
 		criteria.add(Restrictions.eq("person.name", person.getName()));
 		if(criteria.list().size() == 0)
 			return contexts;
 		else
 		{
-			for(PersonContext pc : ((IPerson)criteria.list().get(0)).getPersonContexts())
+			for(PersonContext pc : ((Person)criteria.list().get(0)).getPersonContexts())
 			{
 				contexts.add((LA_Context) pc.getLearningContext());
 			}
@@ -87,14 +92,14 @@ public class DataProviderHibernate implements DataProvider{
 		EntityManager em = emf.createEntityManager();
 		Session session = em.unwrap(org.hibernate.Session.class);
 		
-		Criteria criteria = session.createCriteria(IPerson.class, "person");
+		Criteria criteria = session.createCriteria(Person.class, "person");
 		criteria.add(Restrictions.eq("person.name", login));
 		
 		if(criteria.list().size() == 0)
 		{
 			session.clear();
 			session.close();
-			return new EDI_Person();
+			return new Person();
 		}
 		else
 		{		
@@ -103,6 +108,40 @@ public class DataProviderHibernate implements DataProvider{
 			session.close();
 		}		
 		return person;
+	}
+
+
+	@Override
+	public List<LA_Context> getCoursesByInstructor(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LA_Context getContext(String descriptor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LA_Object getObject(String descriptor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean testConnection() {
+		EntityManager em = emf.createEntityManager();
+		Session session = em.unwrap(org.hibernate.Session.class);
+		Criteria criteria = session.createCriteria(Person.class, "person");
+		if(criteria.list().size() == 0){
+			return false;			
+		} else {
+			return true;
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package de.lemo.persistence.d4la.entities;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,13 +15,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import de.lemo.dataprovider.api.LA_Object;
+
 /** 
  * This class represents the table lemo_learning_object. 
  * @author Sebastian Schwarzrock
  */
 @Entity
 @Table(name = "D4LA_Object")
-public class Object{
+public class Object implements LA_Object{
 
 	private long id;
 	private String name;
@@ -162,5 +165,29 @@ public class Object{
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String getDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> extAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Object> getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

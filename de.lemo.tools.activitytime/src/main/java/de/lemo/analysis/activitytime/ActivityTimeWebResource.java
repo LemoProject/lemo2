@@ -56,6 +56,11 @@ public class ActivityTimeWebResource implements WebResource{
 		String json = "";
 		String xml = "";
 		Long startDate = 1434025148950L;
+		if (dataProvider.testConnection()) {
+			logger.info("Hibernate connection established.");
+		}else{
+			logger.error("Hibernate connection not established.");
+		}
 		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,startDate,
 				1434025149951L,10L,Arrays.asList("test"),Arrays.asList(1L,2L),null);
 		

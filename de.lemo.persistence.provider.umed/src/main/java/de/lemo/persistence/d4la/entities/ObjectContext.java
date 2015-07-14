@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class ObjectContext{
 	
 	private long id;
-	private Context learningContext;
+	private Context context;
 	private Object learningObject;
 	
 	
@@ -36,28 +36,28 @@ public class ObjectContext{
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="context")
-	public Context getLearningContext() {
-		return learningContext;
+	public Context getContext() {
+		return context;
 	}
 
 
 	/**
 	 * @param course the course to set
 	 */
-	public void setLearningContext(Context learningContext) {
-		this.learningContext = learningContext;
+	public void setcontext(Context context) {
+		this.context = context;
 	}
 	
 	public void setLearningContext(final long learningContext, final Map<Long, Context> learningContexts,
 			final Map<Long, Context> oldLearningContexts) {
 		if (learningContexts.get(learningContext) != null)
 		{
-			this.learningContext = learningContexts.get(learningContext);
+			this.context = learningContexts.get(learningContext);
 			learningContexts.get(learningContext).addObjectContext(this);
 		}
-		if ((this.learningContext == null) && (oldLearningContexts.get(learningContext) != null))
+		if ((this.context == null) && (oldLearningContexts.get(learningContext) != null))
 		{
-			this.learningContext = oldLearningContexts.get(learningContext);
+			this.context = oldLearningContexts.get(learningContext);
 			oldLearningContexts.get(learningContext).addObjectContext(this);
 		}
 	}

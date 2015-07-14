@@ -1,6 +1,7 @@
 package de.lemo.persistence.d4la.entities;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,10 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import de.lemo.dataprovider.api.LA_Activity;
+import de.lemo.dataprovider.api.LA_Context;
+import de.lemo.dataprovider.api.LA_Object;
+import de.lemo.dataprovider.api.LA_Person;
+
 /** This class represents the table lemo_learning_context. */
 @Entity
 @Table(name = "D4LA_Context ")
-public class Context{
+public class Context implements LA_Context{
 	
 	private long id;
 	private String name;
@@ -146,5 +152,53 @@ public class Context{
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String getDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> extAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Context> getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Object> getObjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Activity> getActivities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Person> getStudents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LA_Person> getInstructors() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

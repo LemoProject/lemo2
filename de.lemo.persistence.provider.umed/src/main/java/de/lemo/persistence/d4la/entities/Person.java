@@ -9,11 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import de.lemo.dataprovider.api.LA_Person;
+
 
 /** This class represents the table user. */
 @Entity
 @Table(name = "D4LA_Person")
-public class Person{
+public class Person implements LA_Person{
 	
 
 
@@ -105,6 +107,24 @@ public class Person{
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String getDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> extAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

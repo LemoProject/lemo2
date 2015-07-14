@@ -11,17 +11,17 @@
 
 		<non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=lemo-umed)</non-jta-data-source>
 
-		<class>de.lemo.persistence.umed.entities.Config</class>
-		<class>de.lemo.persistence.umed.entities.Person</class>
-		<class>de.lemo.persistence.umed.entities.LearningContext</class>
-		<class>de.lemo.persistence.umed.entities.LearningActivity</class>
-		<class>de.lemo.persistence.umed.entities.LearningObject</class>
-		<class>de.lemo.persistence.umed.entities.PersonContext</class>
-		<class>de.lemo.persistence.umed.entities.ObjectContext</class>
-		<class>de.lemo.persistence.umed.entities.LearningObjectExt</class>
-		<class>de.lemo.persistence.umed.entities.LearningContextExt</class>
-		<class>de.lemo.persistence.umed.entities.PersonExt</class>
-		<class>de.lemo.persistence.umed.entities.LearningActivityExt</class>
+		<class>de.lemo.persistence.d4la.entities.Config</class>
+		<class>de.lemo.persistence.d4la.entities.Person</class>
+		<class>de.lemo.persistence.d4la.entities.LearningContext</class>
+		<class>de.lemo.persistence.d4la.entities.LearningActivity</class>
+		<class>de.lemo.persistence.d4la.entities.LearningObject</class>
+		<class>de.lemo.persistence.d4la.entities.PersonContext</class>
+		<class>de.lemo.persistence.d4la.entities.ObjectContext</class>
+		<class>de.lemo.persistence.d4la.entities.LearningObjectExt</class>
+		<class>de.lemo.persistence.d4la.entities.LearningContextExt</class>
+		<class>de.lemo.persistence.d4la.entities.PersonExt</class>
+		<class>de.lemo.persistence.d4la.entities.LearningActivityExt</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>

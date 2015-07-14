@@ -1,6 +1,7 @@
 package de.lemo.persistence.d4la.entities;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,13 +12,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import de.lemo.dataprovider.api.LA_Activity;
+import de.lemo.dataprovider.api.LA_Object;
+import de.lemo.dataprovider.api.LA_Person;
+
 /**
  * This class represents the lemo_learning_activity object table.
  * @author Sebastian Schwarzrock
  */
 @Entity
 @Table(name = "D4LA_Activity")
-public class Activity{
+public class Activity implements LA_Activity{
 
 	private long id;
 	private Context learningContext;
@@ -86,7 +91,7 @@ public class Activity{
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="person")
-	public Person getPerson() {
+	public Person getJPAPerson() {
 		return person;
 	}
 	
@@ -111,7 +116,7 @@ public class Activity{
 	
 	
 	@Column(name="time")
-	public Long getTime() {
+	public Long getJPATime() {
 		return time;
 	}
 	
@@ -211,5 +216,35 @@ public class Activity{
 	 */
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	@Override
+	public long getTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Set<String> extAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExtAttribute(String attr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LA_Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LA_Person getPerson() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
