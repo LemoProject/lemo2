@@ -1,4 +1,4 @@
-package org.lemo2.tools.treemap;
+package org.lemo2.analysis.treemap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.lemo2.tools.api.AnalyticsTool;
+import org.lemo2.webapplication.api.AnalyticsTool;
 
 @Component
 @Provides
