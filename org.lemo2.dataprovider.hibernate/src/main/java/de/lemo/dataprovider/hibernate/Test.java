@@ -1,8 +1,8 @@
-package de.lemo.dataprovider.hibernate;
+package org.lemo2.dataprovider.hibernate;
 
 import java.util.List;
 
-import de.lemo.dataprovider.api.LA_Context;
+import org.lemo2.dataprovider.api.LA_Context;
 
 public class Test {
 

@@ -11,17 +11,17 @@
 
 		<non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=lemo-umed)</non-jta-data-source>
 
-		<class>de.lemo.persistence.d4la.entities.Config</class>
-		<class>de.lemo.persistence.d4la.entities.Person</class>
-		<class>de.lemo.persistence.d4la.entities.LearningContext</class>
-		<class>de.lemo.persistence.d4la.entities.LearningActivity</class>
-		<class>de.lemo.persistence.d4la.entities.LearningObject</class>
-		<class>de.lemo.persistence.d4la.entities.PersonContext</class>
-		<class>de.lemo.persistence.d4la.entities.ObjectContext</class>
-		<class>de.lemo.persistence.d4la.entities.LearningObjectExt</class>
-		<class>de.lemo.persistence.d4la.entities.LearningContextExt</class>
-		<class>de.lemo.persistence.d4la.entities.PersonExt</class>
-		<class>de.lemo.persistence.d4la.entities.LearningActivityExt</class>
+		<class>org.lemo2.persistence.d4la.entities.Config</class>
+		<class>org.lemo2.persistence.d4la.entities.Person</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningContext</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningActivity</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningObject</class>
+		<class>org.lemo2.persistence.d4la.entities.PersonContext</class>
+		<class>org.lemo2.persistence.d4la.entities.ObjectContext</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningObjectExt</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningContextExt</class>
+		<class>org.lemo2.persistence.d4la.entities.PersonExt</class>
+		<class>org.lemo2.persistence.d4la.entities.LearningActivityExt</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>
@@ -35,7 +35,7 @@
 	<!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
 
 	<!-- <jta-data-source>localJTA</jta-data-source> -->
-	<!-- <class>de.lemo.persistence.Foo</class> -->
+	<!-- <class>org.lemo2.persistence.Foo</class> -->
 
 	<!-- <properties> -->
 	<!-- <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" 

@@ -1,4 +1,4 @@
-package de.lemo.dataprovider.hibernate;
+package org.lemo2.dataprovider.hibernate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,13 +16,13 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import de.lemo.dataprovider.api.DataProvider;
-import de.lemo.dataprovider.api.LA_Context;
-import de.lemo.dataprovider.api.LA_Object;
-import de.lemo.dataprovider.api.LA_Person;
-import de.lemo.persistence.d4la.entities.Context;
-import de.lemo.persistence.d4la.entities.Person;
-import de.lemo.persistence.d4la.entities.PersonContext;
+import org.lemo2.dataprovider.api.DataProvider;
+import org.lemo2.dataprovider.api.LA_Context;
+import org.lemo2.dataprovider.api.LA_Object;
+import org.lemo2.dataprovider.api.LA_Person;
+import org.lemo2.persistence.d4la.entities.Context;
+import org.lemo2.persistence.d4la.entities.Person;
+import org.lemo2.persistence.d4la.entities.PersonContext;
 
 
 

@@ -1,4 +1,4 @@
-package de.lemo.analysis.activitygraph2;
+package org.lemo2.analysis.activitygraph2;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,7 +11,7 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.lemo.rest.api.WebResource;
+import org.lemo2.rest.api.WebResource;
 
 @Component
 @Provides

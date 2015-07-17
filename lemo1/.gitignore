@@ -1,8 +1,0 @@
-/bin
-/target
-.settings/
-*.log
-.project
-/src/de/lemo/dms/processing/Test.java
-/src/main/resources/log4j.properties
-/.classpath

@@ -1,4 +1,4 @@
-package de.lemo.analysis.circlegraph;
+package org.lemo2.analysis.circlegraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.lemo.rest.api.WebResource;
-import de.lemo.tools.api.AnalyticsTool;
+import org.lemo2.rest.api.WebResource;
+import org.lemo2.tools.api.AnalyticsTool;
 
 @Component
 @Provides

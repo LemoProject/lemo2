@@ -1,4 +1,4 @@
-package de.lemo.persistence.dataprovider;
+package org.lemo2.persistence.dataprovider;
 
 import java.util.*;
 
