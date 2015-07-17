@@ -30,9 +30,9 @@ import javax.ws.rs.BadRequestException;
 import de.lemo.analysis.activitytime.returntypes.ActivityTimeResult;
 import de.lemo.analysis.activitytime.returntypes.ResultListHashMapObject;
 import de.lemo.analysis.activitytime.returntypes.ResultListLongObject;
-import de.lemo.persistence.dataprovider.DataProvider;
-import de.lemo.persistence.dataprovider.LA_Activity;
-import de.lemo.persistence.dataprovider.LA_Context;
+import de.lemo.dataprovider.api.DataProvider;
+import de.lemo.dataprovider.api.LA_Activity;
+import de.lemo.dataprovider.api.LA_Context;
 import de.lemo.rest.api.WebResource;
 
 
