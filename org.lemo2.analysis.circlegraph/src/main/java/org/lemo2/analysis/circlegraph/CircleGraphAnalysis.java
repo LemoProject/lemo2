@@ -9,12 +9,11 @@ import javax.ws.rs.Path;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.lemo2.rest.api.WebResource;
-import org.lemo2.tools.api.AnalyticsTool;
+import org.lemo2.analysis.api.WebResource;
+import org.lemo2.webapplication.api.AnalyticsTool;
 
 @Component
 @Provides
