@@ -55,6 +55,7 @@ public class ActivityTimeWebResource implements WebResource{
 		String json = "";
 		String xml = "";
 		Long startDate = 1434025148950L;
+
 		Long startDate2 = new Long(1432001445);
 		Long endDate2 = new Long(1432091445);
 		ResultListHashMapObject resultListHashMap = computeActivities(Arrays.asList(1L),null,startDate2,
@@ -123,11 +124,11 @@ public class ActivityTimeWebResource implements WebResource{
 			while (it.hasNext()) 
 			{
 				final Long learnObjectTypeName = it.next();
-				ActivityTimeWebResource.logger.info("Result Course IDs: " + learnObjectTypeName);
+				this.logger.info("Result Course IDs: " + learnObjectTypeName);
 			}
 
 		} else {
-			ActivityTimeWebResource.logger.info("Returning empty resultset.");
+			this.logger.info("Returning empty resultset.");
 		}
 		return resultObject;
 	}

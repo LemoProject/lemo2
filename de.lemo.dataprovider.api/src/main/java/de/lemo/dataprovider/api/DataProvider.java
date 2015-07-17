@@ -38,5 +38,7 @@ public interface DataProvider {
 	 * @return ED_Object object which has been instantiated by previous call, or null
 	 */
 	public LA_Object getObject(String descriptor);
+
+	public boolean testConnection();
 	
 }

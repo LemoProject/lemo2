@@ -5,12 +5,13 @@
 	version="2.0">
 
 
-	<persistence-unit name="d4la" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="umed" transaction-type="RESOURCE_LOCAL">
 
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
 		<non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=lemo-umed)</non-jta-data-source>
 
+		<class>de.lemo.persistence.d4la.entities.Config</class>
 		<class>de.lemo.persistence.d4la.entities.Person</class>
 		<class>de.lemo.persistence.d4la.entities.LearningContext</class>
 		<class>de.lemo.persistence.d4la.entities.LearningActivity</class>
