@@ -127,15 +127,16 @@ public class WebappConfig {
 	}
 
 	private void addTool(AnalyticsTool analyticsTool, Map<String, Object> properties) {
+		if (properties.get("lemo.tool.id") == null || 
+				properties.get("lemo.tool.name") == null ||
+				properties.get("lemo.tool.description.short") == null ){
+			
+			logger.equals("Metadata of analysis " + analyticsTool.getClass().getName() + " is incomplete.");
+			return;
+		}			
 		analyticsTools.put(analyticsTool, properties);
 		Object toolId = properties.get("lemo.tool.id");
-		if (toolId == null) {
-			toolId = analyticsTool.getClass().getName();
-		}
 		Object toolName = properties.get("lemo.tool.name");
-		if (toolName == null) {
-			toolName = toolId;
-		}
 
 		properties.put("name", "" + toolName);
 		properties.put("url", ANALYTICS_PAGE + "/" + toolId);
