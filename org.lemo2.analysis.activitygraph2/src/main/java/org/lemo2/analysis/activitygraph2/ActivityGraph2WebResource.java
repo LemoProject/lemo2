@@ -11,7 +11,7 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.lemo2.rest.api.WebResource;
+import org.lemo2.analysis.api.WebResource;
 
 @Component
 @Provides
